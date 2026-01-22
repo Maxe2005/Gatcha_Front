@@ -14,10 +14,9 @@ import {
     Toolbar,
     IconButton
 } from '@mui/material';
-import LogoutIcon from '@mui/icons-material/Logout'; // Note: Must verify if icons are installed. They are in @mui/icons-material.
+import LogoutIcon from '@mui/icons-material/Logout';
 
-// I didn't install @mui/icons-material. Let's stick to text or install it.
-// I'll install it or just use text "Logout".
+// Icons are now installed.
 // I'll use text for safety.
 
 const Home = () => {
