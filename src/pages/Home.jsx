@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { invocationApi } from '../services/api';
 import {
@@ -6,24 +6,52 @@ import {
     Box,
     Typography,
     Button,
-    Card,
-    CardContent,
-    CardMedia,
     CircularProgress,
     AppBar,
-    Toolbar,
-    IconButton
+    Toolbar
 } from '@mui/material';
-import LogoutIcon from '@mui/icons-material/Logout';
+import GatchaCard from '../components/GatchaCard';
 
-// Icons are now installed.
-// I'll use text for safety.
+const normalizeMonster = (data) => {
+    if (!data) return null;
+
+    const parseNumber = (value) => {
+        const num = Number(value);
+        return Number.isFinite(num) ? num : 0;
+    };
+
+    const stats = data.stats || {};
+
+    return {
+        nom: data.nom || data.name || 'Monstre Mystère',
+        rang: data.rang || data.rank || '?',
+        element: (data.element || data.type || 'neutre').toLowerCase(),
+        image: data.image || data.picture || data.sprite || data.illustration || null,
+        lore: data.description || data.lore || '',
+        stats: {
+            hp: parseNumber(stats.hp ?? data.hp),
+            atk: parseNumber(stats.atk ?? data.atk),
+            def: parseNumber(stats.def ?? data.def),
+            vit: parseNumber(stats.vit ?? data.vit),
+        },
+    };
+};
+
+const first_monster = { "nom": "Pyrolosse",
+    "element": "Feu",
+    "rang": "Commun",
+    "stats": { "hp": 450, "atk": 65, "def": 40, "vit": 35 },
+    "description": "Un petit bouledogue de lave avec des charbons ardents en guise de fourrure. Ses yeux brillent d'un jaune vif. Style cartoon 2D, contours nets, fond volcanique flou.",
+    "image": "Pyrolosse.png"
+};
 
 const Home = () => {
     const { logout, user } = useAuth();
-    const [monster, setMonster] = useState(null);
+    const [monster, setMonster] = useState(first_monster);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+
+    const normalizedMonster = useMemo(() => normalizeMonster(monster), [monster]);
 
     const handleInvoke = async () => {
         setLoading(true);
@@ -73,26 +101,9 @@ const Home = () => {
 
                 {error && <Typography color="error">{error}</Typography>}
 
-                {monster && (
+                {normalizedMonster && (
                     <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-                        <Card sx={{ maxWidth: 345, width: '100%' }}>
-                            {/* If there is an image URL in monster data, use it. Otherwise placeholder */}
-                            <CardMedia
-                                component="img"
-                                height="200"
-                                image="https://via.placeholder.com/300?text=Unknown+Monster" // Placeholder
-                                alt="Monster"
-                            />
-                            <CardContent>
-                                <Typography gutterBottom variant="h5" component="div">
-                                    {monster.name || 'Unknown Monster'}
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                    {/* Display other monster stats if available */}
-                                    {JSON.stringify(monster, null, 2)}
-                                </Typography>
-                            </CardContent>
-                        </Card>
+                        <GatchaCard monstre={normalizedMonster} />
                     </Box>
                 )}
             </Container>
