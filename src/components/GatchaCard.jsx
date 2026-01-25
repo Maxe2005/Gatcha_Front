@@ -7,6 +7,25 @@ const GatchaCard = ({ monstre }) => {
     if (!monstre) return null;
 
     const elementClass = (monstre.element || 'neutre').toLowerCase();
+    
+    // Mapping rang vers image
+    const rankToImage = {
+        'Commun': '/assets/ranks/Rank_Common.png',
+        'Rare': '/assets/ranks/Rank_Rare.png',
+        'Épique': '/assets/ranks/Rank_Epic.png',
+        'Légendaire': '/assets/ranks/Rank_Legendary.png',
+    };
+    
+    // Mapping élément vers image
+    const elementToImage = {
+        'feu': '/assets/elements/Element_fire.png',
+        'eau': '/assets/elements/Element_water.png',
+        'vent': '/assets/elements/Element_wind.png',
+        'terre': '/assets/elements/Element_earth.png',
+        'lumiere': '/assets/elements/Element_light.png',
+        'tenebre': '/assets/elements/Element_darkness.png',
+    };
+    
     const stats = [
         { key: 'hp', label: 'HP', value: Number(monstre.stats?.hp ?? 0) },
         { key: 'atk', label: 'ATK', value: Number(monstre.stats?.atk ?? 0) },
@@ -15,7 +34,7 @@ const GatchaCard = ({ monstre }) => {
     ];
 
     const maxStat = Math.max(...stats.map((s) => (Number.isFinite(s.value) ? s.value : 0)), 1);
-    const imageSrc = `/assets/monsters/${monstre.image || 'default.png'}`;
+    const imageSrc = monstre.image ? `/assets/monsters/${monstre.image}` : `/assets/monsters/Default_Monster.png`;
     const lore = monstre.lore || monstre.description || '';
 
     return (
@@ -23,12 +42,18 @@ const GatchaCard = ({ monstre }) => {
             <div className={`card-flipper ${isFlipped ? 'flipped' : ''}`}>
                 {/* RECTO */}
                 <div className={`card-face card-front element-${elementClass}`} style={{ backgroundImage: `url(${imageSrc})` }}>
+                    <img 
+                        src={rankToImage[monstre.rang] || '/assets/ranks/Default_Rank.png'}
+                        alt={monstre.rang}
+                        className="rank-icon-front"
+                    />
+                    <img 
+                        src={elementToImage[elementClass] || '/assets/elements/Default_Element.png'}
+                        alt={monstre.element}
+                        className="element-icon-front"
+                    />
                     <div className="card-overlay" />
                     <div className="front-content">
-                        <div className="card-top">
-                            <div className="rank-chip">{monstre.rang || '???'}</div>
-                            <div className="element-chip">{(monstre.element || 'Neutre').toUpperCase()}</div>
-                        </div>
                         <h2 className="monster-name-front">{monstre.nom || 'Monstre Mystère'}</h2>
                     </div>
                 </div>
