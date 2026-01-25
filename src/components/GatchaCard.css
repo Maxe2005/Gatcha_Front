@@ -142,9 +142,18 @@
 }
 
 .element-chip {
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    background: rgba(255, 255, 255, 0.04);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border: 2px solid var(--element-color);
+    background: linear-gradient(135deg, 
+        rgba(255, 255, 255, 0.08) 0%, 
+        rgba(255, 255, 255, 0.02) 100%);
     color: var(--element-color);
+    box-shadow: 0 0 12px var(--element-glow), 
+                inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    text-shadow: 0 0 8px var(--element-glow);
+    backdrop-filter: blur(8px);
 }
 
 .monster-name {
