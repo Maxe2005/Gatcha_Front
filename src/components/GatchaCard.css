@@ -1,44 +1,121 @@
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap');
 
-.gatcha-card {
+/* Container principal */
+.card-container {
+    width: min(360px, 90vw);
+    height: 500px;
+    perspective: 1000px;
+    cursor: pointer;
+}
+
+/* Wrapper pour le flip */
+.card-flipper {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
+}
+
+.card-flipper.flipped {
+    transform: rotateY(180deg);
+}
+
+/* Faces communes */
+.card-face {
     --element-color: #7ab8ff;
     --element-glow: rgba(122, 184, 255, 0.35);
     --card-sheen: rgba(255, 255, 255, 0.08);
-    position: relative;
-    width: min(360px, 90vw);
+    position: absolute;
+    width: 100%;
+    height: 100%;
     border-radius: 18px;
-    padding: 18px;
-    background: radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.06), transparent 40%),
-        radial-gradient(circle at 80% 0%, rgba(255, 255, 255, 0.05), transparent 40%),
-        linear-gradient(145deg, #14141a 0%, #0d0d11 50%, #0f1118 100%);
-    border: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5), 0 0 20px var(--element-glow);
     color: #f8f8fb;
-    overflow: hidden;
     font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
+    backface-visibility: hidden;
+    overflow: hidden;
 }
 
-.gatcha-card::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(120deg, transparent 0%, var(--card-sheen) 50%, transparent 100%);
-    opacity: 0.6;
-    pointer-events: none;
+/* RECTO */
+.card-front {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: flex-end;
+    border: 2px solid var(--element-color);
 }
 
-.card-veil {
+.card-overlay {
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle at 50% 10%, rgba(255, 255, 255, 0.06), transparent 45%);
-    pointer-events: none;
     z-index: 1;
 }
+
+.card-front .card-overlay {
+    background: linear-gradient(to bottom, 
+        rgba(0, 0, 0, 0) 0%, 
+        rgba(0, 0, 0, 0.1) 50%, 
+        rgba(0, 0, 0, 0.6) 100%);
+}
+
+.card-back .card-overlay {
+    background: linear-gradient(to bottom, 
+        rgba(0, 0, 0, 0.5) 0%, 
+        rgba(0, 0, 0, 0.75) 40%, 
+        rgba(0, 0, 0, 0.92) 100%);
+}
+
+.front-content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    padding: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.monster-name-front {
+    margin: 0;
+    font-size: 1.8rem;
+    letter-spacing: 0.02em;
+    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.8);
+}
+
+/* VERSO  */
+.card-back {
+    padding: 18px;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    border: 2px solid var(--element-color);
+    transform: rotateY(180deg);
+}
+
+
 
 .card-grid {
     position: relative;
     z-index: 2;
-    display: grid;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.card-back .card-grid {
+    justify-content: space-between;
+}
+
+.back-content-center {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
     gap: 12px;
 }
 
@@ -171,51 +248,51 @@
 }
 
 /* Element palettes */
-.gatcha-card.element-feu {
+.card-face.element-feu {
     --element-color: #ff7a6a;
     --element-glow: rgba(255, 122, 106, 0.35);
     --card-sheen: rgba(255, 143, 104, 0.12);
 }
 
-.gatcha-card.element-eau {
+.card-face.element-eau {
     --element-color: #6ad1ff;
     --element-glow: rgba(106, 209, 255, 0.35);
     --card-sheen: rgba(106, 209, 255, 0.12);
 }
 
-.gatcha-card.element-vent {
+.card-face.element-vent {
     --element-color: #7ef7c8;
     --element-glow: rgba(126, 247, 200, 0.35);
     --card-sheen: rgba(126, 247, 200, 0.12);
 }
 
-.gatcha-card.element-terre {
+.card-face.element-terre {
     --element-color: #d1b27e;
     --element-glow: rgba(209, 178, 126, 0.35);
     --card-sheen: rgba(209, 178, 126, 0.12);
 }
 
-.gatcha-card.element-lumiere {
+.card-face.element-lumiere {
     --element-color: #f5e68d;
     --element-glow: rgba(245, 230, 141, 0.4);
     --card-sheen: rgba(245, 230, 141, 0.18);
 }
 
-.gatcha-card.element-tenebre {
+.card-face.element-tenebre {
     --element-color: #9e8bff;
     --element-glow: rgba(158, 139, 255, 0.35);
     --card-sheen: rgba(158, 139, 255, 0.14);
 }
 
-.gatcha-card.element-neutre {
+.card-face.element-neutre {
     --element-color: #9fb4c8;
     --element-glow: rgba(159, 180, 200, 0.25);
     --card-sheen: rgba(159, 180, 200, 0.1);
 }
 
 @media (max-width: 420px) {
-    .gatcha-card {
-        padding: 14px;
+    .card-container {
+        height: 480px;
     }
 
     .stat-row {
