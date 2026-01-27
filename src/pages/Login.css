@@ -1,0 +1,350 @@
+:root {
+    /* Base Variables (Divine Theme) */
+    --primary-color: #F1C40F;
+    --secondary-color: #F8F9FA;
+    --accent-color: #5DADE2;
+    --bg-color: #1A1F2B;
+    --bg-image: url('/assets/backgrounds/Login_background_light.png');
+    --card-bg: rgba(255, 255, 255, 0.65);
+    --border-color: #F1C40F;
+    --shadow-color: rgba(241, 196, 15, 0.3);
+    --text-primary: #FFFFFF;
+    --text-secondary: #BDC3C7;
+    --font-title: 'Cinzel', serif;
+    --font-body: 'Montserrat', sans-serif;
+    --particle-color: rgba(255, 255, 255, 0.8);
+    --button-gradient: linear-gradient(135deg, #f1c40f 0%, #d4ac0d 100%);
+    --button-shadow: rgba(241, 196, 15, 0.5);
+    --error-bg: rgba(231, 76, 60, 0.2);
+    --error-border: #E74C3C;
+    --error-text: #FADBD8;
+}
+
+/* Base Styles & Typography */
+body {
+    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="%23F1C40F"><path d="M12 2L1 21h22L12 2zm0 3.8l7.5 13.2H4.5L12 5.8z"/></svg>') 16 16, auto;
+}
+
+/* Dark Theme Overrides */
+.theme-dark {
+    --primary-color: #922B21; /* Crimson Curse */
+    --secondary-color: #D5D8DC; /* Cold Iron */
+    --accent-color: #5B2C6F; /* Ghostly Violet */
+    --bg-color: #0D0D0D; /* Void Black */
+    --bg-image: url('/assets/backgrounds/Login_background_dark.png');
+    --card-bg: rgba(15, 15, 15, 0.85); /* Obsidian Glass */
+    --border-color: #566573;
+    --shadow-color: rgba(146, 43, 33, 0.4);
+    --text-primary: #ECF0F1;
+    --text-secondary: #95A5A6;
+    --font-title: 'Metal Mania', cursive;
+    --font-body: 'Crimson Text', serif;
+    --particle-color: rgba(91, 44, 111, 0.5); /* Violet Ash */
+    --button-gradient: linear-gradient(135deg, #641E16 0%, #922B21 100%);
+    --button-shadow: rgba(146, 43, 33, 0.6);
+    --error-bg: rgba(146, 43, 33, 0.2);
+    --error-border: #922B21;
+    --error-text: #E6B0AA;
+}
+
+/* Container */
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--bg-color);
+    background-image: var(--bg-image);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    position: relative;
+    overflow: hidden;
+    transition: background-image 0.5s ease;
+    font-family: var(--font-body);
+}
+
+/* Background Effects */
+.login-bg-glow {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 50% 120%, var(--shadow-color) 0%, transparent 60%);
+    z-index: 0;
+    opacity: 0.5;
+    animation: pulseGlow 5s infinite alternate;
+}
+
+.theme-divine .login-bg-glow::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -50%;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.1) 45%, transparent 50%);
+    animation: godRays 8s infinite linear;
+    pointer-events: none;
+}
+
+.theme-dark .login-bg-glow::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    box-shadow: inset 0 0 150px #000;
+    pointer-events: none;
+}
+
+/* Card */
+.login-card {
+    width: 100%;
+    max-width: 450px;
+    margin: 16px;
+    padding: 32px;
+    background-color: var(--card-bg);
+    border-radius: 16px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 0 30px var(--shadow-color);
+    backdrop-filter: blur(10px);
+    z-index: 2;
+    position: relative;
+    transition: all 0.5s ease;
+}
+
+.theme-divine .login-card {
+    border-image: linear-gradient(to bottom, var(--primary-color), transparent) 1;
+}
+
+/* Typography */
+.login-title {
+    font-family: var(--font-title) !important;
+    font-weight: 700 !important;
+    color: var(--primary-color);
+    letter-spacing: 0.1em !important;
+    text-transform: uppercase;
+    text-shadow: 0 0 20px var(--shadow-color);
+    text-align: center;
+    margin-bottom: 8px !important;
+}
+
+/* Responsive font size for title */
+@media (min-width: 600px) {
+    .login-title {
+        font-size: 2.5rem !important;
+    }
+}
+@media (max-width: 599px) {
+    .login-title {
+        font-size: 2rem !important;
+    }
+}
+
+.login-subtitle {
+    color: var(--text-secondary);
+    text-align: center;
+    margin-bottom: 32px !important;
+    font-style: italic;
+    font-family: var(--font-body);
+}
+
+/* Inputs */
+.input-wrapper {
+    position: relative;
+    margin-bottom: 24px;
+}
+
+.login-input {
+    width: 100%;
+}
+
+.login-input .MuiOutlinedInput-root {
+    background-color: rgba(0, 0, 0, 0.2);
+    color: var(--text-primary);
+    border-radius: 4px; /* More angular for games */
+    transition: all 0.3s ease;
+}
+
+.login-input .MuiOutlinedInput-root fieldset {
+    border-color: rgba(255, 255, 255, 0.2);
+    border-width: 1px;
+}
+
+.login-input .MuiOutlinedInput-root:hover fieldset {
+    border-color: var(--primary-color);
+    border-width: 1px;
+}
+
+.login-input .MuiOutlinedInput-root.Mui-focused fieldset {
+    border-color: var(--primary-color);
+    border-width: 1px;
+    box-shadow: 0 0 10px var(--shadow-color);
+}
+
+.login-input .MuiInputLabel-root {
+    color: var(--text-secondary);
+    font-family: var(--font-body);
+}
+
+.login-input .MuiInputLabel-root.Mui-focused {
+    color: var(--primary-color);
+}
+
+/* Icons */
+.login-icon-primary {
+    color: var(--primary-color);
+}
+.login-icon-secondary {
+    color: var(--text-secondary);
+}
+
+/* Alert */
+.login-alert {
+    background-color: var(--error-bg) !important;
+    color: var(--error-text) !important;
+    border: 1px solid var(--error-border);
+    font-family: var(--font-body);
+    margin-bottom: 24px !important;
+}
+
+/* Button */
+.login-button {
+    background: var(--button-gradient) !important;
+    color: white !important; /* Always white text for contrast on strong gradients */
+    padding: 14px 0 !important;
+    font-size: 1.1rem !important;
+    font-weight: bold !important;
+    font-family: var(--font-title) !important;
+    letter-spacing: 1px !important;
+    border-radius: 4px !important;
+    box-shadow: 0 0 15px var(--button-shadow) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    text-transform: uppercase;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.2) !important;
+}
+
+.login-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 25px var(--shadow-color), inset 0 0 10px rgba(255,255,255,0.3) !important;
+    filter: brightness(1.1);
+}
+
+.login-button:active {
+    transform: scale(0.98);
+}
+
+.login-button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* Theme Toggle */
+.theme-toggle-btn {
+    position: absolute !important;
+    top: 24px;
+    right: 24px;
+    color: var(--primary-color) !important;
+    background: rgba(0, 0, 0, 0.3) !important;
+    backdrop-filter: blur(5px);
+    border: 1px solid var(--border-color) !important;
+    z-index: 10;
+    transition: all 0.3s ease !important;
+}
+.theme-toggle-btn:hover {
+    box-shadow: 0 0 15px var(--shadow-color);
+    transform: rotate(30deg);
+}
+
+/* Toggle Link */
+.login-toggle-container {
+    margin-top: 24px;
+    text-align: center;
+}
+.login-toggle-text {
+    color: var(--text-secondary);
+    font-family: var(--font-body);
+}
+.login-toggle-btn {
+    color: var(--primary-color) !important;
+    font-weight: 700 !important;
+    text-transform: none !important;
+    font-family: var(--font-body) !important;
+    margin-left: 4px !important;
+}
+.login-toggle-btn:hover {
+    text-decoration: underline;
+    text-shadow: 0 0 8px var(--shadow-color);
+    background: transparent !important;
+}
+
+/* Animations & Particles */
+@keyframes godRays {
+    0% { transform: translateX(-100%) rotate(45deg); opacity: 0; }
+    50% { opacity: 0.3; }
+    100% { transform: translateX(100%) rotate(45deg); opacity: 0; }
+}
+
+@keyframes pulseGlow {
+    from { opacity: 0.3; }
+    to { opacity: 0.6; }
+}
+
+/* Particles Wrapper */
+.particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.particle {
+    position: absolute;
+    border-radius: 50%;
+    background: var(--particle-color);
+    opacity: 0;
+}
+
+/* Divine Particles (Rising Sparks) */
+.theme-divine .particle {
+    bottom: -10px;
+    width: 4px;
+    height: 4px;
+    box-shadow: 0 0 4px #F1C40F;
+    animation: rise 4s infinite ease-in;
+}
+/* Randomize divine particles */
+.theme-divine .particle:nth-child(even) { width: 2px; height: 2px; animation-duration: 6s; }
+.theme-divine .particle:nth-child(3n) { left: 20%; animation-delay: 1s; }
+.theme-divine .particle:nth-child(3n+1) { left: 50%; animation-delay: 2s; }
+.theme-divine .particle:nth-child(3n+2) { left: 80%; animation-delay: 0.5s; }
+
+@keyframes rise {
+    0% { transform: translateY(0) scale(1); opacity: 0; }
+    20% { opacity: 0.8; }
+    100% { transform: translateY(-100vh) scale(0); opacity: 0; }
+}
+
+/* Dark Particles (Falling Ash/Smoke) */
+.theme-dark .particle {
+    top: -10px;
+    background: var(--particle-color);
+    width: 6px;
+    height: 6px;
+    filter: blur(1px);
+    animation: fall 8s infinite linear;
+}
+/* Randomize dark particles */
+.theme-dark .particle:nth-child(even) { width: 3px; height: 3px; animation-duration: 10s; }
+.theme-dark .particle:nth-child(3n) { left: 10%; animation-delay: 0s; }
+.theme-dark .particle:nth-child(3n+1) { left: 60%; animation-delay: 3s; }
+.theme-dark .particle:nth-child(3n+2) { left: 90%; animation-delay: 1.5s; }
+
+@keyframes fall {
+    0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
+    20% { opacity: 0.6; }
+    100% { transform: translateY(110vh) translateX(20px) rotate(180deg); opacity: 0; }
+}
