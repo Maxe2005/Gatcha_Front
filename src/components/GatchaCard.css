@@ -3,7 +3,7 @@
 /* Container principal */
 .card-container {
     width: min(360px, 90vw);
-    height: 500px;
+    aspect-ratio: 2/3;
     perspective: 1000px;
     cursor: pointer;
 }
@@ -54,10 +54,7 @@
 }
 
 .card-front .card-overlay {
-    background: linear-gradient(to bottom, 
-        rgba(0, 0, 0, 0) 0%, 
-        rgba(0, 0, 0, 0.1) 50%, 
-        rgba(0, 0, 0, 0.6) 100%);
+    display: none;
 }
 
 .card-back .card-overlay {
@@ -75,6 +72,8 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(4px);
 }
 
 .monster-name-front {
@@ -321,10 +320,6 @@
 }
 
 @media (max-width: 420px) {
-    .card-container {
-        height: 480px;
-    }
-
     .stat-row {
         grid-template-columns: 54px 1fr 46px;
     }

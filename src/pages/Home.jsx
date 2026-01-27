@@ -26,8 +26,7 @@ const normalizeMonster = (data) => {
         nom: data.nom || data.name || 'Monstre Mystère',
         rang: data.rang || data.rank || '?',
         element: (data.element || data.type || 'neutre').toLowerCase(),
-        image: data.image || data.picture || data.sprite || data.illustration || null,
-        lore: data.description || data.lore || '',
+        lore: data.description || data.lore || data.cardDescription || data.card_description || '',
         stats: {
             hp: parseNumber(stats.hp ?? data.hp),
             atk: parseNumber(stats.atk ?? data.atk),
@@ -38,11 +37,10 @@ const normalizeMonster = (data) => {
 };
 
 const first_monster = { "nom": "Pyrolosse",
-    "element": "Feu",
-    "rang": "Commun",
+    "element": "FIRE",
+    "rang": "COMMON",
     "stats": { "hp": 450, "atk": 65, "def": 40, "vit": 35 },
     "description": "Un petit bouledogue de lave avec des charbons ardents en guise de fourrure. Ses yeux brillent d'un jaune vif. Style cartoon 2D, contours nets, fond volcanique flou.",
-    "image": "Pyrolosse.png"
 };
 
 const Home = () => {

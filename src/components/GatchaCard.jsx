@@ -10,20 +10,20 @@ const GatchaCard = ({ monstre }) => {
     
     // Mapping rang vers image
     const rankToImage = {
-        'Commun': '/assets/ranks/Rank_Common.png',
-        'Rare': '/assets/ranks/Rank_Rare.png',
-        'Épique': '/assets/ranks/Rank_Epic.png',
-        'Légendaire': '/assets/ranks/Rank_Legendary.png',
+        'COMMON': '/assets/ranks/Rank_Common.png',
+        'RARE': '/assets/ranks/Rank_Rare.png',
+        'EPIC': '/assets/ranks/Rank_Epic.png',
+        'LEGENDARY': '/assets/ranks/Rank_Legendary.png',
     };
     
     // Mapping élément vers image
     const elementToImage = {
-        'feu': '/assets/elements/Element_fire.png',
-        'eau': '/assets/elements/Element_water.png',
-        'vent': '/assets/elements/Element_wind.png',
-        'terre': '/assets/elements/Element_earth.png',
-        'lumiere': '/assets/elements/Element_light.png',
-        'tenebre': '/assets/elements/Element_darkness.png',
+        'fire': '/assets/elements/Element_fire.png',
+        'water': '/assets/elements/Element_water.png',
+        'wind': '/assets/elements/Element_wind.png',
+        'earth': '/assets/elements/Element_earth.png',
+        'light': '/assets/elements/Element_light.png',
+        'darkness': '/assets/elements/Element_darkness.png',
     };
     
     const stats = [
@@ -34,7 +34,7 @@ const GatchaCard = ({ monstre }) => {
     ];
 
     const maxStat = Math.max(...stats.map((s) => (Number.isFinite(s.value) ? s.value : 0)), 1);
-    const imageSrc = monstre.image ? `/assets/monsters/${monstre.image}` : `/assets/monsters/Default_Monster.png`;
+    const imageSrc = monstre.nom ? `/assets/monsters/${monstre.nom}.png` : `/assets/monsters/Default_Monster.png`;
     const lore = monstre.lore || monstre.description || '';
 
     return (
