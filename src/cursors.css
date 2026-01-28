@@ -1,0 +1,125 @@
+/**
+ * Cursor System - Centralized & DRY
+ * 
+ * Architecture SOLID:
+ * - Single Responsibility: Ce fichier gère uniquement les cursors
+ * - Open/Closed: Extensible via CSS variables
+ * - Interface Segregation: Sélecteurs spécifiques par cas d'usage
+ * - Dependency Inversion: Dépend des variables CSS, pas des valeurs hardcodées
+ */
+
+/* ============================================
+   1. CURSOR DEFINITIONS (Light/Divine Theme)
+   ============================================ */
+:root,
+.theme-divine {
+    /* Divine Cursors - Élégant et Lumineux */
+    --cursor-default: url('/assets/cursors/Pointeur_plume.cur'), default;
+    --cursor-pointer: url('/assets/cursors/Pointeur_main_light.cur'), pointer;
+    --cursor-text: url('/assets/cursors/Pointeur_sceptre_light.cur'), text;
+    --cursor-wait: url('/assets/cursors/Pointeur_griffes.cur'), wait;
+    --cursor-not-allowed: url('/assets/cursors/Pointeur_croix_dark.cur'), not-allowed;
+}
+
+/* ============================================
+   2. CURSOR DEFINITIONS (Dark Theme)
+   ============================================ */
+[data-theme="dark"],
+.theme-dark {
+    /* Dark Cursors - Mystérieux et Menaçant */
+    --cursor-default: url('/assets/cursors/Pointeur_dague_dark.cur'), default;
+    --cursor-pointer: url('/assets/cursors/Pointeur_griffes.cur'), pointer;
+    --cursor-text: url('/assets/cursors/Pointeur_sceptre_dark.cur'), text;
+    --cursor-wait: url('/assets/cursors/Pointeur_griffes.cur'), wait;
+    --cursor-not-allowed: url('/assets/cursors/Pointeur_dague_dark.cur'), not-allowed;
+}
+
+/* ============================================
+   3. GLOBAL APPLICATION
+   ============================================ */
+
+/* Default cursor for all elements */
+html,
+body,
+* {
+    cursor: var(--cursor-default);
+}
+
+/* ============================================
+   4. INTERACTIVE ELEMENTS
+   ============================================ */
+
+/* Clickable elements - Pointer cursor */
+button,
+a,
+summary,
+[role="button"],
+[role="link"],
+[type="submit"],
+[type="button"],
+.clickable,
+.MuiButton-root,
+.MuiIconButton-root,
+.login-toggle-btn {
+    cursor: var(--cursor-pointer) !important;
+}
+
+/* ============================================
+   5. TEXT INPUT ELEMENTS
+   ============================================ */
+
+/* Text editable areas - Text cursor */
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="search"],
+input[type="tel"],
+input[type="url"],
+textarea,
+[contenteditable="true"],
+.MuiTextField-root input,
+.MuiInputBase-input {
+    cursor: var(--cursor-text) !important;
+}
+
+/* ============================================
+   6. DISABLED STATES
+   ============================================ */
+
+/* Disabled elements - Not allowed cursor */
+button:disabled,
+input:disabled,
+textarea:disabled,
+select:disabled,
+[aria-disabled="true"],
+.MuiButton-root:disabled,
+.disabled {
+    cursor: var(--cursor-not-allowed) !important;
+}
+
+/* ============================================
+   7. LOADING STATES
+   ============================================ */
+
+/* Loading indicators - Wait cursor */
+.is-loading,
+.is-loading *,
+.loading-spinner,
+[aria-busy="true"] {
+    cursor: var(--cursor-wait) !important;
+}
+
+/* ============================================
+   8. SMOOTH TRANSITIONS
+   ============================================ */
+
+/* Transition douce lors du changement de thème */
+html,
+body,
+button,
+a,
+input,
+textarea {
+    transition: cursor 0.2s ease;
+}
+

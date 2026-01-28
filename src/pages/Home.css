@@ -1,0 +1,13 @@
+.home-page {
+    background-color: var(--bg-color);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.home-page.theme-divine {
+    background: linear-gradient(135deg, rgba(241, 196, 15, 0.1) 0%, rgba(255, 255, 255, 0.95) 100%);
+}
+
+.home-page.theme-dark {
+    background: linear-gradient(135deg, rgba(146, 43, 33, 0.2) 0%, rgba(13, 13, 13, 0.95) 100%);
+}

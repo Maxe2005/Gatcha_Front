@@ -1,50 +1,59 @@
-:root {
-    /* Base Variables (Divine Theme) */
+// Import modular particle system
+@import './particles.scss';
+
+/* Light Theme (Default) */
+.theme-divine {
     --primary-color: #F1C40F;
     --secondary-color: #F8F9FA;
     --accent-color: #5DADE2;
-    --bg-color: #1A1F2B;
+    --bg-color: rgba(255, 255, 255, 0.65);
     --bg-image: url('/assets/backgrounds/Login_background_light.png');
     --card-bg: rgba(255, 255, 255, 0.65);
+    --input-bg: rgba(255, 255, 255, 0.4);
+    --input-text-color: #1A1A1A;
     --border-color: #F1C40F;
     --shadow-color: rgba(241, 196, 15, 0.3);
     --text-primary: #FFFFFF;
     --text-secondary: #BDC3C7;
+    --label-color: #2C3E50;
     --font-title: 'Cinzel', serif;
     --font-body: 'Montserrat', sans-serif;
     --particle-color: rgba(255, 255, 255, 0.8);
     --button-gradient: linear-gradient(135deg, #f1c40f 0%, #d4ac0d 100%);
     --button-shadow: rgba(241, 196, 15, 0.5);
-    --error-bg: rgba(231, 76, 60, 0.2);
+    --error-bg: rgba(231, 76, 60, 0.15);
+    --error-border: #C0392B;
+    --error-text: #8B0000;
+}
+
+/* Dark Theme Overrides */
+.theme-dark {
+    --primary-color: #922B21;
+    --secondary-color: #D5D8DC;
+    --accent-color: #5B2C6F;
+    --bg-color: #0D0D0D;
+    --bg-image: url('/assets/backgrounds/Login_background_dark.png');
+    --card-bg: rgba(15, 15, 15, 0.85);
+    --input-bg: rgba(0, 0, 0, 0.4);
+    --input-text-color: #ECF0F1;
+    --border-color: #566573;
+    --shadow-color: rgba(146, 43, 33, 0.4);
+    --text-primary: #ECF0F1;
+    --text-secondary: #95A5A6;
+    --label-color: #D5D8DC;
+    --font-title: 'Metal Mania', cursive;
+    --font-body: 'Crimson Text', serif;
+    --particle-color: rgba(200, 120, 220, 0.8);
+    --button-gradient: linear-gradient(135deg, #641E16 0%, #922B21 100%);
+    --button-shadow: rgba(146, 43, 33, 0.6);
+    --error-bg: rgba(146, 43, 33, 0.25);
     --error-border: #E74C3C;
-    --error-text: #FADBD8;
+    --error-text: #F5B7B1;
 }
 
 /* Base Styles & Typography */
 body {
     cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="%23F1C40F"><path d="M12 2L1 21h22L12 2zm0 3.8l7.5 13.2H4.5L12 5.8z"/></svg>') 16 16, auto;
-}
-
-/* Dark Theme Overrides */
-.theme-dark {
-    --primary-color: #922B21; /* Crimson Curse */
-    --secondary-color: #D5D8DC; /* Cold Iron */
-    --accent-color: #5B2C6F; /* Ghostly Violet */
-    --bg-color: #0D0D0D; /* Void Black */
-    --bg-image: url('/assets/backgrounds/Login_background_dark.png');
-    --card-bg: rgba(15, 15, 15, 0.85); /* Obsidian Glass */
-    --border-color: #566573;
-    --shadow-color: rgba(146, 43, 33, 0.4);
-    --text-primary: #ECF0F1;
-    --text-secondary: #95A5A6;
-    --font-title: 'Metal Mania', cursive;
-    --font-body: 'Crimson Text', serif;
-    --particle-color: rgba(91, 44, 111, 0.5); /* Violet Ash */
-    --button-gradient: linear-gradient(135deg, #641E16 0%, #922B21 100%);
-    --button-shadow: rgba(146, 43, 33, 0.6);
-    --error-bg: rgba(146, 43, 33, 0.2);
-    --error-border: #922B21;
-    --error-text: #E6B0AA;
 }
 
 /* Container */
@@ -82,7 +91,7 @@ body {
     left: -50%;
     width: 200%;
     height: 100%;
-    background: linear-gradient(45deg, transparent 40%, rgba(255,255,255,0.1) 45%, transparent 50%);
+    background: linear-gradient(45deg, transparent 40%,rgba(255, 255, 255, 0.65) 45%, transparent 50%);
     animation: godRays 8s infinite linear;
     pointer-events: none;
 }
@@ -158,10 +167,14 @@ body {
 }
 
 .login-input .MuiOutlinedInput-root {
-    background-color: rgba(0, 0, 0, 0.2);
-    color: var(--text-primary);
+    background-color: var(--input-bg);
+    color: var(--input-text-color);
     border-radius: 4px; /* More angular for games */
     transition: all 0.3s ease;
+}
+
+.login-input .MuiOutlinedInput-root input {
+    color: var(--input-text-color) !important;
 }
 
 .login-input .MuiOutlinedInput-root fieldset {
@@ -181,12 +194,13 @@ body {
 }
 
 .login-input .MuiInputLabel-root {
-    color: var(--text-secondary);
+    color: var(--label-color) !important;
     font-family: var(--font-body);
+    font-weight: 500 !important;
 }
 
 .login-input .MuiInputLabel-root.Mui-focused {
-    color: var(--primary-color);
+    color: var(--primary-color) !important;
 }
 
 /* Icons */
@@ -201,9 +215,15 @@ body {
 .login-alert {
     background-color: var(--error-bg) !important;
     color: var(--error-text) !important;
-    border: 1px solid var(--error-border);
+    border: 1px solid var(--error-border) !important;
     font-family: var(--font-body);
     margin-bottom: 24px !important;
+    font-weight: 500;
+}
+
+/* Alert text color override for all child elements */
+.login-alert .MuiAlert-message {
+    color: var(--error-text) !important;
 }
 
 /* Button */
@@ -276,75 +296,4 @@ body {
     text-decoration: underline;
     text-shadow: 0 0 8px var(--shadow-color);
     background: transparent !important;
-}
-
-/* Animations & Particles */
-@keyframes godRays {
-    0% { transform: translateX(-100%) rotate(45deg); opacity: 0; }
-    50% { opacity: 0.3; }
-    100% { transform: translateX(100%) rotate(45deg); opacity: 0; }
-}
-
-@keyframes pulseGlow {
-    from { opacity: 0.3; }
-    to { opacity: 0.6; }
-}
-
-/* Particles Wrapper */
-.particles {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 1;
-}
-
-.particle {
-    position: absolute;
-    border-radius: 50%;
-    background: var(--particle-color);
-    opacity: 0;
-}
-
-/* Divine Particles (Rising Sparks) */
-.theme-divine .particle {
-    bottom: -10px;
-    width: 4px;
-    height: 4px;
-    box-shadow: 0 0 4px #F1C40F;
-    animation: rise 4s infinite ease-in;
-}
-/* Randomize divine particles */
-.theme-divine .particle:nth-child(even) { width: 2px; height: 2px; animation-duration: 6s; }
-.theme-divine .particle:nth-child(3n) { left: 20%; animation-delay: 1s; }
-.theme-divine .particle:nth-child(3n+1) { left: 50%; animation-delay: 2s; }
-.theme-divine .particle:nth-child(3n+2) { left: 80%; animation-delay: 0.5s; }
-
-@keyframes rise {
-    0% { transform: translateY(0) scale(1); opacity: 0; }
-    20% { opacity: 0.8; }
-    100% { transform: translateY(-100vh) scale(0); opacity: 0; }
-}
-
-/* Dark Particles (Falling Ash/Smoke) */
-.theme-dark .particle {
-    top: -10px;
-    background: var(--particle-color);
-    width: 6px;
-    height: 6px;
-    filter: blur(1px);
-    animation: fall 8s infinite linear;
-}
-/* Randomize dark particles */
-.theme-dark .particle:nth-child(even) { width: 3px; height: 3px; animation-duration: 10s; }
-.theme-dark .particle:nth-child(3n) { left: 10%; animation-delay: 0s; }
-.theme-dark .particle:nth-child(3n+1) { left: 60%; animation-delay: 3s; }
-.theme-dark .particle:nth-child(3n+2) { left: 90%; animation-delay: 1.5s; }
-
-@keyframes fall {
-    0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
-    20% { opacity: 0.6; }
-    100% { transform: translateY(110vh) translateX(20px) rotate(180deg); opacity: 0; }
 }

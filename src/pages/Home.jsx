@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import { invocationApi } from '../services/api';
 import {
     Container,
@@ -7,10 +8,10 @@ import {
     Typography,
     Button,
     CircularProgress,
-    AppBar,
-    Toolbar
 } from '@mui/material';
+import Header from '../components/Header';
 import GatchaCard from '../components/GatchaCard';
+import './Home.css';
 
 const normalizeMonster = (data) => {
     if (!data) return null;
@@ -45,6 +46,7 @@ const first_monster = { "nom": "Pyrolosse",
 
 const Home = () => {
     const { logout, user } = useAuth();
+    const { theme } = useTheme();
     const [monster, setMonster] = useState(first_monster);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -68,31 +70,32 @@ const Home = () => {
     };
 
     return (
-        <Box sx={{ flexGrow: 1 }}>
-            <AppBar position="static">
-                <Toolbar>
-                    <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                        Gatcha World
-                    </Typography>
-                    <Typography variant="subtitle1" sx={{ mr: 2 }}>
-                        {user?.username}
-                    </Typography>
-                    <Button color="inherit" onClick={logout}>Logout</Button>
-                </Toolbar>
-            </AppBar>
+        <Box className={`home-page ${theme === 'dark' ? 'theme-dark' : 'theme-divine'}`} sx={{ flexGrow: 1, minHeight: '100vh' }}>
+            <Header title="Gatcha World" />
 
-            <Container maxWidth="md" sx={{ mt: 4, textAlign: 'center' }}>
-                <Typography variant="h3" gutterBottom>
-                    Summon Your Destiny
+            <Container maxWidth="md" sx={{ mt: 4, textAlign: 'center', pb: 4 }}>
+                <Typography variant="h3" gutterBottom sx={{ color: 'var(--primary-color)', fontFamily: 'var(--font-title)' }}>
+                    Invoque ton Destin
                 </Typography>
 
                 <Button
                     variant="contained"
-                    color="secondary"
                     size="large"
                     onClick={handleInvoke}
                     disabled={loading}
-                    sx={{ mt: 2, mb: 4, fontSize: '1.2rem', py: 2, px: 4 }}
+                    sx={{ 
+                        mt: 2, 
+                        mb: 4, 
+                        fontSize: '1.2rem', 
+                        py: 2, 
+                        px: 4,
+                        background: 'var(--button-gradient)',
+                        color: 'white',
+                        boxShadow: `0 0 20px ${theme === 'dark' ? 'rgba(146, 43, 33, 0.5)' : 'rgba(241, 196, 15, 0.3)'}`,
+                        '&:hover': {
+                            transform: 'translateY(-2px)',
+                        }
+                    }}
                 >
                     {loading ? <CircularProgress size={24} color="inherit" /> : 'INVOQUE!'}
                 </Button>

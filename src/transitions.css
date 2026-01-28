@@ -1,0 +1,166 @@
+/* Overlay de transition pour l'effet d'aspiration */
+#transition-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 10000;
+    opacity: 0;
+    display: none;
+}
+
+/* Flash Divin - Ascension Lumineuse */
+.divine-flash {
+    animation: divineAnim 1.5s forwards;
+    background: radial-gradient(circle, #fff 0%, #F1C40F 40%, transparent 70%);
+}
+
+/* Trou Noir - Singularité */
+.void-effect {
+    animation: voidAnim 1.5s forwards;
+    background: radial-gradient(circle, #000 0%, #922B21 40%, transparent 70%);
+}
+
+@keyframes divineAnim {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+        filter: brightness(1);
+    }
+    30% {
+        transform: scale(1.5);
+        opacity: 0.8;
+        filter: brightness(2);
+    }
+    50% {
+        transform: scale(2.5);
+        opacity: 1;
+        filter: brightness(3);
+        box-shadow: 0 0 100px rgba(241, 196, 15, 0.8) inset;
+    }
+    100% {
+        transform: scale(6);
+        background: white;
+        opacity: 1;
+        filter: brightness(5);
+    }
+}
+
+@keyframes voidAnim {
+    0% {
+        transform: scale(0);
+        opacity: 0;
+        filter: blur(0px);
+    }
+    30% {
+        transform: scale(1.5);
+        opacity: 0.6;
+        filter: blur(5px);
+        box-shadow: 0 0 50px rgba(146, 43, 33, 0.8) inset;
+    }
+    50% {
+        transform: scale(2.5);
+        opacity: 0.9;
+        filter: blur(10px);
+        box-shadow: 
+            0 0 100px rgba(91, 44, 111, 0.6) inset,
+            0 0 50px rgba(146, 43, 33, 0.8);
+    }
+    100% {
+        transform: scale(6);
+        background: black;
+        opacity: 1;
+        filter: blur(15px);
+        box-shadow: 0 0 200px rgba(91, 44, 111, 0.9) inset;
+    }
+}
+
+/* Animation de sortie pour la carte de login */
+.login-card-exit {
+    animation: cardFadeOut 0.8s forwards;
+}
+
+@keyframes cardFadeOut {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+        filter: blur(0px);
+    }
+    50% {
+        opacity: 0.5;
+        transform: scale(0.95);
+        filter: blur(2px);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0.9);
+        filter: blur(5px);
+    }
+}
+
+/* Animation de fissure pour le mode dark */
+.void-effect::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200%;
+    height: 200%;
+    background: 
+        linear-gradient(45deg, transparent 40%, rgba(91, 44, 111, 0.5) 50%, transparent 60%),
+        linear-gradient(-45deg, transparent 40%, rgba(91, 44, 111, 0.5) 50%, transparent 60%);
+    animation: crackExpand 1.5s forwards;
+    pointer-events: none;
+}
+
+@keyframes crackExpand {
+    0% {
+        transform: translate(-50%, -50%) scale(0) rotate(0deg);
+        opacity: 0;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1) rotate(180deg);
+        opacity: 0.8;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(3) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* Animation de rayons pour le mode divine */
+.divine-flash::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 200%;
+    height: 200%;
+    background: 
+        repeating-conic-gradient(
+            from 0deg,
+            transparent 0deg 10deg,
+            rgba(241, 196, 15, 0.3) 10deg 12deg
+        );
+    animation: raysExpand 1.5s forwards;
+    pointer-events: none;
+}
+
+@keyframes raysExpand {
+    0% {
+        transform: translate(-50%, -50%) scale(0) rotate(0deg);
+        opacity: 0;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(2) rotate(360deg);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(4) rotate(720deg);
+        opacity: 0;
+    }
+}

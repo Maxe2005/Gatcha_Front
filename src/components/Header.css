@@ -1,0 +1,11 @@
+.header {
+    transition: all 0.3s ease;
+}
+
+.header-light {
+    background-color: rgba(255, 255, 255, 0.95) !important;
+}
+
+.header-dark {
+    background-color: rgba(15, 15, 15, 0.95) !important;
+}

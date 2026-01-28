@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import { authApi } from '../services/api';
-import './Login.css';
+import './Login.scss';
 import {
     Box,
     TextField,
@@ -28,7 +29,6 @@ const Login = () => {
     // State management
     const [isLogin, setIsLogin] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
-    const [theme, setTheme] = useState('divine'); // 'divine' or 'dark'
     
     // Form fields
     const [username, setUsername] = useState('');
@@ -40,6 +40,7 @@ const Login = () => {
     const [error, setError] = useState('');
 
     const { login } = useAuth();
+    const { theme, toggleTheme } = useTheme();
     const navigate = useNavigate();
 
     const handleToggleMode = () => {
@@ -47,10 +48,6 @@ const Login = () => {
         setError('');
         setPassword('');
         setConfirmPassword('');
-    };
-
-    const toggleTheme = () => {
-        setTheme(theme === 'divine' ? 'dark' : 'divine');
     };
 
     const handleSubmit = async (e) => {
@@ -79,8 +76,25 @@ const Login = () => {
 
             if (isLogin) {
                  if (response.data && response.data.token) {
-                    login(response.data.token, username);
-                    navigate('/');
+                    // Ajouter la classe de sortie à la carte de login
+                    const loginCard = document.querySelector('.login-card');
+                    if (loginCard) {
+                        loginCard.classList.add('login-card-exit');
+                    }
+                    
+                    // Déclencher la transition avec particules
+                    if (window.triggerParticleTransition) {
+                        window.triggerParticleTransition(() => {
+                            login(response.data.token, username);
+                            navigate('/');
+                        });
+                    } else {
+                        // Fallback si le système de particules n'est pas chargé
+                        setTimeout(() => {
+                            login(response.data.token, username);
+                            navigate('/');
+                        }, 800);
+                    }
                 } else {
                     setError('Erreur de connexion : Aucun jeton reçu.');
                 }
@@ -88,8 +102,25 @@ const Login = () => {
                 // Register flow
                  // If the backend logs in automatically after register
                 if (response.data && response.data.token) {
-                    login(response.data.token, username);
-                    navigate('/');
+                    // Ajouter la classe de sortie à la carte de login
+                    const loginCard = document.querySelector('.login-card');
+                    if (loginCard) {
+                        loginCard.classList.add('login-card-exit');
+                    }
+                    
+                    // Déclencher la transition avec particules
+                    if (window.triggerParticleTransition) {
+                        window.triggerParticleTransition(() => {
+                            login(response.data.token, username);
+                            navigate('/');
+                        });
+                    } else {
+                        // Fallback si le système de particules n'est pas chargé
+                        setTimeout(() => {
+                            login(response.data.token, username);
+                            navigate('/');
+                        }, 800);
+                    }
                 } else {
                     // Otherwise switch to login mode with success message
                     setIsLogin(true);
@@ -115,13 +146,13 @@ const Login = () => {
     };
 
     return (
-        <Box className={`login-container theme-${theme}`}>
+        <Box className={`login-container ${theme === 'dark' ? 'theme-dark' : 'theme-divine'}`}>
             {/* Background elements (visual flair) */}
             <Box className="login-bg-glow" />
             
             {/* Particles/Fog Container */}
             <div className={`particles ${theme}-particles`}>
-                 {[...Array(20)].map((_, i) => (
+                 {[...Array(50)].map((_, i) => (
                     <div key={i} className="particle"></div>
                 ))}
             </div>
@@ -132,7 +163,7 @@ const Login = () => {
                 className="theme-toggle-btn"
                 aria-label="Toggle theme"
             >
-                {theme === 'divine' ? <LightMode /> : <DarkMode />}
+                {theme === 'light' ? <DarkMode /> : <LightMode />}
             </IconButton>
 
             {/* Main Card */}
