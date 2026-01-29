@@ -71,5 +71,4 @@ input, textarea {
 /* Prevent image dragging */
 img {
     -webkit-user-drag: none;
-    user-drag: none;
 }

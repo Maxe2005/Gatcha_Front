@@ -31,7 +31,8 @@
 }
 
 .home-container.divine .background-layer {
-    background: linear-gradient(135deg, #e0f7fa 0%, #ffffff 50%, #fff8e1 100%);
+    background: url('/assets/backgrounds/Home_background_light.png') no-repeat center center fixed;
+    background-size: cover;
 }
 
 .home-container.divine .divine-rays .ray {
@@ -62,7 +63,8 @@
 }
 
 .home-container.dark .background-layer {
-    background: radial-gradient(circle at center, #2c0404 0%, #000000 90%);
+    background: url('/assets/backgrounds/Home_background_dark.png') no-repeat center center fixed;
+    background-size: cover;
 }
 
 .home-container.dark .dark-fog {

@@ -11,9 +11,9 @@ const ThemeToggle = () => {
         <IconButton
             onClick={toggleTheme}
             className="theme-toggle-btn"
-            // title={theme === 'light' ? 'Mode sombre' : 'Mode clair'}
+            title={theme === 'dark' ? 'Mode Divin' : 'Mode Sombre'}
         >
-            {theme === 'light' ? <DarkMode /> : <LightMode />}
+            {theme === 'divine' || theme === 'light' ? <DarkMode /> : <LightMode />}
         </IconButton>
     );
 };

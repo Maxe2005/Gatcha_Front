@@ -3,6 +3,7 @@ import { useTheme } from '../context/ThemeContext';
 import { usePlayer } from '../context/PlayerContext';
 import { useNavigate } from 'react-router-dom';
 import './Home.css';
+import ThemeToggle from '../components/ThemeToggle';
 
 const Home = () => {
     const { theme, toggleTheme } = useTheme();
@@ -91,10 +92,8 @@ const Home = () => {
                     </div>
 
                     {/* Theme Toggle */}
-                    <div className="theme-toggle-wrapper" onClick={toggleTheme}>
-                        <div className={`toggle-icon ${theme}`}>
-                            {theme === 'divine' ? '☀️' : '🌙'}
-                        </div>
+                    <div className="theme-toggle-wrapper">
+                        <ThemeToggle />
                     </div>
                 </div>
             </header>

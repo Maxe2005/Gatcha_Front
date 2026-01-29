@@ -3,10 +3,10 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 const ThemeContext = createContext(null);
 
 export const ThemeProvider = ({ children }) => {
-    // Get theme from localStorage or default to 'light'
+    // Get theme from localStorage or default to 'divine'
     const [theme, setTheme] = useState(() => {
         const savedTheme = localStorage.getItem('app-theme');
-        return savedTheme || 'light';
+        return savedTheme || 'divine';
     });
 
     // Update localStorage and document class when theme changes
@@ -28,7 +28,7 @@ export const ThemeProvider = ({ children }) => {
     }, [theme]);
 
     const toggleTheme = () => {
-        setTheme(prevTheme => prevTheme === 'light' ? 'dark' : 'light');
+        setTheme(prevTheme => prevTheme === 'divine' ? 'dark' : 'divine');
     };
 
     return (
