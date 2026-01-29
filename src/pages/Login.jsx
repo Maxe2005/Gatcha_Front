@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
-import { authApi } from '../services/api';
+import { authApi, joueurApi } from '../services/api';
 import './Login.scss';
 import {
     Box,
@@ -109,6 +109,8 @@ const Login = () => {
                 if (response.data && response.data.token) {
                     // Stocker le token AVANT la transition
                     login(response.data.token, username);
+
+                    await joueurApi.post('/api/players', { username });
                     
                     // Attendre un tick pour que le state soit mis à jour
                     await new Promise(resolve => setTimeout(resolve, 100));
