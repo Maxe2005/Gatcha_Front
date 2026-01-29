@@ -1,13 +1,433 @@
-.home-page {
-    background-color: var(--bg-color);
+/* Reset & Base */
+.home-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    color: white; /* Default text color */
+    font-family: 'Cinzel', serif; /* Font fantasy par excellence */
+    transition: opacity 1.5s ease;
+    opacity: 0;
+}
+
+.home-container.loaded {
+    opacity: 1;
+}
+
+/* =========================================
+   THEMES VARIABLES & BACKGROUNDS
+   ========================================= */
+
+/* DIVINE THEME */
+.home-container.divine {
+    --bg-primary: #f0f8ff;
+    --bg-secondary: #e6e6fa;
+    --accent-color: #ffd700; /* Gold */
+    --accent-glow: rgba(255, 215, 0, 0.6);
+    --text-primary: #2c3e50;
+    --hud-bg: rgba(255, 255, 255, 0.85);
+    --portal-color: #00bfff;
+    --portal-glow: 0 0 30px #87ceeb;
+}
+
+.home-container.divine .background-layer {
+    background: linear-gradient(135deg, #e0f7fa 0%, #ffffff 50%, #fff8e1 100%);
+}
+
+.home-container.divine .divine-rays .ray {
+    position: absolute;
+    top: -20%;
+    left: 50%;
+    width: 100px;
+    height: 150vh;
+    background: linear-gradient(180deg, rgba(255,255,255,0.8), transparent);
+    transform-origin: top center;
+    animation: rayRotate 20s infinite linear;
+    filter: blur(20px);
+}
+.ray.r1 { animation-duration: 25s; transform: rotate(15deg); }
+.ray.r2 { animation-duration: 35s; transform: rotate(-15deg); width: 150px; }
+.ray.r3 { animation-duration: 30s; transform: rotate(0deg); opacity: 0.5; }
+
+/* DARK THEME */
+.home-container.dark {
+    --bg-primary: #0f0f0f;
+    --bg-secondary: #1a0b0b;
+    --accent-color: #c0392b; /* Blood Red */
+    --accent-glow: rgba(192, 57, 43, 0.6);
+    --text-primary: #ecf0f1;
+    --hud-bg: rgba(0, 0, 0, 0.75);
+    --portal-color: #800080;
+    --portal-glow: 0 0 40px #4b0082;
+}
+
+.home-container.dark .background-layer {
+    background: radial-gradient(circle at center, #2c0404 0%, #000000 90%);
+}
+
+.home-container.dark .dark-fog {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 60%;
+    background: linear-gradient(to top, rgba(20,0,0,0.8), transparent);
+    z-index: 0;
+}
+.home-container.dark .embers {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(#ff4500 1px, transparent 1px);
+    background-size: 20px 20px;
+    animation: embersRise 10s infinite linear;
+    opacity: 0.5;
+}
+
+/* Base Background Layer - Common */
+.background-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+}
+
+/* =========================================
+   TOP HUD
+   ========================================= */
+.top-hud {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 85%;
+    max-width: 1000px;
+    height: 80px;
+    z-index: 10;
+    transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.27);
+}
+.home-container:not(.loaded) .top-hud {
+    transform: translate(-50%, -50px);
+}
+
+.hud-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--hud-bg);
+    backdrop-filter: blur(10px);
+    border-radius: 40px;
+    padding: 10px 25px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    border: 1px solid var(--accent-color);
+}
+
+/* Avatar */
+.avatar-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+.avatar-section:hover {
+    transform: scale(1.05);
+}
+
+.avatar-frame {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 3px solid var(--accent-color);
+    position: relative;
+    background: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 0 10px var(--accent-glow);
+}
+.avatar-placeholder {
+    font-size: 1.5rem;
+    color: white;
+    font-weight: bold;
+}
+.player-info {
+    display: flex;
+    flex-direction: column;
+}
+.player-name {
     color: var(--text-primary);
-    transition: background-color 0.3s ease, color 0.3s ease;
+    font-weight: bold;
+    font-size: 1rem;
+}
+.level-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.8rem;
+    color: var(--text-primary);
+}
+.xp-bar-container {
+    width: 80px;
+    height: 6px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 3px;
+    overflow: hidden;
+}
+.xp-bar {
+    height: 100%;
+    background: var(--accent-color);
+    width: 0%;
+    transition: width 1s ease-out;
 }
 
-.home-page.theme-divine {
-    background: linear-gradient(135deg, rgba(241, 196, 15, 0.1) 0%, rgba(255, 255, 255, 0.95) 100%);
+/* Resources */
+.resources-section {
+    display: flex;
+    gap: 20px;
+}
+.resource-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(0,0,0,0.1);
+    padding: 5px 12px;
+    border-radius: 15px;
+    color: var(--text-primary);
+    font-weight: bold;
+    transition: transform 0.2s;
+}
+.resource-item:hover {
+    transform: translateY(-2px);
+    background: rgba(0,0,0,0.2);
 }
 
-.home-page.theme-dark {
-    background: linear-gradient(135deg, rgba(146, 43, 33, 0.2) 0%, rgba(13, 13, 13, 0.95) 100%);
+/* Theme Toggle */
+.theme-toggle-wrapper {
+    cursor: pointer;
+    font-size: 1.5rem;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    transition: background 0.3s;
+}
+.theme-toggle-wrapper:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+/* =========================================
+   CENTRAL MONUMENT (GACHA PORTAL)
+   ========================================= */
+.central-zone {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 5;
+}
+
+.monument-container {
+    position: relative;
+    width: 300px;
+    height: 300px;
+    cursor: pointer;
+    transition: transform 0.5s ease;
+}
+
+.monument-container:hover {
+    transform: scale(1.05);
+}
+.monument-container:hover .portal-core {
+    transform: translate(-50%, -50%) scale(1.1);
+    box-shadow: 0 0 50px var(--portal-color); /* Stronger glow */
+}
+
+.portal-ring {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    border: 2px dashed var(--accent-color);
+}
+
+.outer-ring {
+    width: 280px;
+    height: 280px;
+    opacity: 0.6;
+    animation: rotateSlow 20s linear infinite;
+    border-width: 1px;
+}
+.home-container.divine .outer-ring { border-style: solid; border-color: gold; }
+.home-container.dark .outer-ring { border-style: dashed; border-color: darkred; }
+
+.inner-ring {
+    width: 220px;
+    height: 220px;
+    animation: rotateSlow 15s linear infinite reverse;
+    border: 4px solid var(--accent-color);
+    box-shadow: var(--portal-glow);
+}
+
+.portal-core {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 150px;
+    height: 150px;
+    transform: translate(-50%, -50%);
+    background: var(--portal-color);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 4rem;
+    color: white;
+    box-shadow: var(--portal-glow);
+    animation: pulse 3s ease-in-out infinite;
+    overflow: hidden;
+}
+
+.floating-particles .particle {
+    position: absolute;
+    background: var(--accent-color);
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    box-shadow: 0 0 5px var(--accent-color);
+    animation: floatParticle 4s ease-in infinite;
+    opacity: 0;
+}
+/* Random positions for CSS particles */
+.floating-particles .particle:nth-child(1) { top: 20%; left: 30%; animation-delay: 0s; }
+.floating-particles .particle:nth-child(2) { top: 70%; left: 20%; animation-delay: 1s; }
+.floating-particles .particle:nth-child(3) { top: 40%; left: 80%; animation-delay: 2s; }
+.floating-particles .particle:nth-child(4) { top: 10%; left: 60%; animation-delay: 0.5s; }
+.floating-particles .particle:nth-child(5) { top: 80%; left: 70%; animation-delay: 1.5s; }
+
+
+.interaction-hint {
+    position: absolute;
+    bottom: -40px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--text-primary);
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    opacity: 0.8;
+    background: rgba(0,0,0,0.3);
+    padding: 5px 10px;
+    border-radius: 10px;
+}
+
+/* =========================================
+   SECONDARY NAV
+   ========================================= */
+.secondary-nav {
+    position: absolute;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 30px;
+    align-items: center;
+    z-index: 10;
+}
+
+.nav-item {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-primary);
+    transition: all 0.3s;
+    width: 80px;
+}
+
+.nav-icon {
+    font-size: 2.5rem;
+    filter: drop-shadow(0 0 5px var(--accent-glow));
+    transition: transform 0.3s;
+}
+
+.nav-label {
+    opacity: 0;
+    font-family: inherit;
+    font-size: 0.8rem;
+    transform: translateY(10px);
+    transition: all 0.3s;
+}
+.nav-item:hover .nav-label {
+    opacity: 1;
+    transform: translateY(0);
+}
+.nav-item:hover .nav-icon {
+    transform: translateY(-5px) scale(1.1);
+}
+
+.nav-divider {
+    width: 1px;
+    height: 40px;
+    background: var(--accent-color);
+    opacity: 0.5;
+}
+
+/* =========================================
+   ANIMATIONS
+   ========================================= */
+@keyframes rotateSlow {
+    from { transform: translate(-50%, -50%) rotate(0deg); }
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+@keyframes pulse {
+    0% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+    50% { transform: translate(-50%, -50%) scale(1.05); opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
+}
+
+@keyframes rayRotate {
+    0% { transform: rotate(15deg) translateY(0); opacity: 0.5; }
+    50% { transform: rotate(20deg) translateY(20px); opacity: 0.8; }
+    100% { transform: rotate(15deg) translateY(0); opacity: 0.5; }
+}
+
+@keyframes embersRise {
+    from { background-position: 0 0; }
+    to { background-position: 20px -100px; }
+}
+
+@keyframes floatParticle {
+    0% { transform: translate(0, 0) scale(0); opacity: 0; }
+    20% { opacity: 1; }
+    100% { transform: translate(var(--mx, -50px), -100px) scale(1); opacity: 0; }
+}
+
+/* Media Queries for Responsive */
+@media (max-width: 768px) {
+    .hud-content {
+        padding: 5px 15px;
+    }
+    .player-name, .level-info span {
+        display: none; /* Hide text on very small screens */
+    }
+    .monument-container {
+        width: 220px;
+        height: 220px;
+    }
+    .top-hud {
+        width: 95%;
+    }
 }

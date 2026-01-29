@@ -52,4 +52,24 @@ body {
     color: var(--text-primary);
     min-height: 100vh;
     transition: background-color 0.3s ease, color 0.3s ease;
+
+    /* Prevent text selection globally */
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+/Edge */
+    user-select: none; /* Standard */
+}
+
+/* Allow text selection in inputs and textareas */
+input, textarea {
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+    user-select: text;
+}
+
+/* Prevent image dragging */
+img {
+    -webkit-user-drag: none;
+    user-drag: none;
 }

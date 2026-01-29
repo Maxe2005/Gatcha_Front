@@ -1,114 +1,136 @@
-import React, { useMemo, useState } from 'react';
-import { useAuth } from '../context/AuthContext';
+import React, { useEffect, useState } from 'react';
 import { useTheme } from '../context/ThemeContext';
-import { invocationApi } from '../services/api';
-import {
-    Container,
-    Box,
-    Typography,
-    Button,
-    CircularProgress,
-} from '@mui/material';
-import Header from '../components/Header';
-import GatchaCard from '../components/GatchaCard';
+import { usePlayer } from '../context/PlayerContext';
+import { useNavigate } from 'react-router-dom';
 import './Home.css';
 
-const normalizeMonster = (data) => {
-    if (!data) return null;
-
-    const parseNumber = (value) => {
-        const num = Number(value);
-        return Number.isFinite(num) ? num : 0;
-    };
-
-    const stats = data.stats || {};
-
-    return {
-        nom: data.nom || data.name || 'Monstre Mystère',
-        rang: data.rang || data.rank || '?',
-        element: (data.element || data.type || 'neutre').toLowerCase(),
-        lore: data.description || data.lore || data.cardDescription || data.card_description || '',
-        stats: {
-            hp: parseNumber(stats.hp ?? data.hp),
-            atk: parseNumber(stats.atk ?? data.atk),
-            def: parseNumber(stats.def ?? data.def),
-            vit: parseNumber(stats.vit ?? data.vit),
-        },
-    };
-};
-
-const first_monster = { "nom": "Pyrolosse",
-    "element": "FIRE",
-    "rang": "COMMON",
-    "stats": { "hp": 450, "atk": 65, "def": 40, "vit": 35 },
-    "description": "Un petit bouledogue de lave avec des charbons ardents en guise de fourrure. Ses yeux brillent d'un jaune vif. Style cartoon 2D, contours nets, fond volcanique flou.",
-};
-
 const Home = () => {
-    const { logout, user } = useAuth();
-    const { theme } = useTheme();
-    const [monster, setMonster] = useState(first_monster);
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
+    const { theme, toggleTheme } = useTheme();
+    const { playerData, refreshPlayerData } = usePlayer();
+    const navigate = useNavigate();
+    const [isLoaded, setIsLoaded] = useState(false);
 
-    const normalizedMonster = useMemo(() => normalizeMonster(monster), [monster]);
+    // Simulation de chargement pour l'animation d'entrée
+    useEffect(() => {
+        setTimeout(() => setIsLoaded(true), 100);
+        // Rafraîchir les données joueur à l'arrivée
+        refreshPlayerData();
+    }, []);
 
-    const handleInvoke = async () => {
-        setLoading(true);
-        setError('');
-        setMonster(null);
-        try {
-            // GET /api/invocation/invoque
-            const response = await invocationApi.get('/api/invocation/invoque');
-            setMonster(response.data);
-        } catch (err) {
-            console.error("Invocation error", err);
-            setError('Failed to summon monster. ' + (err.message || ''));
-        } finally {
-            setLoading(false);
-        }
+    // Placeholder pour les ressources (si non présentes dans l'API)
+    // À remplacer par playerData.gold, playerData.gems quand disponibles
+    const resources = {
+        gold: playerData?.gold || 0,
+        gems: playerData?.gems || 0,
+        tickets: playerData?.tickets || 0
     };
+
+    // Calcul de la progression XP (mock)
+    const xpPercent = playerData ? (playerData.experience % 1000) / 10 : 0;
 
     return (
-        <Box className={`home-page ${theme === 'dark' ? 'theme-dark' : 'theme-divine'}`} sx={{ flexGrow: 1, minHeight: '100vh' }}>
-            <Header title="Gatcha World" />
-
-            <Container maxWidth="md" sx={{ mt: 4, textAlign: 'center', pb: 4 }}>
-                <Typography variant="h3" gutterBottom sx={{ color: 'var(--primary-color)', fontFamily: 'var(--font-title)' }}>
-                    Invoque ton Destin
-                </Typography>
-
-                <Button
-                    variant="contained"
-                    size="large"
-                    onClick={handleInvoke}
-                    disabled={loading}
-                    sx={{ 
-                        mt: 2, 
-                        mb: 4, 
-                        fontSize: '1.2rem', 
-                        py: 2, 
-                        px: 4,
-                        background: 'var(--button-gradient)',
-                        color: 'white',
-                        boxShadow: `0 0 20px ${theme === 'dark' ? 'rgba(146, 43, 33, 0.5)' : 'rgba(241, 196, 15, 0.3)'}`,
-                        '&:hover': {
-                            transform: 'translateY(-2px)',
-                        }
-                    }}
-                >
-                    {loading ? <CircularProgress size={24} color="inherit" /> : 'INVOQUE!'}
-                </Button>
-
-                {error && <Typography color="error">{error}</Typography>}
-
-                {normalizedMonster && (
-                    <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-                        <GatchaCard monstre={normalizedMonster} />
-                    </Box>
+        <div className={`home-container ${theme} ${isLoaded ? 'loaded' : ''}`}>
+            {/* BACKGROUND LAYER */}
+            <div className="background-layer">
+                <div className="sky-gradient"></div>
+                <div className="clouds-layer"></div>
+                {theme === 'divine' ? (
+                    <div className="divine-rays">
+                        <div className="ray r1"></div>
+                        <div className="ray r2"></div>
+                        <div className="ray r3"></div>
+                    </div>
+                ) : (
+                    <div className="dark-fog">
+                        <div className="fog f1"></div>
+                        <div className="fog f2"></div>
+                        <div className="embers"></div>
+                    </div>
                 )}
-            </Container>
-        </Box>
+                {/* colonnes/ruines background - simple CSS shapes */}
+                <div className="scenery scenery-left"></div>
+                <div className="scenery scenery-right"></div>
+            </div>
+
+            {/* TOP HUD */}
+            <header className="top-hud">
+                <div className="hud-content">
+                    {/* Avatar Section */}
+                    <div className="avatar-section" onClick={() => navigate('/profile')}>
+                        <div className="avatar-frame">
+                            <div className="avatar-placeholder">
+                                {playerData?.username?.charAt(0).toUpperCase() || '?'}
+                            </div>
+                            <div className="status-indicator"></div>
+                        </div>
+                        <div className="player-info">
+                            <span className="player-name">{playerData?.username || 'Voyageur'}</span>
+                            <div className="level-info">
+                                <span className="level-badge">Niv. {playerData?.level || 1}</span>
+                                <div className="xp-bar-container">
+                                    <div className="xp-bar" style={{ width: `${xpPercent}%` }}></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Resources Section */}
+                    <div className="resources-section">
+                        <div className="resource-item gold" title="Or">
+                            <span className="icon">🪙</span>
+                            <span className="count">{resources.gold.toLocaleString()}</span>
+                        </div>
+                        <div className="resource-item gems" title="Gemmes">
+                            <span className="icon">💎</span>
+                            <span className="count">{resources.gems.toLocaleString()}</span>
+                        </div>
+                        <div className="resource-item tickets" title="Tickets d'invocation">
+                            <span className="icon">🎫</span>
+                            <span className="count">{resources.tickets}</span>
+                        </div>
+                    </div>
+
+                    {/* Theme Toggle */}
+                    <div className="theme-toggle-wrapper" onClick={toggleTheme}>
+                        <div className={`toggle-icon ${theme}`}>
+                            {theme === 'divine' ? '☀️' : '🌙'}
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            {/* CENTRAL ZONE - MONUMENT */}
+            <main className="central-zone">
+                <div className="monument-container" onClick={() => navigate('/gacha')}>
+                    <div className="portal-ring outer-ring"></div>
+                    <div className="portal-ring inner-ring"></div>
+                    <div className="portal-core">
+                        <span className="element-symbol">
+                            {theme === 'divine' ? '✧' : '☠'}
+                        </span>
+                    </div>
+                    <div className="floating-particles">
+                        {[...Array(5)].map((_, i) => (
+                            <span key={i} className="particle"></span>
+                        ))}
+                    </div>
+                    <div className="interaction-hint">Toucher le Portail</div>
+                </div>
+            </main>
+
+            {/* SECONDARY NAVIGATION */}
+            <nav className="secondary-nav">
+                <button className="nav-item" onClick={() => navigate('/inventory')}>
+                    <span className="nav-icon">🎒</span>
+                    <span className="nav-label">Inventaire</span>
+                </button>
+                <div className="nav-divider"></div>
+                <button className="nav-item" onClick={() => navigate('/profile')}>
+                    <span className="nav-icon">👤</span>
+                    <span className="nav-label">Profil</span>
+                </button>
+            </nav>
+        </div>
     );
 };
 

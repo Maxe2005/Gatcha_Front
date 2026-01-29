@@ -1,8 +1,10 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
 import Home from './pages/Home';
+import Gacha from './pages/Gacha';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { PlayerProvider } from './context/PlayerContext';
 
 const PrivateRoute = ({ children }) => {
     const { token } = useAuth();
@@ -22,6 +24,14 @@ function AppRoutes() {
                     </PrivateRoute>
                 }
             />
+            <Route
+                path="/gacha"
+                element={
+                    <PrivateRoute>
+                        <Gacha />
+                    </PrivateRoute>
+                }
+            />
         </Routes>
     );
 }
@@ -30,9 +40,11 @@ function App() {
     return (
         <ThemeProvider>
             <AuthProvider>
-                <Router>
-                    <AppRoutes />
-                </Router>
+                <PlayerProvider>
+                    <Router>
+                        <AppRoutes />
+                    </Router>
+                </PlayerProvider>
             </AuthProvider>
         </ThemeProvider>
     );
