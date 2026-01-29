@@ -193,17 +193,42 @@ class ParticleSystem {
       p.decay = 0.01; // Ralentir la disparition
     });
 
-    // Créer l'overlay de transition
-    const overlay = document.getElementById("transition-overlay");
-    if (overlay) {
-      overlay.classList.add(isDark ? "void-effect" : "divine-flash");
-      overlay.style.display = "block";
-
-      // Après 1.5s, exécuter le callback
-      setTimeout(() => {
-        if (onComplete) onComplete();
-      }, 1500);
+    // Créer ou réutiliser l'overlay de transition
+    let overlay = document.getElementById("transition-overlay");
+    if (!overlay) {
+      overlay = document.createElement("div");
+      overlay.id = "transition-overlay";
+      document.body.appendChild(overlay);
     }
+
+    // Réinitialiser les classes
+    overlay.className = "";
+    overlay.style.opacity = ""; // Réinitialiser pour que CSS le contrôle
+
+    // Phase 1: Animation de remplissage (1.5s) - opacity va de 0 à 1
+    overlay.classList.add(isDark ? "void-effect" : "divine-flash");
+    overlay.style.display = "block";
+    overlay.style.pointerEvents = "auto"; // Bloquer les clics pendant la transition
+
+    // Après 1.5s (fin de phase 1), appeler le callback pour charger la page Home
+    setTimeout(() => {
+      if (onComplete) onComplete();
+
+      // Après un petit délai pour laisser React charger Home, commencer la phase 2
+      setTimeout(() => {
+        // Phase 2: Fade out de l'overlay (1s) - opacity va de 1 à 0
+        overlay.classList.remove(isDark ? "void-effect" : "divine-flash");
+        overlay.classList.add("reveal-transition");
+
+        // Après la phase 2, nettoyer complètement
+        setTimeout(() => {
+          overlay.style.display = "none";
+          overlay.style.opacity = "0";
+          overlay.style.pointerEvents = "none";
+          overlay.className = "";
+        }, 1000);
+      }, 100); // Petit délai pour que React ait commencé le rendu
+    }, 1500);
   }
 }
 

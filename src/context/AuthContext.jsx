@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useCallback } from 'react';
 
 const AuthContext = createContext(null);
 
@@ -12,18 +12,18 @@ export const AuthProvider = ({ children }) => {
     const [token, setToken] = useState(getTokenFromCookie());
     const [user, setUser] = useState(null);
 
-    const login = (newToken, username) => {
-        setToken(newToken);
-        // Store in cookie: secure flag should be added in production with https
+    const login = useCallback((newToken, username) => {
+        // Store in cookie FIRST: secure flag should be added in production with https
         document.cookie = `token=${newToken}; path=/; max-age=86400; SameSite=Lax`; 
+        setToken(newToken);
         setUser({ username }); // We might want to decode token or just store username
-    };
+    }, []);
 
-    const logout = () => {
+    const logout = useCallback(() => {
         setToken(null);
         document.cookie = "token=; path=/; max-age=0";
         setUser(null);
-    };
+    }, []);
 
     return (
         <AuthContext.Provider value={{ token, user, login, logout }}>

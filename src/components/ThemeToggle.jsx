@@ -11,15 +11,7 @@ const ThemeToggle = () => {
         <IconButton
             onClick={toggleTheme}
             className="theme-toggle-btn"
-            sx={{
-                color: 'var(--primary-color)',
-                transition: 'all 0.3s ease',
-                '&:hover': {
-                    transform: 'rotate(20deg)',
-                    backgroundColor: 'rgba(241, 196, 15, 0.1)',
-                },
-            }}
-            title={theme === 'light' ? 'Mode sombre' : 'Mode clair'}
+            // title={theme === 'light' ? 'Mode sombre' : 'Mode clair'}
         >
             {theme === 'light' ? <DarkMode /> : <LightMode />}
         </IconButton>

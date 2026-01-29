@@ -13,8 +13,9 @@ function AppRoutes() {
     return (
         <Routes>
             <Route path="/login" element={<Login />} />
+            <Route path="/" element={<Navigate to="/home" replace />} />
             <Route
-                path="/"
+                path="/home"
                 element={
                     <PrivateRoute>
                         <Home />

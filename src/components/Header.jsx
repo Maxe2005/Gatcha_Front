@@ -1,36 +1,47 @@
 import React from 'react';
-import { AppBar, Toolbar, Box, Typography } from '@mui/material';
+import { AppBar, Toolbar, Box, Typography, Button } from '@mui/material';
 import ThemeToggle from './ThemeToggle';
 import { useTheme } from '../context/ThemeContext';
+import { useAuth } from '../context/AuthContext';
 import './Header.css';
 
 const Header = ({ title = 'Gatcha API' }) => {
     const { theme } = useTheme();
+    const { user, logout } = useAuth();
 
     return (
         <AppBar
             position="static"
             className={`header header-${theme}`}
-            sx={{
-                backgroundColor: 'var(--header-bg)',
-                boxShadow: '0 2px 8px var(--shadow-color)',
-                transition: 'all 0.3s ease',
-            }}
         >
-            <Toolbar>
+            <Toolbar className="header-toolbar">
                 <Typography
                     variant="h6"
-                    sx={{
-                        flexGrow: 1,
-                        fontFamily: 'var(--font-title)',
-                        color: 'var(--primary-color)',
-                        fontWeight: 'bold',
-                    }}
+                    className="header-title"
                 >
                     {title}
                 </Typography>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <ThemeToggle />
+                <Box className="header-actions">
+                    {user && (
+                        <Typography
+                            variant="subtitle1"
+                            className="header-username"
+                        >
+                            {user.username}
+                        </Typography>
+                    )}
+                    {user && (
+                        <Button
+                            onClick={logout}
+                            variant="outlined"
+                            className="header-logout"
+                        >
+                            Logout
+                        </Button>
+                    )}
+                    <Box className="header-theme-toggle">
+                        <ThemeToggle />
+                    </Box>
                 </Box>
             </Toolbar>
         </AppBar>

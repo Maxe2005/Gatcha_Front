@@ -51,11 +51,6 @@
     --error-text: #F5B7B1;
 }
 
-/* Base Styles & Typography */
-body {
-    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="%23F1C40F"><path d="M12 2L1 21h22L12 2zm0 3.8l7.5 13.2H4.5L12 5.8z"/></svg>') 16 16, auto;
-}
-
 /* Container */
 .login-container {
     min-height: 100vh;
@@ -260,20 +255,10 @@ body {
 }
 
 /* Theme Toggle */
-.theme-toggle-btn {
+.login-theme-toggle {
     position: absolute !important;
     top: 24px;
     right: 24px;
-    color: var(--primary-color) !important;
-    background: rgba(0, 0, 0, 0.3) !important;
-    backdrop-filter: blur(5px);
-    border: 1px solid var(--border-color) !important;
-    z-index: 10;
-    transition: all 0.3s ease !important;
-}
-.theme-toggle-btn:hover {
-    box-shadow: 0 0 15px var(--shadow-color);
-    transform: rotate(30deg);
 }
 
 /* Toggle Link */

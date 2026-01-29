@@ -24,6 +24,7 @@ import {
     LightMode,
     DarkMode
 } from '@mui/icons-material';
+import ThemeToggle from '../components/ThemeToggle';
 
 const Login = () => {
     // State management
@@ -69,13 +70,17 @@ const Login = () => {
         }
 
         try {
-            const endpoint = isLogin ? '/user/login' : '/user/register';
+            const endpoint = isLogin ? '/user/login' : '/user';
             const payload = { username, password };
 
             const response = await authApi.post(endpoint, payload);
 
             if (isLogin) {
-                 if (response.data && response.data.token) {
+                if (response.data && response.data.token) {
+                    // Stocker le token ET le mettre dans le cookie AVANT la transition
+                    // C'est crucial car le PrivateRoute doit pouvoir lire le token immédiatement
+                    login(response.data.token, username);
+                    
                     // Ajouter la classe de sortie à la carte de login
                     const loginCard = document.querySelector('.login-card');
                     if (loginCard) {
@@ -85,14 +90,14 @@ const Login = () => {
                     // Déclencher la transition avec particules
                     if (window.triggerParticleTransition) {
                         window.triggerParticleTransition(() => {
-                            login(response.data.token, username);
-                            navigate('/');
+                            // La navigation se fait avec le token déjà stocké
+                            // Le PrivateRoute lira le token depuis le cookie si besoin
+                            navigate('/home', { replace: true });
                         });
                     } else {
                         // Fallback si le système de particules n'est pas chargé
                         setTimeout(() => {
-                            login(response.data.token, username);
-                            navigate('/');
+                            navigate('/home', { replace: true });
                         }, 800);
                     }
                 } else {
@@ -102,6 +107,12 @@ const Login = () => {
                 // Register flow
                  // If the backend logs in automatically after register
                 if (response.data && response.data.token) {
+                    // Stocker le token AVANT la transition
+                    login(response.data.token, username);
+                    
+                    // Attendre un tick pour que le state soit mis à jour
+                    await new Promise(resolve => setTimeout(resolve, 100));
+                    
                     // Ajouter la classe de sortie à la carte de login
                     const loginCard = document.querySelector('.login-card');
                     if (loginCard) {
@@ -111,14 +122,12 @@ const Login = () => {
                     // Déclencher la transition avec particules
                     if (window.triggerParticleTransition) {
                         window.triggerParticleTransition(() => {
-                            login(response.data.token, username);
-                            navigate('/');
+                            navigate('/home', { replace: true });
                         });
                     } else {
                         // Fallback si le système de particules n'est pas chargé
                         setTimeout(() => {
-                            login(response.data.token, username);
-                            navigate('/');
+                            navigate('/home', { replace: true });
                         }, 800);
                     }
                 } else {
@@ -157,14 +166,9 @@ const Login = () => {
                 ))}
             </div>
 
-            {/* Theme Toggle */}
-            <IconButton 
-                onClick={toggleTheme} 
-                className="theme-toggle-btn"
-                aria-label="Toggle theme"
-            >
-                {theme === 'light' ? <DarkMode /> : <LightMode />}
-            </IconButton>
+            <Box className="login-theme-toggle">
+                <ThemeToggle />
+            </Box>
 
             {/* Main Card */}
             <Box className="login-card">

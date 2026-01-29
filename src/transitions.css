@@ -82,6 +82,23 @@
     animation: cardFadeOut 0.8s forwards;
 }
 
+/* Phase 2 : Révélation de la page Home - Fade out doux de l'overlay */
+.reveal-transition {
+    animation: revealHome 2s forwards;
+}
+
+@keyframes revealHome {
+    0% {
+        opacity: 1;
+        background: inherit;
+    }
+    100% {
+        opacity: 0;
+        background: transparent;
+        pointer-events: none;
+    }
+}
+
 @keyframes cardFadeOut {
     0% {
         opacity: 1;
