@@ -71,13 +71,6 @@ const Home = () => {
                 {monster && (
                     <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
                         <Card sx={{ maxWidth: 345, width: '100%' }}>
-                            {/* If there is an image URL in monster data, use it. Otherwise placeholder */}
-                            <CardMedia
-                                component="img"
-                                height="200"
-                                image="https://via.placeholder.com/300?text=Unknown+Monster" // Placeholder
-                                alt="Monster"
-                            />
                             <CardContent>
                                 <Typography gutterBottom variant="h5" component="div">
                                     {monster.name || 'Unknown Monster'}
