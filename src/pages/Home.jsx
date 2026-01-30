@@ -12,12 +12,7 @@ import {
     CircularProgress,
     AppBar,
     Toolbar,
-    IconButton
 } from '@mui/material';
-import LogoutIcon from '@mui/icons-material/Logout';
-
-// Icons are now installed.
-// I'll use text for safety.
 
 const Home = () => {
     const { logout, user } = useAuth();

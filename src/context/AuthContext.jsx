@@ -1,4 +1,5 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { authApi } from '../services/api';
 
 const AuthContext = createContext(null);
 
@@ -11,6 +12,7 @@ export const AuthProvider = ({ children }) => {
 
     const [token, setToken] = useState(getTokenFromCookie());
     const [user, setUser] = useState(null);
+    const hasVerified = useRef(false);
 
     const login = (newToken, username) => {
         setToken(newToken);
@@ -23,7 +25,26 @@ export const AuthProvider = ({ children }) => {
         setToken(null);
         document.cookie = "token=; path=/; max-age=0";
         setUser(null);
+        hasVerified.current = false;
     };
+
+    const verifyToken = useCallback(async (token) => {
+        const response = await authApi.post('/user/verify-token', { token })
+        console.log('Token verification response:', response.data);
+        if (response.data && response.data.username) {
+            setUser({ username: response.data.username });
+        } else {
+            logout();
+        }
+    }, [logout]);
+
+    // Vérifier le token au chargement si user est null mais token existe
+    useEffect(() => {
+        if (token && !user && !hasVerified.current) {
+            hasVerified.current = true;
+            verifyToken(token);
+        }
+    }, [token, user, verifyToken]);
 
     return (
         <AuthContext.Provider value={{ token, user, login, logout }}>

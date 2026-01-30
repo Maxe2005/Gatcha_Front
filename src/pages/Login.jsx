@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { authApi } from '../services/api';
+import { authApi, joueurApi } from '../services/api';
 import {
     Container,
     Box,
@@ -9,38 +9,67 @@ import {
     TextField,
     Button,
     Alert,
-    Paper
+    Paper,
+    InputAdornment,
+    IconButton,
+    Collapse
 } from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 const Login = () => {
+    const [isLogin, setIsLogin] = useState(true);
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
     const { login } = useAuth();
     const navigate = useNavigate();
+
+    const handleToggleMode = () => {
+        setIsLogin(!isLogin);
+        setError('');
+        setPassword('');
+        setConfirmPassword('');
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
 
-        try {
-            // POST /user/login with { username, password }
-            // Returns { token: "..." }
-            const response = await authApi.post('/user/login', {
-                username,
-                password
-            });
+        // Basic Validation
+        if (!username || !password) {
+            setError('Tous les champs sont requis.');
+            return;
+        }
 
+        if (!isLogin && password !== confirmPassword) {
+            setError('Les mots de passe ne correspondent pas.');
+            return;
+        }
+
+        try {
+            const endpoint = isLogin ? '/user/login' : '/user';
+            const payload = { username, password };
+
+            const response = await authApi.post(endpoint, payload);
+            
             if (response.data && response.data.token) {
                 login(response.data.token, username);
-                navigate('/');
+                if (!login) {
+                    await joueurApi.post('/api/players', { username });
+                }
+                navigate('/home', { replace: true });
             } else {
                 setError('Login failed: No token received');
             }
         } catch (err) {
             console.error("Login error", err);
-            if (err.response && err.response.status === 401) {
-                setError('Invalid credentials');
+            const status = err.response?.status;
+            if (status === 401 || status === 403) {
+                 setError(isLogin ? 'Identifiants incorrects, voyageur.' : 'Ce pseudo est peut-être déjà pris.');
+            } else if (status === 409) {
+                setError(isLogin ? 'Conflit de données.' : 'Ce nom d\'utilisateur existe déjà.');
             } else {
                 setError('Login failed. Please try again.');
             }
@@ -80,12 +109,39 @@ const Login = () => {
                             fullWidth
                             name="password"
                             label="Password"
-                            type="password"
+                            type={showPassword ? 'text' : 'password'}
                             id="password"
                             autoComplete="current-password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            onClick={() => setShowPassword(!showPassword)}
+                                            edge="end"
+                                            className="login-icon-secondary"
+                                        >
+                                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                                        </IconButton>
+                                    </InputAdornment>
+                                )
+                            }}
                         />
+                        <Collapse in={!isLogin}>
+                            <TextField
+                                margin="normal"
+                                required={!isLogin}
+                                fullWidth
+                                name="confirmPassword"
+                                label="Confirm Password"
+                                type="password"
+                                id="confirmPassword"
+                                autoComplete="new-password"
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                            />
+                        </Collapse>
                         {error && (
                             <Alert severity="error" sx={{ mt: 2 }}>
                                 {error}
@@ -99,6 +155,17 @@ const Login = () => {
                         >
                             Sign In
                         </Button>
+                    </Box>
+                    <Box className="login-toggle-container">
+                        <Typography variant="body2" className="login-toggle-text">
+                            {isLogin ? "Nouveau voyageur ?" : "Déjà un compte ?"}
+                            <Button
+                                onClick={handleToggleMode}
+                                className="login-toggle-btn"
+                            >
+                                {isLogin ? "Créer un pseudo" : "Connexion"}
+                            </Button>
+                        </Typography>
                     </Box>
                 </Paper>
             </Box>
