@@ -8,6 +8,13 @@ import axios from "axios";
 // The browser needs to hit localhost (if exposed) or the same origin (if served/proxied).
 // We will use the relative paths matching the proxy.
 
+export const joueurApi = axios.create({
+  baseURL: "/joueur-service",
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
 export const authApi = axios.create({
   baseURL: "/auth-service",
   headers: {
@@ -32,5 +39,6 @@ const addToken = (config) => {
   return config;
 };
 
+joueurApi.interceptors.request.use(addToken);
 authApi.interceptors.request.use(addToken);
 invocationApi.interceptors.request.use(addToken);
