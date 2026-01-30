@@ -56,8 +56,13 @@ const Login = () => {
             
             if (response.data && response.data.token) {
                 login(response.data.token, username);
-                if (!login) {
-                    await joueurApi.post('/api/players', { username });
+                if (!isLogin) {
+                    try {
+                        await joueurApi.post('/api/players', { username });
+                    } catch (playerErr) {
+                        setError("Compte créé, mais le profil joueur n'a pas pu être initialisé. Réessaie plus tard.");
+                        return;
+                    }
                 }
                 navigate('/home', { replace: true });
             } else {
