@@ -109,8 +109,13 @@ const Login = () => {
                 if (response.data && response.data.token) {
                     // Stocker le token AVANT la transition
                     login(response.data.token, username);
-
-                    await joueurApi.post('/api/players', { username });
+                    
+                    try {
+                        await joueurApi.post('/api/players', { username });
+                    } catch (playerErr) {
+                        setError("Compte créé, mais le profil joueur n'a pas pu être initialisé. Réessaie plus tard.");
+                        return;
+                    }
                     
                     // Attendre un tick pour que le state soit mis à jour
                     await new Promise(resolve => setTimeout(resolve, 100));
