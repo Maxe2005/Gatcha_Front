@@ -1,54 +1,14 @@
 // Import modular particle system
-@import './particles.scss';
+@use './particles.scss';
 
 /* Light Theme (Default) */
 .theme-divine {
-    --primary-color: #F1C40F;
-    --secondary-color: #F8F9FA;
-    --accent-color: #5DADE2;
-    --bg-color: rgba(255, 255, 255, 0.65);
-    --bg-image: url('/assets/backgrounds/Login_background_light.png');
-    --card-bg: rgba(255, 255, 255, 0.65);
-    --input-bg: rgba(255, 255, 255, 0.4);
-    --input-text-color: #1A1A1A;
-    --border-color: #F1C40F;
-    --shadow-color: rgba(241, 196, 15, 0.3);
-    --text-primary: #FFFFFF;
-    --text-secondary: #BDC3C7;
-    --label-color: #2C3E50;
-    --font-title: 'Cinzel', serif;
-    --font-body: 'Montserrat', sans-serif;
-    --particle-color: rgba(255, 255, 255, 0.8);
-    --button-gradient: linear-gradient(135deg, #f1c40f 0%, #d4ac0d 100%);
-    --button-shadow: rgba(241, 196, 15, 0.5);
-    --error-bg: rgba(231, 76, 60, 0.15);
-    --error-border: #C0392B;
-    --error-text: #8B0000;
+    --bg-image: url('/assets/backgrounds/background_login_divine.png');
 }
 
 /* Dark Theme Overrides */
 .theme-dark {
-    --primary-color: #922B21;
-    --secondary-color: #D5D8DC;
-    --accent-color: #5B2C6F;
-    --bg-color: #0D0D0D;
-    --bg-image: url('/assets/backgrounds/Login_background_dark.png');
-    --card-bg: rgba(15, 15, 15, 0.85);
-    --input-bg: rgba(0, 0, 0, 0.4);
-    --input-text-color: #ECF0F1;
-    --border-color: #566573;
-    --shadow-color: rgba(146, 43, 33, 0.4);
-    --text-primary: #ECF0F1;
-    --text-secondary: #95A5A6;
-    --label-color: #D5D8DC;
-    --font-title: 'Metal Mania', cursive;
-    --font-body: 'Crimson Text', serif;
-    --particle-color: rgba(200, 120, 220, 0.8);
-    --button-gradient: linear-gradient(135deg, #641E16 0%, #922B21 100%);
-    --button-shadow: rgba(146, 43, 33, 0.6);
-    --error-bg: rgba(146, 43, 33, 0.25);
-    --error-border: #E74C3C;
-    --error-text: #F5B7B1;
+    --bg-image: url('/assets/backgrounds/background_login_dark.png');
 }
 
 /* Container */
@@ -113,10 +73,6 @@
     z-index: 2;
     position: relative;
     transition: all 0.5s ease;
-}
-
-.theme-divine .login-card {
-    border-image: linear-gradient(to bottom, var(--primary-color), transparent) 1;
 }
 
 /* Typography */

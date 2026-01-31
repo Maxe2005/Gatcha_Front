@@ -1,3 +1,5 @@
+@use "sass:list";
+
 // ===== PARTICLE ANIMATIONS & STYLES =====
 // Modular particle system with size variants and position mapping
 // Supports both divine (rising) and dark (falling) themes
@@ -138,8 +140,8 @@ $divine-positions: (
 // Generate all divine particle position rules via loop
 @each $index, $values in $divine-positions {
     .theme-divine .particle:nth-child(#{$index}) { 
-        left: nth($values, 1); 
-        animation-delay: nth($values, 2); 
+        left: list.nth($values, 1); 
+        animation-delay: list.nth($values, 2); 
     }
 }
 
@@ -241,7 +243,7 @@ $dark-positions: (
 // Generate all dark particle position rules via loop
 @each $index, $values in $dark-positions {
     .theme-dark .particle:nth-child(#{$index}) { 
-        left: nth($values, 1); 
-        animation-delay: nth($values, 2); 
+        left: list.nth($values, 1); 
+        animation-delay: list.nth($values, 2); 
     }
 }
