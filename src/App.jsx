@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Login from './pages/Login';
 import Home from './pages/Home';
 import Gacha from './pages/Gacha';
+import Inventory from './pages/Inventory';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { PlayerProvider } from './context/PlayerContext';
@@ -29,6 +30,14 @@ function AppRoutes() {
                 element={
                     <PrivateRoute>
                         <Gacha />
+                    </PrivateRoute>
+                }
+            />
+            <Route
+                path="/inventory"
+                element={
+                    <PrivateRoute>
+                        <Inventory />
                     </PrivateRoute>
                 }
             />

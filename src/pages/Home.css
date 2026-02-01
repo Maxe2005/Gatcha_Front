@@ -96,8 +96,8 @@
     z-index: 0;
 }
 
-.background-layer::before,
-.background-layer::after {
+.home-container .background-layer::before,
+.home-container .background-layer::after {
     content: '';
     position: absolute;
     inset: 0;
@@ -108,12 +108,12 @@
     will-change: opacity;
 }
 
-.background-layer::before {
+.home-container .background-layer::before {
     background-image: url('/assets/backgrounds/Home_background_light.png');
     opacity: 0;
 }
 
-.background-layer::after {
+.home-container .background-layer::after {
     background-image: url('/assets/backgrounds/Home_background_dark.png');
     opacity: 0;
 }

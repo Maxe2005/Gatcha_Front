@@ -46,10 +46,80 @@ const first_monster = { "nom": "Pyrolosse",
     "description": "Un petit bouledogue de lave avec des charbons ardents en guise de fourrure. Ses yeux brillent d'un jaune vif. Style cartoon 2D, contours nets, fond volcanique flou.",
 };
 
+const secondary_monster = {
+    "nom": "Abyssal-Hydra",
+    "element": "WATER",
+    "rang": "EPIC",
+    "stats": {
+      "hp": 1500.0,
+      "atk": 130.0,
+      "def": 150.0,
+      "vit": 40.0
+    },
+    "level": 10.0,
+    "description": "Terreur des fosses marines. Ses trois têtes pensent à l'unisson pour noyer tout espoir.",
+    "skills": [
+      {
+        "name": "Morsure Profonde",
+        "description": "Les trois têtes mordent en synchronisation.",
+        "damage": 90.0,
+        "ratio": {
+          "stat": "ATK",
+          "percent": 1.3
+        },
+        "cooldown": 0.0,
+	"level": 1.0,
+        "lvlMax": 5.0,
+        "rank": "COMMON"
+      },
+      {
+        "name": "Lumière Hypnotique",
+        "description": "Utilise ses lanternes pour étourdir l'adversaire.",
+        "damage": 50.0,
+        "ratio": {
+          "stat": "DEF",
+          "percent": 0.6
+        },
+        "cooldown": 3.0,
+	"level": 1.0,
+        "lvlMax": 5.0,
+        "rank": "RARE"
+      },
+      {
+        "name": "Régénération Abyssale",
+        "description": "Plonge dans un état de transe pour soigner ses blessures.",
+        "damage": 0.0,
+        "ratio": {
+          "stat": "HP",
+          "percent": 0.3
+        },
+        "cooldown": 5.0,
+	"level": 1.0,
+        "lvlMax": 5.0,
+        "rank": "EPIC"
+      },
+      {
+        "name": "Jugement de la Fosse",
+        "description": "Invoque la pression des abysses pour écraser les ennemis.",
+        "damage": 300.0,
+        "ratio": {
+          "stat": "DEF",
+          "percent": 2.5
+        },
+        "cooldown": 6.0,
+	"level": 1.0,
+        "lvlMax": 3.0,
+        "rank": "LEGENDARY"
+      }
+    ]
+  }
+
+const monster_mock = secondary_monster;
+
 const Gacha = () => {
     const { logout, user } = useAuth();
     const { theme } = useTheme();
-    const [monster, setMonster] = useState(first_monster);
+    const [monster, setMonster] = useState(monster_mock);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [isRevealed, setIsRevealed] = useState(false);

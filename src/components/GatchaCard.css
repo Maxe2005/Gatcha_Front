@@ -21,6 +21,11 @@
     transform: rotateY(180deg);
 }
 
+/* Hover flip mode */
+.card-container.hover-flip:hover .card-flipper {
+    transform: rotateY(180deg);
+}
+
 /* Faces communes */
 .card-face {
     --element-color: var(--accent-color);

@@ -1,0 +1,444 @@
+/* Inventory.css */
+
+.inventory-container {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Base Styles inherit from Index/App usually, but defined here for safety */
+.glass-panel {
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Filter Bar */
+.filter-bar {
+    z-index: 10;
+    padding: 1rem 2rem;
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0; /* Prevent shrinking */
+}
+
+/* Filter Styling based on Theme */
+.inventory-container.divine .filter-bar {
+    background: rgba(255, 255, 255, 0.2);
+    border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+}
+
+.inventory-container.dark .filter-bar {
+    background: rgba(0, 0, 0, 0.6);
+    border-bottom: 1px solid rgba(139, 0, 0, 0.4);
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: white;
+    font-family: 'Cinzel', serif;
+}
+
+.filter-group select {
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: bold;
+}
+
+/* Divine Inputs */
+.inventory-container.divine .filter-group select {
+    background: rgba(255, 255, 255, 0.9);
+    color: #4a3b22;
+    box-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+}
+
+/* Dark Inputs */
+.inventory-container.dark .filter-group select {
+    background: rgba(40, 0, 0, 0.9);
+    color: #ffcccc;
+    box-shadow: 0 0 5px rgba(139, 0, 0, 0.5);
+}
+
+/* Scroll Area */
+.inventory-scroll-area {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 2rem;
+    padding-bottom: 4rem;
+    position: relative; /* Ensure it sits above background */
+    z-index: 5;
+    /* Custom Scrollbar - Firefox */
+    scrollbar-width: thin;
+}
+
+/* WebKit Scrollbar (Chrome, Safari, Edge) */
+.inventory-scroll-area::-webkit-scrollbar {
+    width: 10px;
+}
+
+.inventory-scroll-area::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 5px;
+}
+
+.inventory-scroll-area::-webkit-scrollbar-thumb {
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.inventory-scroll-area::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+/* Divine Theme Scrollbar */
+.inventory-container.divine .inventory-scroll-area {
+    scrollbar-color: #d4af37 rgba(255, 255, 255, 0.1);
+}
+
+.inventory-container.divine .inventory-scroll-area::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #ffd700, #d4af37);
+    border: 1px solid #fff;
+    box-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
+}
+.inventory-container.divine .inventory-scroll-area::-webkit-scrollbar-track {
+    background: rgba(255, 250, 240, 0.2);
+}
+
+/* Dark Theme Scrollbar */
+.inventory-container.dark .inventory-scroll-area {
+    scrollbar-color: #8b0000 rgba(0, 0, 0, 0.3);
+}
+
+.inventory-container.dark .inventory-scroll-area::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #c0392b, #8b0000);
+    border: 1px solid #ff4d4d;
+    box-shadow: 0 0 5px rgba(139, 0, 0, 0.5);
+}
+.inventory-container.dark .inventory-scroll-area::-webkit-scrollbar-track {
+    background: rgba(20, 0, 0, 0.4);
+}
+
+/* Grid System */
+.inventory-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--cards-per-row, 4), 1fr);
+    gap: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.inventory-card-wrapper {
+    display: flex;
+    justify-content: center;
+    /* Wrapper to handle scaling or hover effects outside the card component */
+    transition: transform 0.2s ease;
+}
+
+.inventory-card-wrapper:hover {
+    transform: translateY(-5px);
+    z-index: 5;
+}
+
+/* Specific styling for GatchaCard scaling within grid */
+.inventory-card-wrapper .card-container {
+    width: 100%; /* Fill the grid cell */
+    height: auto; /* Let aspect-ratio determine height */
+    aspect-ratio: 2/3; /* Enforce standard ratio */
+    max-width: 300px; /* Prevent becoming too huge on large screens with few columns */
+}
+
+/* Modal Overlay */
+.detail-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(8px);
+    background: rgba(0, 0, 0, 0.7);
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Modal Content Container */
+.detail-content {
+    display: flex;
+    width: 80%;
+    max-width: 1000px;
+    height: 80vh; /* Fixed height relative to viewport */
+    border-radius: 16px;
+    overflow: hidden;
+    position: relative;
+    padding: 2rem;
+    gap: 2rem;
+}
+
+.inventory-container.divine .detail-content {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 248, 220, 0.95));
+    border: 2px solid rgba(255, 215, 0, 0.6);
+    box-shadow: 0 0 30px rgba(255, 215, 0, 0.4);
+}
+
+.inventory-container.dark .detail-content {
+    background: linear-gradient(135deg, rgba(20, 0, 0, 0.95), rgba(40, 0, 0, 0.9));
+    border: 2px solid rgba(139, 0, 0, 0.6);
+    box-shadow: 0 0 30px rgba(139, 0, 0, 0.5);
+}
+
+/* Close Button */
+.close-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    font-size: 2rem;
+    cursor: pointer;
+    color: inherit;
+    z-index: 1010;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background 0.2s;
+}
+
+.inventory-container.divine .close-btn { color: #5c4d35; }
+.inventory-container.divine .close-btn:hover { background: rgba(0,0,0,0.1); }
+
+.inventory-container.dark .close-btn { color: #ffcccc; }
+.inventory-container.dark .close-btn:hover { background: rgba(255,255,255,0.1); }
+
+/* Left Side: Big Card */
+.detail-left {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-right: 1px solid rgba(0,0,0,0.1);
+}
+
+.big-card-container .card-container {
+    width: 300px;
+    height: 440px;
+    transform: scale(1.1); /* Make it pop */
+    pointer-events: none; /* Disable flip clicking inside the detailed view to avoid confusion? */
+}
+
+/* Right Side: Details */
+.detail-right {
+    flex: 1.5;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    padding-right: 1rem; /* Space for scrollbar */
+}
+
+.detail-title {
+    font-family: 'Cinzel', serif;
+    font-size: 2.5rem;
+    margin: 0 0 0.5rem 0;
+}
+
+.inventory-container.divine .detail-title { color: #4a3b22; }
+.inventory-container.dark .detail-title { color: #ff4d4d; text-shadow: 0 0 10px rgba(255, 0, 0, 0.5); }
+
+.detail-tags {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.tag {
+    padding: 0.25rem 0.75rem;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    color: white;
+}
+.tag.rank-COMMON { background: #808080; }
+.tag.rank-RARE { background: #3498db; }
+.tag.rank-EPIC { background: #9b59b6; }
+.tag.rank-LEGENDARY { background: #f1c40f; color: black; }
+
+.tag.element-fire { background: #e74c3c; }
+.tag.element-water { background: #3498db; }
+.tag.element-wind { background: #2ecc71; }
+.tag.element-earth { background: #d35400; }
+.tag.element-light { background: #f1c40f; color: black; }
+.tag.element-darkness { background: #2c3e50; }
+
+.detail-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background: rgba(0,0,0,0.05);
+    border-radius: 8px;
+}
+
+.stat-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.stat-box span { font-size: 0.8rem; opacity: 0.7; }
+.stat-box strong { font-size: 1.2rem; }
+
+.inventory-container.divine .stat-box strong { color: #b8860b; }
+.inventory-container.dark .stat-box strong { color: #e74c3c; }
+
+.detail-lore {
+    margin-bottom: 2rem;
+    font-style: italic;
+    opacity: 0.9;
+}
+
+.detail-skills h3 {
+    font-family: 'Cinzel', serif;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    padding-bottom: 0.5rem;
+}
+
+/* Background Effects reuse */
+.global-bg {
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    z-index: 0;
+    pointer-events: none; /* Prevent scroll blocking */
+}
+
+/* =========================================
+   BACKGROUND & ANIMATIONS (Ported from Home)
+   ========================================= */
+
+/* Background Images */
+.inventory-container .background-layer::before,
+.inventory-container .background-layer::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    transition: opacity 0.8s ease;
+    will-change: opacity;
+}
+
+.inventory-container .background-layer::before {
+    background-image: url('/assets/backgrounds/Inventaire_background_divine.png');
+    opacity: 0;
+}
+
+.inventory-container .background-layer::after {
+    background-image: url('/assets/backgrounds/Inventaire_background_dark.png');
+    opacity: 0;
+}
+
+.inventory-container.divine .background-layer::before { opacity: 1; }
+.inventory-container.divine .background-layer::after { opacity: 0; }
+.inventory-container.dark .background-layer::before { opacity: 0; }
+.inventory-container.dark .background-layer::after { opacity: 1; }
+
+/* Divine Rays */
+.divine-rays .ray {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 80px;
+    height: 100%;
+    background: linear-gradient(180deg, rgba(255,215,0,0.15), rgba(255,215,0,0.05), transparent);
+    transform-origin: top center;
+    animation: rayRotate 20s infinite linear;
+    filter: blur(15px);
+    pointer-events: none;
+}
+.ray.r1 { animation-duration: 25s; transform: rotate(25deg); width: 120px; }
+.ray.r2 { animation-duration: 35s; transform: rotate(-25deg); width: 100px; }
+
+@keyframes rayRotate {
+    0% { transform: rotate(0deg) translateX(-20px); opacity: 0.5; }
+    50% { opacity: 1; }
+    100% { transform: rotate(360deg) translateX(20px); opacity: 0.5; }
+}
+
+/* Dark Fog & Embers */
+.dark-fog {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top, rgba(20,0,0,0.2), transparent 80%);
+    pointer-events: none;
+}
+.embers {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(circle, rgba(255,100,50,0.15) 1px, transparent 1px);
+    background-size: 50px 50px;
+    animation: embersFloat 15s infinite linear;
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+@keyframes embersFloat {
+    0% { background-position: 0 100%; }
+    100% { background-position: 20px 0; }
+}
+
+/* Navigation Back Button */
+.inventory-header {
+    position: relative;
+    z-index: 20;
+}
+
+.nav-back-btn {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    padding: 0.5rem 1rem;
+    z-index: 30;
+    color: inherit;
+    font-family: 'Cinzel', serif;
+    font-weight: bold;
+    cursor: pointer;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 4px;
+    transition: all 0.2s;
+}
+
+.nav-back-btn:hover {
+    background: rgba(255,255,255,0.3);
+    transform: translateY(-50%) scale(1.05);
+}
+
+.inventory-container.divine .nav-back-btn { color: #5c4d35; border-color: #ffd700; }
+.inventory-container.dark .nav-back-btn { color: #ffcccc; border-color: #c0392b; }
