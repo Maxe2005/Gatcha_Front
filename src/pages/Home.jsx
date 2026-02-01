@@ -4,6 +4,7 @@ import { usePlayer } from '../context/PlayerContext';
 import { useNavigate } from 'react-router-dom';
 import './Home.css';
 import ThemeToggle from '../components/ThemeToggle';
+import Portal from '../components/Portal';
 
 const Home = () => {
     const { theme, toggleTheme } = useTheme();
@@ -48,7 +49,6 @@ const Home = () => {
                         <div className="embers"></div>
                     </div>
                 )}
-                {/* colonnes/ruines background - simple CSS shapes */}
                 <div className="scenery scenery-left"></div>
                 <div className="scenery scenery-right"></div>
             </div>
@@ -59,6 +59,11 @@ const Home = () => {
                     {/* Avatar Section */}
                     <div className="avatar-section" onClick={() => navigate('/profile')}>
                         <div className="avatar-frame">
+                            <img 
+                                src={theme === 'divine' ? '/assets/home_icons/Cadre_avatar_divine.png' : '/assets/home_icons/Cardre_avatar_dark.png'}
+                                alt="Avatar Frame"
+                                className="avatar-frame-image"
+                            />
                             <div className="avatar-placeholder">
                                 {playerData?.username?.charAt(0).toUpperCase() || '?'}
                             </div>
@@ -98,34 +103,31 @@ const Home = () => {
                 </div>
             </header>
 
-            {/* CENTRAL ZONE - MONUMENT */}
+            {/* CENTRAL ZONE - PORTAL */}
             <main className="central-zone">
-                <div className="monument-container" onClick={() => navigate('/gacha')}>
-                    <div className="portal-ring outer-ring"></div>
-                    <div className="portal-ring inner-ring"></div>
-                    <div className="portal-core">
-                        <span className="element-symbol">
-                            {theme === 'divine' ? '✧' : '☠'}
-                        </span>
-                    </div>
-                    <div className="floating-particles">
-                        {[...Array(5)].map((_, i) => (
-                            <span key={i} className="particle"></span>
-                        ))}
-                    </div>
-                    <div className="interaction-hint">Toucher le Portail</div>
-                </div>
+                <Portal 
+                    onInvoke={(element) => navigate('/gacha')}
+                    isLoading={false}
+                />
             </main>
 
             {/* SECONDARY NAVIGATION */}
             <nav className="secondary-nav">
                 <button className="nav-item" onClick={() => navigate('/inventory')}>
-                    <span className="nav-icon">🎒</span>
+                    <img 
+                        src={theme === 'divine' ? '/assets/home_icons/Inventaire_divine.png' : '/assets/home_icons/Inventaire_dark.png'}
+                        alt="Inventaire"
+                        className="nav-icon-image"
+                    />
                     <span className="nav-label">Inventaire</span>
                 </button>
                 <div className="nav-divider"></div>
                 <button className="nav-item" onClick={() => navigate('/profile')}>
-                    <span className="nav-icon">👤</span>
+                    <img 
+                        src={theme === 'divine' ? '/assets/home_icons/Profile_divine.png' : '/assets/home_icons/Profile_dark.png'}
+                        alt="Profil"
+                        className="nav-icon-image"
+                    />
                     <span className="nav-label">Profil</span>
                 </button>
             </nav>

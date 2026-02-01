@@ -1,0 +1,659 @@
+/* ======================================
+   PORTAL COMPONENT - ANIMATIONS & STYLES
+   ====================================== */
+
+.portal-container {
+    position: relative;
+    width: 300px;
+    height: 300px;
+    cursor: pointer;
+    user-select: none;
+    filter: drop-shadow(0 0 30px rgba(255, 200, 0, 0.3));
+    transition: filter 0.3s ease;
+}
+
+.portal-container.divine {
+    --ring-color: #e8d5b7;
+    --ring-shadow: rgba(218, 165, 32, 0.6);
+    --glyph-color: #ffd700;
+    --glyph-glow: rgba(255, 223, 0, 0.8);
+    --element-glow: rgba(255, 255, 200, 0.4);
+    --particle-color: #ffeb99;
+    --vortex-glow: rgba(255, 200, 100, 0.6);
+}
+
+.portal-container.dark {
+    --ring-color: #2a2a2a;
+    --ring-shadow: rgba(139, 0, 0, 0.6);
+    --glyph-color: #cc2222;
+    --glyph-glow: rgba(255, 50, 50, 0.9);
+    --element-glow: rgba(255, 100, 100, 0.5);
+    --particle-color: #ff6b6b;
+    --vortex-glow: rgba(200, 0, 0, 0.7);
+}
+
+/* STATE: HOVER */
+.portal-container.hover {
+    filter: drop-shadow(0 0 50px var(--ring-shadow));
+}
+
+/* STATE: ACTIVATING */
+.portal-container.activating {
+    filter: drop-shadow(0 0 80px var(--ring-shadow)) brightness(1.2);
+}
+
+/* ======================================
+   LAYERS STACKING
+   ====================================== */
+
+.portal-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ======================================
+   LAYER A : RING / ANNEAU EXTERNE
+   ====================================== */
+
+.ring-layer {
+    z-index: 100;
+}
+
+.ring {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: ring-idle 4s ease-in-out infinite;
+}
+
+.portal-container.hover .ring {
+    animation: ring-hover 3s ease-in-out infinite;
+}
+
+.portal-container.activating .ring,
+.portal-container.active .ring {
+    animation: ring-activate 0.6s ease-out forwards;
+}
+
+.ring-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 0 10px var(--ring-shadow));
+}
+
+.ring-flash {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.8), transparent);
+    animation: flash-burst 0.4s ease-out;
+    pointer-events: none;
+}
+
+@keyframes ring-idle {
+    0%, 100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 0.9;
+    }
+    50% {
+        transform: scale(1.02) rotate(-5deg);
+        opacity: 1;
+    }
+}
+
+@keyframes ring-hover {
+    0%, 100% {
+        transform: scale(1.03) rotate(-10deg);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.06) rotate(5deg);
+        opacity: 0.95;
+    }
+}
+
+@keyframes ring-activate {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1.15);
+        opacity: 0.6;
+    }
+}
+
+@keyframes flash-burst {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(1.3);
+    }
+}
+
+/* ======================================
+   LAYER B : GLYPHES & RUNES
+   ====================================== */
+
+.glyphes-layer {
+    z-index: 80;
+}
+
+.glyphes-container {
+    position: relative;
+    width: 80%;
+    height: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.glyph {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: glyph-rotate-idle 12s linear infinite;
+}
+
+.portal-container.hover .glyph {
+    animation: glyph-rotate-hover 8s linear infinite;
+}
+
+.portal-container.activating .glyph,
+.portal-container.active .glyph {
+    animation: glyph-rotate-activate 0.8s ease-out forwards;
+}
+
+@keyframes glyph-rotate-idle {
+    0% {
+        transform: rotate(calc(var(--glyph-index) * 45deg));
+        opacity: 0.6;
+    }
+    100% {
+        transform: rotate(calc(360deg + var(--glyph-index) * 45deg));
+        opacity: 0.6;
+    }
+}
+
+@keyframes glyph-rotate-hover {
+    0% {
+        transform: rotate(calc(var(--glyph-index) * 45deg));
+        opacity: 0.9;
+    }
+    100% {
+        transform: rotate(calc(360deg + var(--glyph-index) * 45deg));
+        opacity: 0.9;
+    }
+}
+
+@keyframes glyph-rotate-activate {
+    0% {
+        transform: rotate(calc(var(--glyph-index) * 45deg));
+        opacity: 1;
+    }
+    100% {
+        transform: rotate(calc(540deg + var(--glyph-index) * 45deg));
+        opacity: 1;
+    }
+}
+
+.glyph-inner {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: -40%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.glyph-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 0 8px var(--glyph-glow));
+    animation: glyph-pulse 2s ease-in-out infinite;
+}
+
+.portal-container.hover .glyph-image {
+    animation: glyph-pulse-hover 1s ease-in-out infinite;
+}
+
+.glyph-glow {
+    position: absolute;
+    width: 120%;
+    height: 120%;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--glyph-glow), transparent);
+    filter: blur(4px);
+    animation: glyph-glow-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes glyph-pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 0.6;
+    }
+}
+
+@keyframes glyph-pulse-hover {
+    0%, 100% {
+        transform: scale(1.2);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.5);
+        opacity: 0.8;
+    }
+}
+
+@keyframes glyph-glow-pulse {
+    0%, 100% {
+        opacity: 0.4;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.8;
+        transform: scale(1.3);
+    }
+}
+
+/* ======================================
+   LAYER C : ELEMENT CIRCLE
+   ====================================== */
+
+.element-circle-layer {
+    z-index: 60;
+}
+
+.element-circle {
+    position: relative;
+    width: 50%;
+    height: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: element-breathe 3s ease-in-out infinite;
+}
+
+.portal-container.hover .element-circle {
+    animation: element-breathe 2s ease-in-out infinite;
+}
+
+.portal-container.activating .element-circle,
+.portal-container.active .element-circle {
+    animation: element-morph 0.6s ease-out forwards;
+}
+
+.element-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 0 15px var(--element-glow));
+    animation: element-glow-pulse 2s ease-in-out infinite;
+}
+
+.element-ripple {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    border: 2px solid var(--glyph-glow);
+    transform: translate(-50%, -50%);
+    animation: ripple-wave 1s ease-out infinite;
+    pointer-events: none;
+}
+
+@keyframes element-breathe {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+    50% {
+        transform: scale(1.08);
+        opacity: 1;
+    }
+}
+
+@keyframes element-morph {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1.3);
+        opacity: 0.5;
+    }
+}
+
+@keyframes element-glow-pulse {
+    0%, 100% {
+        filter: drop-shadow(0 0 10px var(--element-glow));
+    }
+    50% {
+        filter: drop-shadow(0 0 20px var(--element-glow));
+    }
+}
+
+@keyframes ripple-wave {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1.6);
+        opacity: 0;
+    }
+}
+
+/* ======================================
+   LAYER D : VORTEX / NOYAU CENTRAL
+   ====================================== */
+
+.vortex-layer {
+    z-index: 40;
+}
+
+.vortex {
+    position: relative;
+    width: 35%;
+    height: 35%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: vortex-spin 8s linear infinite;
+    filter: drop-shadow(0 0 25px var(--vortex-glow));
+}
+
+.portal-container.hover .vortex {
+    animation: vortex-spin 5s linear infinite;
+}
+
+.portal-container.activating .vortex {
+    animation: vortex-spin 2s linear infinite;
+}
+
+.vortex-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.vortex-glow {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 120%;
+    height: 120%;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--vortex-glow), transparent);
+    transform: translate(-50%, -50%);
+    animation: vortex-glow-pulse 2s ease-in-out infinite;
+    pointer-events: none;
+}
+
+.vortex-pulse {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.5), transparent);
+    transform: translate(-50%, -50%);
+    animation: vortex-pulse-burst 0.6s ease-out;
+    pointer-events: none;
+}
+
+@keyframes vortex-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes vortex-glow-pulse {
+    0%, 100% {
+        opacity: 0.5;
+        transform: translate(-50%, -50%) scale(1);
+    }
+    50% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1.1);
+    }
+}
+
+@keyframes vortex-pulse-burst {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1.5);
+        opacity: 0;
+    }
+}
+
+/* ======================================
+   LAYER E : PARTICULES
+   ====================================== */
+
+.particles-layer {
+    z-index: 50;
+    pointer-events: none;
+}
+
+.particle {
+    position: absolute;
+    border-radius: 50%;
+    background: var(--particle-color);
+    box-shadow: 0 0 6px var(--particle-color);
+    filter: blur(0.5px);
+}
+
+.particle.divine {
+    box-shadow: 0 0 6px #ffeb99, 0 0 12px rgba(255, 200, 0, 0.6);
+}
+
+.particle.dark {
+    box-shadow: 0 0 6px #ff6b6b, 0 0 12px rgba(255, 50, 50, 0.7);
+}
+
+@keyframes float-to-center {
+    0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(1);
+    }
+    85% {
+        opacity: 0.8;
+        transform: translate(calc(-50vw + 50%), calc(-50vh + 50%)) scale(0.6);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(calc(-50vw + 50%), calc(-50vh + 50%)) scale(0);
+    }
+}
+
+/* ======================================
+   ACTIVATION EFFECTS
+   ====================================== */
+
+.activation-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 200;
+    pointer-events: none;
+}
+
+.blackout-flash {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.9);
+    animation: blackout-sequence 0.6s ease-out forwards;
+    border-radius: 50%;
+}
+
+@keyframes blackout-sequence {
+    0% {
+        opacity: 0;
+        filter: blur(0);
+    }
+    20% {
+        opacity: 1;
+        filter: blur(2px);
+    }
+    100% {
+        opacity: 0;
+        filter: blur(10px);
+    }
+}
+
+/* ======================================
+   LOADING STATE
+   ====================================== */
+
+.portal-loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 250;
+    backdrop-filter: blur(2px);
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 50%;
+}
+
+.loading-ring {
+    width: 60%;
+    height: 60%;
+    border: 3px solid transparent;
+    border-top-color: var(--glyph-glow);
+    border-right-color: var(--glyph-glow);
+    border-radius: 50%;
+    animation: loading-spin 1s linear infinite;
+}
+
+@keyframes loading-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* ======================================
+   RESPONSIVENESS
+   ====================================== */
+
+@media (max-width: 768px) {
+    .portal-container {
+        width: 250px;
+        height: 250px;
+    }
+
+    .glyph-inner {
+        width: 16px;
+        height: 16px;
+    }
+
+    .portal-container {
+        filter: drop-shadow(0 0 20px rgba(255, 200, 0, 0.2));
+    }
+
+    .portal-container.hover {
+        filter: drop-shadow(0 0 35px var(--ring-shadow));
+    }
+}
+
+@media (max-width: 480px) {
+    .portal-container {
+        width: 200px;
+        height: 200px;
+    }
+
+    .glyph-inner {
+        width: 14px;
+        height: 14px;
+    }
+}
+
+/* ======================================
+   DARK/DIVINE THEME OVERRIDES
+   ====================================== */
+
+.portal-container.divine .ring-image {
+    filter: drop-shadow(0 0 15px rgba(218, 165, 32, 0.5));
+}
+
+.portal-container.dark .ring-image {
+    filter: drop-shadow(0 0 15px rgba(139, 0, 0, 0.6));
+}
+
+/* Particules aspirées vers le centre avec variation */
+@keyframes float-to-center-alt {
+    0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(1);
+    }
+    70% {
+        opacity: 0.7;
+    }
+    100% {
+        opacity: 0;
+        transform: translate(calc(-45% + var(--tx, 0)), calc(-45% + var(--ty, 0))) scale(0);
+    }
+}
+
+/* Animation bonus : scintillement sur hover */
+.portal-container.hover .vortex-image {
+    animation: shimmer 0.3s ease-in-out 0.5s, vortex-spin 5s linear infinite;
+}
+
+@keyframes shimmer {
+    0%, 100% {
+        filter: brightness(1);
+    }
+    50% {
+        filter: brightness(1.3);
+    }
+}

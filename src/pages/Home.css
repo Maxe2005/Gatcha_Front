@@ -37,18 +37,19 @@
 
 .home-container.divine .divine-rays .ray {
     position: absolute;
-    top: -20%;
+    top: 0;
     left: 50%;
-    width: 100px;
-    height: 150vh;
-    background: linear-gradient(180deg, rgba(255,255,255,0.8), transparent);
+    width: 80px;
+    height: 100%;
+    background: linear-gradient(180deg, rgba(255,215,0,0.15), rgba(255,215,0,0.05), transparent);
     transform-origin: top center;
     animation: rayRotate 20s infinite linear;
-    filter: blur(20px);
+    filter: blur(15px);
+    pointer-events: none;
 }
-.ray.r1 { animation-duration: 25s; transform: rotate(15deg); }
-.ray.r2 { animation-duration: 35s; transform: rotate(-15deg); width: 150px; }
-.ray.r3 { animation-duration: 30s; transform: rotate(0deg); opacity: 0.5; }
+.ray.r1 { animation-duration: 25s; transform: rotate(25deg); width: 120px; }
+.ray.r2 { animation-duration: 35s; transform: rotate(-25deg); width: 100px; }
+.ray.r3 { animation-duration: 30s; transform: rotate(-5deg); opacity: 0.6; }
 
 /* DARK THEME */
 .home-container.dark {
@@ -71,18 +72,20 @@
     position: absolute;
     bottom: 0;
     width: 100%;
-    height: 60%;
-    background: linear-gradient(to top, rgba(20,0,0,0.8), transparent);
+    height: 100%;
+    background: linear-gradient(to top, rgba(20,0,0,0.1), transparent 80%);
     z-index: 0;
+    pointer-events: none;
 }
 .home-container.dark .embers {
     position: absolute;
     width: 100%;
     height: 100%;
-    background-image: radial-gradient(#ff4500 1px, transparent 1px);
-    background-size: 20px 20px;
-    animation: embersRise 10s infinite linear;
-    opacity: 0.5;
+    background-image: radial-gradient(circle, rgba(255,100,50,0.08) 1px, transparent 1px);
+    background-size: 50px 50px;
+    animation: embersFloat 15s infinite linear;
+    opacity: 0.4;
+    pointer-events: none;
 }
 
 /* Base Background Layer - Common */
@@ -148,11 +151,20 @@
     justify-content: center;
     align-items: center;
     box-shadow: 0 0 10px var(--accent-glow);
+    overflow: hidden;
+}
+.avatar-frame-image {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
 }
 .avatar-placeholder {
     font-size: 1.5rem;
     color: white;
     font-weight: bold;
+    z-index: 1;
 }
 .player-info {
     display: flex;
@@ -237,98 +249,20 @@
     z-index: 5;
 }
 
-.monument-container {
-    position: relative;
-    width: 300px;
-    height: 300px;
-    cursor: pointer;
-    transition: transform 0.5s ease;
-}
-
-.monument-container:hover {
-    transform: scale(1.05);
-}
-.monument-container:hover .portal-core {
-    transform: translate(-50%, -50%) scale(1.1);
-    box-shadow: 0 0 50px var(--portal-color); /* Stronger glow */
-}
-
-.portal-ring {
+/* =========================================
+   CENTRAL PORTAL ZONE
+   ========================================= */
+.central-zone {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    border-radius: 50%;
-    border: 2px dashed var(--accent-color);
-}
-
-.outer-ring {
-    width: 280px;
-    height: 280px;
-    opacity: 0.6;
-    animation: rotateSlow 20s linear infinite;
-    border-width: 1px;
-}
-.home-container.divine .outer-ring { border-style: solid; border-color: gold; }
-.home-container.dark .outer-ring { border-style: dashed; border-color: darkred; }
-
-.inner-ring {
-    width: 220px;
-    height: 220px;
-    animation: rotateSlow 15s linear infinite reverse;
-    border: 4px solid var(--accent-color);
-    box-shadow: var(--portal-glow);
-}
-
-.portal-core {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 150px;
-    height: 150px;
-    transform: translate(-50%, -50%);
-    background: var(--portal-color);
-    border-radius: 50%;
+    width: 100%;
+    height: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 4rem;
-    color: white;
-    box-shadow: var(--portal-glow);
-    animation: pulse 3s ease-in-out infinite;
-    overflow: hidden;
-}
-
-.floating-particles .particle {
-    position: absolute;
-    background: var(--accent-color);
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    box-shadow: 0 0 5px var(--accent-color);
-    animation: floatParticle 4s ease-in infinite;
-    opacity: 0;
-}
-/* Random positions for CSS particles */
-.floating-particles .particle:nth-child(1) { top: 20%; left: 30%; animation-delay: 0s; }
-.floating-particles .particle:nth-child(2) { top: 70%; left: 20%; animation-delay: 1s; }
-.floating-particles .particle:nth-child(3) { top: 40%; left: 80%; animation-delay: 2s; }
-.floating-particles .particle:nth-child(4) { top: 10%; left: 60%; animation-delay: 0.5s; }
-.floating-particles .particle:nth-child(5) { top: 80%; left: 70%; animation-delay: 1.5s; }
-
-
-.interaction-hint {
-    position: absolute;
-    bottom: -40px;
-    left: 50%;
-    transform: translateX(-50%);
-    color: var(--text-primary);
-    font-size: 0.9rem;
-    letter-spacing: 2px;
-    opacity: 0.8;
-    background: rgba(0,0,0,0.3);
-    padding: 5px 10px;
-    border-radius: 10px;
+    z-index: 5;
 }
 
 /* =========================================
@@ -364,6 +298,14 @@
     transition: transform 0.3s;
 }
 
+.nav-icon-image {
+    width: 100px;
+    height: 100px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 5px var(--accent-glow));
+    transition: transform 0.3s;
+}
+
 .nav-label {
     opacity: 0;
     font-family: inherit;
@@ -375,7 +317,8 @@
     opacity: 1;
     transform: translateY(0);
 }
-.nav-item:hover .nav-icon {
+.nav-item:hover .nav-icon,
+.nav-item:hover .nav-icon-image {
     transform: translateY(-5px) scale(1.1);
 }
 
@@ -389,32 +332,16 @@
 /* =========================================
    ANIMATIONS
    ========================================= */
-@keyframes rotateSlow {
-    from { transform: translate(-50%, -50%) rotate(0deg); }
-    to { transform: translate(-50%, -50%) rotate(360deg); }
-}
-
-@keyframes pulse {
-    0% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
-    50% { transform: translate(-50%, -50%) scale(1.05); opacity: 1; }
-    100% { transform: translate(-50%, -50%) scale(1); opacity: 0.8; }
-}
-
 @keyframes rayRotate {
-    0% { transform: rotate(15deg) translateY(0); opacity: 0.5; }
-    50% { transform: rotate(20deg) translateY(20px); opacity: 0.8; }
-    100% { transform: rotate(15deg) translateY(0); opacity: 0.5; }
+    0% { opacity: 0.4; }
+    50% { opacity: 0.7; }
+    100% { opacity: 0.4; }
 }
 
-@keyframes embersRise {
-    from { background-position: 0 0; }
-    to { background-position: 20px -100px; }
-}
-
-@keyframes floatParticle {
-    0% { transform: translate(0, 0) scale(0); opacity: 0; }
-    20% { opacity: 1; }
-    100% { transform: translate(var(--mx, -50px), -100px) scale(1); opacity: 0; }
+@keyframes embersFloat {
+    0% { background-position: 0 0; transform: translateX(0); }
+    50% { transform: translateX(10px); }
+    100% { background-position: 50px -50px; transform: translateX(0); }
 }
 
 /* Media Queries for Responsive */
@@ -424,10 +351,6 @@
     }
     .player-name, .level-info span {
         display: none; /* Hide text on very small screens */
-    }
-    .monument-container {
-        width: 220px;
-        height: 220px;
     }
     .top-hud {
         width: 95%;
