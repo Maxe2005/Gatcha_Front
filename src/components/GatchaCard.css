@@ -2,10 +2,11 @@
 
 /* Container principal */
 .card-container {
-    width: min(360px, 90vw);
+    width: min(360px, 90vw); /* Default fallback */
     aspect-ratio: 2/3;
     perspective: 1000px;
     cursor: pointer;
+    container-type: inline-size;
 }
 
 /* Wrapper pour le flip */
@@ -34,8 +35,8 @@
     position: absolute;
     width: 100%;
     height: 100%;
-    border-radius: 18px;
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5), 0 0 20px var(--element-glow);
+    border-radius: 5cqi;
+    box-shadow: 0 5cqi 15cqi rgba(0, 0, 0, 0.5), 0 0 5cqi var(--element-glow);
     color: var(--text-primary);
     font-family: 'Space Grotesk', 'Segoe UI', sans-serif;
     backface-visibility: hidden;
@@ -74,25 +75,25 @@
     position: relative;
     z-index: 2;
     width: 100%;
-    padding: 18px;
+    padding: 5cqi;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 3cqi;
     background: rgba(0, 0, 0, 0.75);
     backdrop-filter: blur(4px);
 }
 
 .monster-name-front {
     margin: 0;
-    font-size: 1.8rem;
+    font-size: 8cqi;
     letter-spacing: 0.02em;
-    text-shadow: 0 4px 12px rgba(0, 0, 0, 0.8);
+    text-shadow: 0 1cqi 3cqi rgba(0, 0, 0, 0.8);
     color: var(--primary-color);
 }
 
 /* VERSO  */
 .card-back {
-    padding: 18px;
+    padding: 5cqi;
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
@@ -108,7 +109,7 @@
     height: 100%;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 3cqi;
 }
 
 .card-back .card-grid {
@@ -122,21 +123,21 @@
     justify-content: center;
     align-items: center;
     text-align: center;
-    gap: 12px;
+    gap: 3cqi;
 }
 
 .card-top {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    gap: 8px;
+    gap: 2cqi;
 }
 
 .rank-chip,
 .element-chip {
-    padding: 6px 12px;
-    border-radius: 12px;
-    font-size: 0.85rem;
+    padding: 2.5cqi 6cqi;
+    border-radius: 3cqi;
+    font-size: 4cqi;
     letter-spacing: 0.03em;
     font-weight: 700;
 }
@@ -167,25 +168,25 @@
 .element-icon-front {
     position: absolute;
     z-index: 3;
-    height: 60px;
+    height: 18cqi;
     width: auto;
     object-fit: contain;
-    filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.7));
+    filter: drop-shadow(0 2cqi 4cqi rgba(0, 0, 0, 0.7));
 }
 
 .rank-icon-front {
-    top: 12px;
-    right: 12px;
+    top: 3cqi;
+    right: 3cqi;
 }
 
 .element-icon-front {
-    top: 12px;
-    left: 12px;
+    top: 3cqi;
+    left: 3cqi;
 }
 
 .monster-name {
     margin: 0;
-    font-size: 1.5rem;
+    font-size: 8cqi;
     letter-spacing: 0.02em;
     color: var(--primary-color);
 }
@@ -193,7 +194,7 @@
 .monster-lore {
     margin: 0;
     color: var(--text-secondary);
-    font-size: 0.95rem;
+    font-size: 5cqi;
     line-height: 1.4;
 }
 
@@ -231,44 +232,46 @@
 .stats-block {
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 14px;
-    padding: 12px;
+    border-radius: 3cqi;
+    padding: 3cqi;
     backdrop-filter: blur(6px);
 }
 
 .stats-title {
-    font-size: 0.95rem;
+    font-size: 4cqi;
     letter-spacing: 0.05em;
     text-transform: uppercase;
     color: rgba(248, 248, 251, 0.7);
-    margin-bottom: 8px;
+    margin-bottom: 2cqi;
 }
 
 .stats-list {
     display: grid;
-    gap: 10px;
+    gap: 5.5cqi;
 }
 
 .stat-row {
     display: grid;
-    grid-template-columns: 64px 1fr 52px;
+    grid-template-columns: 18cqi 1fr 14cqi;
     align-items: center;
-    gap: 10px;
+    gap: 2.5cqi;
 }
 
 .stat-label {
     color: rgba(248, 248, 251, 0.65);
     font-weight: 600;
+    font-size: 4.5cqi;
 }
 
 .stat-value {
     text-align: right;
     font-weight: 700;
+    font-size: 4.5cqi;
 }
 
 .stat-bar {
     position: relative;
-    height: 10px;
+    height: 2.5cqi;
     background: rgba(255, 255, 255, 0.05);
     border-radius: 999px;
     overflow: hidden;
