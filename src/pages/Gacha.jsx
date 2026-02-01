@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { invocationApi } from '../services/api';
@@ -13,6 +13,7 @@ import {
 import Header from '../components/Header';
 import GatchaCard from '../components/GatchaCard';
 import { useNavigate } from 'react-router-dom';
+import './Gacha.css';
 
 const normalizeMonster = (data) => {
     if (!data) return null;
@@ -51,9 +52,15 @@ const Gacha = () => {
     const [monster, setMonster] = useState(first_monster);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [isRevealed, setIsRevealed] = useState(false);
     const navigate = useNavigate();
 
     const normalizedMonster = useMemo(() => normalizeMonster(monster), [monster]);
+
+    useEffect(() => {
+        const timer = setTimeout(() => setIsRevealed(true), 60);
+        return () => clearTimeout(timer);
+    }, []);
 
     const handleInvoke = async () => {
         setLoading(true);
@@ -72,7 +79,7 @@ const Gacha = () => {
     };
 
     return (
-        <Box className={`gacha-page ${theme === 'dark' ? 'theme-dark' : 'theme-divine'}`} sx={{ flexGrow: 1, minHeight: '100vh', background: 'var(--bg-primary)' }}>
+        <Box className={`gacha-page ${theme === 'dark' ? 'theme-dark' : 'theme-divine'} ${isRevealed ? 'revealed' : 'entering'}`} sx={{ flexGrow: 1, minHeight: '100vh', background: 'var(--bg-primary)' }}>
             <Box sx={{ p: 2 }}>
                 <Button onClick={() => navigate('/home')} variant="outlined">
                     ← Retour Home

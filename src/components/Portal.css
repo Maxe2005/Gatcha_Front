@@ -10,6 +10,7 @@
     user-select: none;
     filter: drop-shadow(0 0 30px rgba(255, 200, 0, 0.3));
     transition: filter 0.3s ease;
+    will-change: transform, opacity, filter;
 }
 
 .portal-container.divine {
@@ -40,6 +41,86 @@
 /* STATE: ACTIVATING */
 .portal-container.activating {
     filter: drop-shadow(0 0 80px var(--ring-shadow)) brightness(1.2);
+    --glyph-rotation-duration: 2.2s;
+}
+
+/* STATE: TRANSITIONING (warp to Gacha) */
+.portal-container.transitioning {
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 300;
+    filter: drop-shadow(0 0 120px var(--ring-shadow)) brightness(1.25);
+    pointer-events: none;
+    --glyph-rotation-duration: 0.65s;
+}
+
+.portal-container.transitioning .vortex {
+    animation: vortex-spin 0.6s linear infinite, vortex-warp 0.9s cubic-bezier(0.22, 0.8, 0.2, 1) forwards;
+    will-change: transform, opacity;
+}
+
+.portal-container.transitioning .ring {
+    animation: ring-warp 0.9s cubic-bezier(0.22, 0.8, 0.2, 1) forwards;
+    will-change: transform, opacity;
+    filter: drop-shadow(0 0 40px var(--ring-shadow));
+}
+
+.portal-container.transitioning .ring-layer {
+    animation: ring-layer-warp 0.9s cubic-bezier(0.22, 0.8, 0.2, 1) forwards;
+    will-change: transform;
+}
+
+.portal-container.transitioning .ring-image {
+    filter: drop-shadow(0 0 30px var(--ring-shadow)) brightness(1.3);
+}
+
+.portal-container.transitioning .glyphes-container {
+    --glyph-opacity: 0.6;
+    filter: blur(0.2px);
+}
+
+@keyframes vortex-warp {
+    0% {
+        transform: rotate(0deg) scale(1);
+        opacity: 1;
+    }
+    60% {
+        transform: rotate(0deg) scale(3.5);
+        opacity: 1;
+    }
+    100% {
+        transform: rotate(0deg) scale(7.5);
+        opacity: 0.98;
+    }
+}
+
+@keyframes ring-warp {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    60% {
+        transform: scale(3.5);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(7.5);
+        opacity: 0.98;
+    }
+}
+
+@keyframes ring-layer-warp {
+    0% {
+        transform: scale(1);
+    }
+    60% {
+        transform: scale(3.5);
+    }
+    100% {
+        transform: scale(7.5);
+    }
 }
 
 /* ======================================
@@ -73,6 +154,7 @@
     align-items: center;
     justify-content: center;
     animation: ring-idle 4s ease-in-out infinite;
+    will-change: transform, opacity;
 }
 
 .portal-container.hover .ring {
@@ -163,6 +245,7 @@
     align-items: center;
     justify-content: center;
     --glyph-opacity: 0.6;
+    will-change: transform;
 }
 
 .portal-container.hover .glyphes-container {
@@ -353,6 +436,7 @@
     justify-content: center;
     animation: vortex-spin 8s linear infinite;
     filter: drop-shadow(0 0 25px var(--vortex-glow));
+    will-change: transform;
 }
 
 .portal-container.hover .vortex {
@@ -489,6 +573,10 @@
     background: rgba(255, 255, 255, 0.9);
     animation: blackout-sequence 0.6s ease-out forwards;
     border-radius: 50%;
+}
+
+.portal-container.dark .blackout-flash {
+    background: rgba(10, 10, 10, 0.92);
 }
 
 @keyframes blackout-sequence {

@@ -11,6 +11,7 @@ const Home = () => {
     const { playerData, refreshPlayerData } = usePlayer();
     const navigate = useNavigate();
     const [isLoaded, setIsLoaded] = useState(false);
+    const [isTransitioning, setIsTransitioning] = useState(false);
 
     // Simulation de chargement pour l'animation d'entrée
     useEffect(() => {
@@ -30,8 +31,16 @@ const Home = () => {
     // Calcul de la progression XP (mock)
     const xpPercent = playerData ? (playerData.experience % 1000) / 10 : 0;
 
+    const handlePortalInvoke = () => {
+        if (isTransitioning) return;
+        setIsTransitioning(true);
+        setTimeout(() => {
+            navigate('/gacha');
+        }, 1100);
+    };
+
     return (
-        <div className={`home-container ${theme} ${isLoaded ? 'loaded' : ''}`}>
+        <div className={`home-container ${theme} ${isLoaded ? 'loaded' : ''} ${isTransitioning ? 'transitioning' : ''}`}>
             {/* BACKGROUND LAYER */}
             <div className="background-layer">
                 <div className="sky-gradient"></div>
@@ -106,10 +115,13 @@ const Home = () => {
             {/* CENTRAL ZONE - PORTAL */}
             <main className="central-zone">
                 <Portal 
-                    onInvoke={(element) => navigate('/gacha')}
+                    onInvoke={handlePortalInvoke}
                     isLoading={false}
+                    transitioning={isTransitioning}
                 />
             </main>
+
+            <div className={`home-transition-overlay ${theme}`} aria-hidden="true"></div>
 
             {/* SECONDARY NAVIGATION */}
             <nav className="secondary-nav">

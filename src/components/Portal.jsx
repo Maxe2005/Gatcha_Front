@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useTheme } from '../context/ThemeContext';
 import './Portal.css';
 
-const Portal = ({ onInvoke, isLoading = false }) => {
+const Portal = ({ onInvoke, isLoading = false, transitioning = false }) => {
     const { theme } = useTheme();
     const [state, setState] = useState('idle'); // idle, hover, activating, active
     const [activeElement, setActiveElement] = useState('feu'); // feu, eau, terre, vent, lumiere, darkness
@@ -40,7 +40,7 @@ const Portal = ({ onInvoke, isLoading = false }) => {
 
         animationFrameId = requestAnimationFrame(updateRotation);
         return () => cancelAnimationFrame(animationFrameId);
-    }, [state]);
+    }, [state, transitioning]);
 
     // Génération des particules (changer aléatoirement l'élément actif)
     useEffect(() => {
@@ -54,7 +54,7 @@ const Portal = ({ onInvoke, isLoading = false }) => {
     // Système de particules
     useEffect(() => {
         const particleInterval = setInterval(() => {
-            if (state === 'idle' || state === 'hover') {
+            if (!transitioning && (state === 'idle' || state === 'hover')) {
                 const newParticle = {
                     id: Math.random(),
                     x: Math.cos(Math.random() * Math.PI * 2) * 120 + 50,
@@ -71,7 +71,7 @@ const Portal = ({ onInvoke, isLoading = false }) => {
         }, 150);
 
         return () => clearInterval(particleInterval);
-    }, [state]);
+    }, [state, transitioning]);
 
     const handleMouseEnter = () => {
         if (!isLoading) {
@@ -100,7 +100,7 @@ const Portal = ({ onInvoke, isLoading = false }) => {
     };
 
     const handleClick = () => {
-        if (!isLoading && state !== 'activating' && state !== 'active') {
+        if (!isLoading && !transitioning && state !== 'activating' && state !== 'active') {
             setState('activating');
             // Animation d'activation
             setTimeout(() => {
@@ -126,7 +126,7 @@ const Portal = ({ onInvoke, isLoading = false }) => {
     return (
         <div
             ref={portalRef}
-            className={`portal-container ${theme} ${state}`}
+            className={`portal-container ${theme} ${state} ${transitioning ? 'transitioning' : ''}`}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
             onClick={handleClick}

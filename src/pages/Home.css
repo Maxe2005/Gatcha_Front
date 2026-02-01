@@ -146,7 +146,7 @@
     max-width: 1000px;
     height: 80px;
     z-index: 10;
-    transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.27);
+    transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.27), opacity 0.6s ease, filter 0.6s ease;
 }
 .home-container:not(.loaded) .top-hud {
     transform: translate(-50%, -50px);
@@ -287,6 +287,8 @@
     justify-content: center;
     align-items: center;
     z-index: 5;
+    transition: transform 1.2s cubic-bezier(0.22, 0.8, 0.2, 1), opacity 0.8s ease;
+    will-change: transform, opacity;
 }
 
 /* =========================================
@@ -317,6 +319,7 @@
     gap: 30px;
     align-items: center;
     z-index: 10;
+    transition: opacity 0.6s ease, transform 0.8s ease, filter 0.8s ease;
 }
 
 .nav-item {
@@ -368,6 +371,59 @@
     background: var(--accent-color);
     opacity: 0.5;
     transition: background-color 0.6s ease;
+}
+
+/* =========================================
+   TRANSITION HOME -> GACHA
+   ========================================= */
+.home-container.transitioning .top-hud,
+.home-container.transitioning .secondary-nav {
+    opacity: 0;
+    transform: translate(-50%, -20px) scale(0.98);
+    filter: blur(3px);
+    pointer-events: none;
+}
+
+.home-container.transitioning .background-layer {
+    transform: scale(1.04);
+    filter: blur(2px) brightness(0.95);
+    transition: transform 1.2s ease, filter 1.2s ease;
+}
+
+.home-container.transitioning .central-zone {
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+.home-transition-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 250;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.home-transition-overlay.divine {
+    background: #ffffff;
+}
+
+.home-transition-overlay.dark {
+    background: #0a0a0a;
+}
+
+.home-container.transitioning .home-transition-overlay {
+    animation: portal-flash 0.45s ease-out 0.65s forwards;
+}
+
+@keyframes portal-flash {
+    0% {
+        opacity: 0;
+    }
+    30% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
 }
 
 /* =========================================
