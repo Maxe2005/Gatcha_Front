@@ -1,52 +1,25 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../context/ThemeContext';
 import './Portal.css';
 
 const Portal = ({ onInvoke, isLoading = false, transitioning = false }) => {
     const { theme } = useTheme();
     const [state, setState] = useState('idle'); // idle, hover, activating, active
-    const [activeElement, setActiveElement] = useState('feu'); // feu, eau, terre, vent, lumiere, darkness
+    const [activeElement, setActiveElement] = useState('feu');
     const [particles, setParticles] = useState([]);
-    const [glyphRotation, setGlyphRotation] = useState(0);
     const portalRef = useRef(null);
-    const particleSystemRef = useRef(null);
     const hoverTimestampRef = useRef(null);
-    const lastFrameTimeRef = useRef(Date.now());
-    const HOVER_MIN_DURATION = 3000; // 3 secondes en millisecondes
+    const HOVER_MIN_DURATION = 3000;
 
-    // Éléments disponibles
     const elements = ['feu', 'eau', 'terre', 'vent', 'lumiere', 'darkness'];
 
-    // Animation fluide de rotation des glyphes (accumulation continue)
-    useEffect(() => {
-        let animationFrameId;
-        lastFrameTimeRef.current = Date.now();
-
-        const updateRotation = () => {
-            const now = Date.now();
-            const deltaTime = now - lastFrameTimeRef.current;
-            lastFrameTimeRef.current = now;
-
-            // Vitesse en degrés par milliseconde
-            // idle: 360°/12000ms = 0.03°/ms
-            // hover: 360°/8000ms = 0.045°/ms
-            // activating: 360°/2000ms = 0.18°/ms
-            const speedMultiplier = state === 'hover' ? 1.5 : state === 'activating' ? 6 : 1;
-            const speed = 0.03 * speedMultiplier; // degrees per ms
-            
-            setGlyphRotation((prev) => (prev + speed * deltaTime) % 360);
-            animationFrameId = requestAnimationFrame(updateRotation);
-        };
-
-        animationFrameId = requestAnimationFrame(updateRotation);
-        return () => cancelAnimationFrame(animationFrameId);
-    }, [state, transitioning]);
-
-    // Génération des particules (changer aléatoirement l'élément actif)
+    // Changement d'élément actif
     useEffect(() => {
         const elementInterval = setInterval(() => {
             setActiveElement(elements[Math.floor(Math.random() * elements.length)]);
-        }, 6000); // Changement tous les 6s
+        }, 6000);
 
         return () => clearInterval(elementInterval);
     }, []);
@@ -85,14 +58,12 @@ const Portal = ({ onInvoke, isLoading = false, transitioning = false }) => {
             const elapsedTime = Date.now() - (hoverTimestampRef.current || Date.now());
             
             if (elapsedTime < HOVER_MIN_DURATION) {
-                // Pas assez de temps écoulé, attendre avant de revenir à idle
                 const remainingTime = HOVER_MIN_DURATION - elapsedTime;
                 setTimeout(() => {
                     setState('idle');
                     hoverTimestampRef.current = null;
                 }, remainingTime);
             } else {
-                // Assez de temps écoulé, revenir à idle immédiatement
                 setState('idle');
                 hoverTimestampRef.current = null;
             }
@@ -102,11 +73,9 @@ const Portal = ({ onInvoke, isLoading = false, transitioning = false }) => {
     const handleClick = () => {
         if (!isLoading && !transitioning && state !== 'activating' && state !== 'active') {
             setState('activating');
-            // Animation d'activation
             setTimeout(() => {
                 setState('active');
                 if (onInvoke) onInvoke(activeElement);
-                // Retour à idle après invocation
                 setTimeout(() => {
                     setState('idle');
                 }, 1200);
@@ -114,124 +83,185 @@ const Portal = ({ onInvoke, isLoading = false, transitioning = false }) => {
         }
     };
 
-    const elementToCircle = {
-        feu: 'Cercle_feu.png',
-        eau: 'Cercle_eau.png',
-        terre: 'Cercle_terre.png',
-        vent: 'Cercle_vent.png',
-        lumiere: 'Cercle_light.png',
-        darkness: 'Cercle_dark.png',
+    // Animation configs pour Framer Motion
+    const glyphRotationVariants = {
+        idle: { rotate: [0, 360], transition: { duration: 12, repeat: Infinity, ease: 'linear' } },
+        hover: { rotate: [0, 360], transition: { duration: 8, repeat: Infinity, ease: 'linear' } },
+        activating: { rotate: [0, 360], transition: { duration: 2.2, repeat: Infinity, ease: 'linear' } },
+    };
+
+    const ringVariants = {
+        idle: {
+            scale: [1, 1.02, 1],
+            transition: { duration: 4, repeat: Infinity, ease: 'easeInOut' },
+        },
+        hover: {
+            scale: [1.03, 1.06, 1.03],
+            transition: { duration: 3, repeat: Infinity, ease: 'easeInOut' },
+        },
+        activating: {
+            scale: 1.15,
+            transition: { duration: 0.6, ease: 'easeOut' },
+        },
+    };
+
+    const vortexVariants = {
+        idle: {
+            rotate: [0, -360],
+            transition: { duration: 8, repeat: Infinity, ease: 'linear' },
+        },
+        hover: {
+            rotate: [0, -360],
+            transition: { duration: 5, repeat: Infinity, ease: 'linear' },
+        },
+        activating: {
+            rotate: [0, -360],
+            transition: { duration: 2, repeat: Infinity, ease: 'linear' },
+        },
     };
 
     return (
-        <div
-            ref={portalRef}
-            className={`portal-container ${theme} ${state} ${transitioning ? 'transitioning' : ''}`}
-            onMouseEnter={handleMouseEnter}
-            onMouseLeave={handleMouseLeave}
-            onClick={handleClick}
-            role="button"
-            tabIndex={0}
-            aria-label="Portal d'invocation - Cliquez pour invoquer"
-        >
-            {/* COUCHE E : Particules & FX */}
-            <div className="portal-layer particles-layer">
-                {particles.map((particle) => (
-                    <div
-                        key={particle.id}
-                        className={`particle ${theme}`}
-                        style={{
-                            left: `${particle.x}%`,
-                            top: `${particle.y}%`,
-                            width: `${particle.size}px`,
-                            height: `${particle.size}px`,
-                            animation: `float-to-center ${particle.duration}s ease-in forwards`,
-                            animationDelay: `${particle.delay}ms`,
-                        }}
-                    />
-                ))}
-            </div>
-
-            {/* COUCHE D : Noyau / Vortex */}
-            <div className="portal-layer vortex-layer">
-                <div className={`vortex vortex-${theme}`}>
-                    <img
-                        src={`/assets/portail/Vortex_portail_${theme}.png`}
-                        alt="Vortex"
-                        className="vortex-image"
-                    />
-                    <div className="vortex-glow"></div>
-                    {state === 'activating' && <div className="vortex-pulse"></div>}
-                </div>
-            </div>
-
-            {/* COUCHE C : Cercle élémentaire */}
-            <div className="portal-layer element-circle-layer">
-                <div className={`element-circle element-${activeElement}`}>
-                    {/* <img
-                        src={`/assets/portail/cercles_elementaires/${elementToCircle[activeElement]}`}
-                        alt={`Élément: ${activeElement}`}
-                        className="element-image"
-                    /> */}
-                    {state === 'hover' && <div className="element-ripple"></div>}
-                </div>
-            </div>
-
-            {/* COUCHE B : Glyphes & Runes */}
-            <div className="portal-layer glyphes-layer">
-                <div className={`glyphes-container glyphes-${theme}`}>
-                    {[0, 1, 2, 3, 4, 5, 6, 7].map((index) => (
-                        <div
-                            key={`glyph-${index}`}
-                            className="glyph"
-                            style={{
-                                '--glyph-index': index,
-                                transform: `rotate(${glyphRotation + (index * 45)}deg)`,
-                            }}
+        <>
+            <AnimatePresence>
+                {transitioning && (
+                    <motion.div
+                        className="portal-warp-overlay"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.1 }}
+                    >
+                        {/* Ring - Grandit au premier plan */}
+                        <motion.div
+                            className={`portal-warp-ring ${theme}`}
+                            initial={{ scale: 1, opacity: 1 }}
+                            animate={{ scale: 20, opacity: 0.8 }}
+                            transition={{ duration: 0.9, ease: 'easeIn' }}
                         >
-                            <div className="glyph-inner">
-                                <img
-                                    src={`/assets/portail/glyphes/${theme}/Glyphes_${theme}_${index + 1}.png`}
-                                    alt={`Glyphe ${index + 1}`}
-                                    className="glyph-image"
-                                />
-                                {state !== 'idle' && (
-                                    <div className="glyph-glow"></div>
-                                )}
+                            <img
+                                src={`/assets/portail/Anneau_portail_${theme}.png`}
+                                alt="Ring"
+                                className="warp-ring-image"
+                            />
+                        </motion.div>
+
+                        {/* Vortex - Grandit + tourne */}
+                        <motion.div
+                            className={`portal-warp-vortex ${theme}`}
+                            initial={{ scale: 1, rotate: 0, opacity: 1 }}
+                            animate={{ scale: 22, rotate: -720, opacity: 0.85 }}
+                            transition={{ duration: 0.9, ease: 'easeIn' }}
+                        >
+                            <img
+                                src={`/assets/portail/Vortex_portail_${theme}.png`}
+                                alt="Vortex"
+                                className="warp-vortex-image"
+                            />
+                        </motion.div>
+
+                        {/* White/Dark Flash */}
+                        {/* <motion.div
+                            className={`portal-warp-flash ${theme}`}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: [0, 0, 1] }}
+                            transition={{ duration: 0.9, times: [0, 0.7, 1] }}
+                        /> */}
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            <div
+                ref={portalRef}
+                className={`portal-container ${theme} ${state}`}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+                onClick={handleClick}
+                role="button"
+                tabIndex={0}
+                aria-label="Portal d'invocation - Cliquez pour invoquer"
+            >
+
+                {/* COUCHE D : Noyau / Vortex */}
+                <div className="portal-layer vortex-layer">
+                    <motion.div
+                        className={`vortex vortex-${theme}`}
+                        animate={state}
+                        variants={vortexVariants}
+                    >
+                        <img
+                            src={`/assets/portail/Vortex_portail_${theme}.png`}
+                            alt="Vortex"
+                            className="vortex-image"
+                        />
+                        <div className="vortex-glow"></div>
+                        {state === 'activating' && <div className="vortex-pulse"></div>}
+                    </motion.div>
+                </div>
+
+                {/* COUCHE C : Cercle élémentaire */}
+                <div className="portal-layer element-circle-layer">
+                    <div className={`element-circle element-${activeElement}`}>
+                        {state === 'hover' && <div className="element-ripple"></div>}
+                    </div>
+                </div>
+
+                {/* COUCHE B : Glyphes & Runes */}
+                <div className="portal-layer glyphes-layer">
+                    <motion.div
+                        className={`glyphes-container glyphes-${theme}`}
+                        animate={state}
+                        variants={glyphRotationVariants}
+                    >
+                        {[0, 1, 2, 3, 4, 5, 6, 7].map((index) => (
+                            <div
+                                key={`glyph-${index}`}
+                                className="glyph"
+                                style={{
+                                    '--glyph-index': index,
+                                    transform: `rotate(calc(var(--glyph-index) * 45deg))`,
+                                }}
+                            >
+                                <div className="glyph-inner">
+                                    <img
+                                        src={`/assets/portail/glyphes/${theme}/Glyphes_${theme}_${index + 1}.png`}
+                                        alt={`Glyphe ${index + 1}`}
+                                        className="glyph-image"
+                                    />
+                                    {state !== 'idle' && (
+                                        <div className="glyph-glow"></div>
+                                    )}
+                                </div>
                             </div>
-                        </div>
-                    ))}
+                        ))}
+                    </motion.div>
                 </div>
+
+                {/* COUCHE A : Anneau externe */}
+                <div className="portal-layer ring-layer">
+                    <motion.div
+                        className={`ring ring-${theme}`}
+                        animate={state}
+                        variants={ringVariants}
+                    >
+                        <img
+                            src={`/assets/portail/Anneau_portail_${theme}.png`}
+                            alt="Anneau du portail"
+                            className="ring-image"
+                        />
+                        {state === 'activating' && (
+                            <div className="ring-flash"></div>
+                        )}
+                    </motion.div>
+                </div>
+
+                {/* Indicateur de chargement */}
+                {isLoading && (
+                    <div className="portal-loading">
+                        <div className="loading-ring"></div>
+                    </div>
+                )}
             </div>
-
-            {/* COUCHE A : Anneau externe */}
-            <div className="portal-layer ring-layer">
-                <div className={`ring ring-${theme}`}>
-                    <img
-                        src={`/assets/portail/Anneau_portail_${theme}.png`}
-                        alt="Anneau du portail"
-                        className="ring-image"
-                    />
-                    {state === 'activating' && (
-                        <div className="ring-flash"></div>
-                    )}
-                </div>
-            </div>
-
-            {/* Overlay pour le blackout d'activation */}
-            {state === 'activating' && (
-                <div className="activation-overlay">
-                    <div className="blackout-flash"></div>
-                </div>
-            )}
-
-            {/* Indicateur de chargement */}
-            {isLoading && (
-                <div className="portal-loading">
-                    <div className="loading-ring"></div>
-                </div>
-            )}
-        </div>
+        </>
     );
 };
 

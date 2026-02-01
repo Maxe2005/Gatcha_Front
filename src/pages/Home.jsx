@@ -12,6 +12,8 @@ const Home = () => {
     const navigate = useNavigate();
     const [isLoaded, setIsLoaded] = useState(false);
     const [isTransitioning, setIsTransitioning] = useState(false);
+    const [particles, setParticles] = useState([]);
+    
 
     // Simulation de chargement pour l'animation d'entrée
     useEffect(() => {
@@ -36,8 +38,39 @@ const Home = () => {
         setIsTransitioning(true);
         setTimeout(() => {
             navigate('/gacha');
-        }, 1100);
+        }, 950); // Durée totale de la warp animation
     };
+
+    // Génération des particules (changer aléatoirement l'élément actif)
+        useEffect(() => {
+            const elementInterval = setInterval(() => {
+                setActiveElement(elements[Math.floor(Math.random() * elements.length)]);
+            }, 6000); // Changement tous les 6s
+    
+            return () => clearInterval(elementInterval);
+        }, []);
+    
+        // Système de particules
+        useEffect(() => {
+            const particleInterval = setInterval(() => {
+                if (!isTransitioning) {
+                    const newParticle = {
+                        id: Math.random(),
+                        x: Math.cos(Math.random() * Math.PI * 2) * 50 + 50,
+                        y: Math.sin(Math.random() * Math.PI * 2) * 50 + 50,
+                        duration: 2 + Math.random() * 1,
+                        size: 2 + Math.random() * 4,
+                        delay: 0,
+                    };
+                    setParticles((prev) => {
+                        const updated = [...prev, newParticle];
+                        return updated.length > 40 ? updated.slice(-40) : updated;
+                    });
+                }
+            }, 150);
+    
+            return () => clearInterval(particleInterval);
+        }, [isTransitioning]);
 
     return (
         <div className={`home-container ${theme} ${isLoaded ? 'loaded' : ''} ${isTransitioning ? 'transitioning' : ''}`}>
@@ -60,6 +93,24 @@ const Home = () => {
                 )}
                 <div className="scenery scenery-left"></div>
                 <div className="scenery scenery-right"></div>
+            </div>
+
+            {/* COUCHE E : Particules & FX */}
+            <div className="portal-layer particles-layer">
+                {particles.map((particle) => (
+                    <div
+                        key={particle.id}
+                        className={`particle ${theme}`}
+                        style={{
+                            left: `${particle.x}%`,
+                            top: `${particle.y}%`,
+                            width: `${particle.size}px`,
+                            height: `${particle.size}px`,
+                            animation: `float-to-center ${particle.duration}s ease-in forwards`,
+                            animationDelay: `${particle.delay}ms`,
+                        }}
+                    />
+                ))}
             </div>
 
             {/* TOP HUD */}

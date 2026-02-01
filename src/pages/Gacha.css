@@ -1,14 +1,12 @@
 /* Soft reveal for Gacha page (wake-up feel) */
 .gacha-page {
     opacity: 0;
-    transform: scale(1.02);
     filter: blur(10px);
-    transition: opacity 1.2s ease, transform 1.2s ease, filter 1.2s ease;
-    will-change: opacity, transform, filter;
+    transition: opacity 1s ease-out, filter 1s ease-out;
+    will-change: opacity, filter;
 }
 
 .gacha-page.revealed {
     opacity: 1;
-    transform: scale(1);
     filter: blur(0);
 }

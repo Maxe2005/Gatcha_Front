@@ -134,6 +134,46 @@
     opacity: 1;
 }
 
+/* ======================================
+   LAYER E : PARTICULES
+   ====================================== */
+
+.particles-layer {
+    z-index: 10;
+    pointer-events: none;
+}
+
+.particle {
+    position: absolute;
+    border-radius: 50%;
+    background: var(--particle-color);
+    box-shadow: 0 0 6px var(--particle-color);
+    filter: blur(0.5px);
+}
+
+.particle.divine {
+    box-shadow: 0 0 6px #ffeb99, 0 0 12px rgba(255, 200, 0, 0.6);
+}
+
+.particle.dark {
+    box-shadow: 0 0 6px #ff6b6b, 0 0 12px rgba(255, 50, 50, 0.7);
+}
+
+@keyframes float-to-center {
+    0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(1);
+    }
+    85% {
+        opacity: 0.8;
+        transform: translate(calc(-50vw + 50%), calc(-50vh + 50%)) scale(0.6);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(calc(-50vw + 50%), calc(-50vh + 50%)) scale(0);
+    }
+}
+
 /* =========================================
    TOP HUD
    ========================================= */
@@ -374,24 +414,26 @@
 }
 
 /* =========================================
-   TRANSITION HOME -> GACHA
+   TRANSITION HOME -> GACHA (Optimisée avec transform/opacity)
    ========================================= */
-.home-container.transitioning .top-hud,
-.home-container.transitioning .secondary-nav {
+
+.home-container.transitioning .top-hud {
     opacity: 0;
-    transform: translate(-50%, -20px) scale(0.98);
     filter: blur(3px);
     pointer-events: none;
+    transition: opacity 0.6s ease, filter 0.6s ease;
+}
+
+.home-container.transitioning .secondary-nav {
+    opacity: 0;
+    filter: blur(3px);
+    pointer-events: none;
+    transition: opacity 0.6s ease, filter 0.6s ease;
 }
 
 .home-container.transitioning .background-layer {
-    transform: scale(1.04);
-    filter: blur(2px) brightness(0.95);
-    transition: transform 1.2s ease, filter 1.2s ease;
-}
-
-.home-container.transitioning .central-zone {
-    transform: translate(-50%, -50%) scale(1.1);
+    filter: blur(2px) brightness(0.92);
+    transition: filter 0.9s ease;
 }
 
 .home-transition-overlay {
@@ -408,22 +450,6 @@
 
 .home-transition-overlay.dark {
     background: #0a0a0a;
-}
-
-.home-container.transitioning .home-transition-overlay {
-    animation: portal-flash 0.45s ease-out 0.65s forwards;
-}
-
-@keyframes portal-flash {
-    0% {
-        opacity: 0;
-    }
-    30% {
-        opacity: 1;
-    }
-    100% {
-        opacity: 0;
-    }
 }
 
 /* =========================================
