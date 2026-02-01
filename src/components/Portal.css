@@ -212,6 +212,33 @@
     height: 100%;
     object-fit: contain;
     filter: drop-shadow(0 0 8px var(--glyph-glow));
+    animation: glyph-pulse 2s ease-in-out infinite;
+}
+
+.portal-container.hover .glyph-image {
+    animation: glyph-pulse-hover 1s ease-in-out infinite;
+}
+
+@keyframes glyph-pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 0.6;
+    }
+}
+
+@keyframes glyph-pulse-hover {
+    0%, 100% {
+        transform: scale(1.2);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.5);
+        opacity: 0.8;
+    }
 }
 
 .glyph-glow {

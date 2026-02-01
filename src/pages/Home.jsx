@@ -38,7 +38,7 @@ const Home = () => {
         setIsTransitioning(true);
         setTimeout(() => {
             navigate('/gacha');
-        }, 950); // Durée totale de la warp animation
+        }, 2050); // Durée totale de la warp animation
     };
 
     // Génération des particules (changer aléatoirement l'élément actif)

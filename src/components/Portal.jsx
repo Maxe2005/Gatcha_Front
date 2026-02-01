@@ -14,6 +14,7 @@ const Portal = ({ onInvoke, isLoading = false, transitioning = false }) => {
     const HOVER_MIN_DURATION = 3000;
 
     const elements = ['feu', 'eau', 'terre', 'vent', 'lumiere', 'darkness'];
+    const transitionDuration = 2.0;
 
     // Changement d'élément actif
     useEffect(() => {
@@ -93,15 +94,24 @@ const Portal = ({ onInvoke, isLoading = false, transitioning = false }) => {
     const ringVariants = {
         idle: {
             scale: [1, 1.02, 1],
+            rotate: [0, -5, 0],
+            opacity: 1,
             transition: { duration: 4, repeat: Infinity, ease: 'easeInOut' },
         },
         hover: {
             scale: [1.03, 1.06, 1.03],
+            rotate: [-10, 5, -10],
+            opacity: 1,
             transition: { duration: 3, repeat: Infinity, ease: 'easeInOut' },
         },
         activating: {
             scale: 1.15,
+            opacity: 1,
             transition: { duration: 0.6, ease: 'easeOut' },
+        },
+        hidden: {
+            opacity: 0,
+            transition: { duration: 0.1 },
         },
     };
 
@@ -122,53 +132,56 @@ const Portal = ({ onInvoke, isLoading = false, transitioning = false }) => {
 
     return (
         <>
-            <AnimatePresence>
-                {transitioning && (
-                    <motion.div
-                        className="portal-warp-overlay"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.1 }}
-                    >
-                        {/* Ring - Grandit au premier plan */}
+            {createPortal(
+                <AnimatePresence>
+                    {transitioning && (
                         <motion.div
-                            className={`portal-warp-ring ${theme}`}
-                            initial={{ scale: 1, opacity: 1 }}
-                            animate={{ scale: 20, opacity: 0.8 }}
-                            transition={{ duration: 0.9, ease: 'easeIn' }}
-                        >
-                            <img
-                                src={`/assets/portail/Anneau_portail_${theme}.png`}
-                                alt="Ring"
-                                className="warp-ring-image"
-                            />
-                        </motion.div>
-
-                        {/* Vortex - Grandit + tourne */}
-                        <motion.div
-                            className={`portal-warp-vortex ${theme}`}
-                            initial={{ scale: 1, rotate: 0, opacity: 1 }}
-                            animate={{ scale: 22, rotate: -720, opacity: 0.85 }}
-                            transition={{ duration: 0.9, ease: 'easeIn' }}
-                        >
-                            <img
-                                src={`/assets/portail/Vortex_portail_${theme}.png`}
-                                alt="Vortex"
-                                className="warp-vortex-image"
-                            />
-                        </motion.div>
-
-                        {/* White/Dark Flash */}
-                        {/* <motion.div
-                            className={`portal-warp-flash ${theme}`}
+                            className="portal-warp-overlay"
                             initial={{ opacity: 0 }}
-                            animate={{ opacity: [0, 0, 1] }}
-                            transition={{ duration: 0.9, times: [0, 0.7, 1] }}
-                        /> */}
-                    </motion.div>
-                )}
-            </AnimatePresence>
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.1 }}
+                        >
+                            {/* Ring - Grandit au premier plan */}
+                            <motion.div
+                                className={`portal-warp-ring ${theme}`}
+                                initial={{ scale: 1, opacity: 1 }}
+                                animate={{ scale: 20, opacity: 0.8 }}
+                                transition={{ duration: transitionDuration, ease: "linear" }}
+                            >
+                                <img
+                                    src={`/assets/portail/Anneau_portail_${theme}.png`}
+                                    alt="Ring"
+                                    className="warp-ring-image"
+                                />
+                            </motion.div>
+
+                            {/* Vortex - Grandit + tourne */}
+                            <motion.div
+                                className={`portal-warp-vortex ${theme}`}
+                                initial={{ scale: 1, rotate: 0, opacity: 1 }}
+                                animate={{ scale: 22, rotate: -720, opacity: 0.85 }}
+                                transition={{ duration: transitionDuration, ease: "linear" }}
+                            >
+                                <img
+                                    src={`/assets/portail/Vortex_portail_${theme}.png`}
+                                    alt="Vortex"
+                                    className="warp-vortex-image"
+                                />
+                            </motion.div>
+
+                            {/* White/Dark Flash */}
+                            <motion.div
+                                className={`portal-warp-flash ${theme}`}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: [0, 0, 1] }}
+                                transition={{ duration: transitionDuration*0.7, times: [0, 0.8, 1], ease: "linear" }}
+                            />
+                        </motion.div>
+                    )}
+                </AnimatePresence>,
+                document.body
+            )}
 
             <div
                 ref={portalRef}
@@ -240,7 +253,7 @@ const Portal = ({ onInvoke, isLoading = false, transitioning = false }) => {
                 <div className="portal-layer ring-layer">
                     <motion.div
                         className={`ring ring-${theme}`}
-                        animate={state}
+                        animate={transitioning ? 'hidden' : state}
                         variants={ringVariants}
                     >
                         <img
