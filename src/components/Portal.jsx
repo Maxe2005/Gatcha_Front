@@ -7,11 +7,40 @@ const Portal = ({ onInvoke, isLoading = false }) => {
     const [state, setState] = useState('idle'); // idle, hover, activating, active
     const [activeElement, setActiveElement] = useState('feu'); // feu, eau, terre, vent, lumiere, darkness
     const [particles, setParticles] = useState([]);
+    const [glyphRotation, setGlyphRotation] = useState(0);
     const portalRef = useRef(null);
     const particleSystemRef = useRef(null);
+    const hoverTimestampRef = useRef(null);
+    const lastFrameTimeRef = useRef(Date.now());
+    const HOVER_MIN_DURATION = 3000; // 3 secondes en millisecondes
 
     // Éléments disponibles
     const elements = ['feu', 'eau', 'terre', 'vent', 'lumiere', 'darkness'];
+
+    // Animation fluide de rotation des glyphes (accumulation continue)
+    useEffect(() => {
+        let animationFrameId;
+        lastFrameTimeRef.current = Date.now();
+
+        const updateRotation = () => {
+            const now = Date.now();
+            const deltaTime = now - lastFrameTimeRef.current;
+            lastFrameTimeRef.current = now;
+
+            // Vitesse en degrés par milliseconde
+            // idle: 360°/12000ms = 0.03°/ms
+            // hover: 360°/8000ms = 0.045°/ms
+            // activating: 360°/2000ms = 0.18°/ms
+            const speedMultiplier = state === 'hover' ? 1.5 : state === 'activating' ? 6 : 1;
+            const speed = 0.03 * speedMultiplier; // degrees per ms
+            
+            setGlyphRotation((prev) => (prev + speed * deltaTime) % 360);
+            animationFrameId = requestAnimationFrame(updateRotation);
+        };
+
+        animationFrameId = requestAnimationFrame(updateRotation);
+        return () => cancelAnimationFrame(animationFrameId);
+    }, [state]);
 
     // Génération des particules (changer aléatoirement l'élément actif)
     useEffect(() => {
@@ -45,11 +74,29 @@ const Portal = ({ onInvoke, isLoading = false }) => {
     }, [state]);
 
     const handleMouseEnter = () => {
-        if (!isLoading) setState('hover');
+        if (!isLoading) {
+            setState('hover');
+            hoverTimestampRef.current = Date.now();
+        }
     };
 
     const handleMouseLeave = () => {
-        if (!isLoading) setState('idle');
+        if (!isLoading && state === 'hover') {
+            const elapsedTime = Date.now() - (hoverTimestampRef.current || Date.now());
+            
+            if (elapsedTime < HOVER_MIN_DURATION) {
+                // Pas assez de temps écoulé, attendre avant de revenir à idle
+                const remainingTime = HOVER_MIN_DURATION - elapsedTime;
+                setTimeout(() => {
+                    setState('idle');
+                    hoverTimestampRef.current = null;
+                }, remainingTime);
+            } else {
+                // Assez de temps écoulé, revenir à idle immédiatement
+                setState('idle');
+                hoverTimestampRef.current = null;
+            }
+        }
     };
 
     const handleClick = () => {
@@ -121,11 +168,11 @@ const Portal = ({ onInvoke, isLoading = false }) => {
             {/* COUCHE C : Cercle élémentaire */}
             <div className="portal-layer element-circle-layer">
                 <div className={`element-circle element-${activeElement}`}>
-                    <img
+                    {/* <img
                         src={`/assets/portail/cercles_elementaires/${elementToCircle[activeElement]}`}
                         alt={`Élément: ${activeElement}`}
                         className="element-image"
-                    />
+                    /> */}
                     {state === 'hover' && <div className="element-ripple"></div>}
                 </div>
             </div>
@@ -139,7 +186,7 @@ const Portal = ({ onInvoke, isLoading = false }) => {
                             className="glyph"
                             style={{
                                 '--glyph-index': index,
-                                transform: `rotate(${(index * 45)}deg)`,
+                                transform: `rotate(${glyphRotation + (index * 45)}deg)`,
                             }}
                         >
                             <div className="glyph-inner">

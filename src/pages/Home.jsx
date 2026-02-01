@@ -57,7 +57,7 @@ const Home = () => {
             <header className="top-hud">
                 <div className="hud-content">
                     {/* Avatar Section */}
-                    <div className="avatar-section" onClick={() => navigate('/profile')}>
+                    <div className="avatar-section" onClick={() => navigate('/profile')} title='Profile'>
                         <div className="avatar-frame">
                             <img 
                                 src={theme === 'divine' ? '/assets/home_icons/Cadre_avatar_divine.png' : '/assets/home_icons/Cardre_avatar_dark.png'}

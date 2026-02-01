@@ -162,6 +162,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    --glyph-opacity: 0.6;
+}
+
+.portal-container.hover .glyphes-container {
+    --glyph-opacity: 0.9;
 }
 
 .glyph {
@@ -171,55 +176,13 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    animation: glyph-rotate-idle 12s linear infinite;
-}
-
-.portal-container.hover .glyph {
-    animation: glyph-rotate-hover 8s linear infinite;
-}
-
-.portal-container.activating .glyph,
-.portal-container.active .glyph {
-    animation: glyph-rotate-activate 0.8s ease-out forwards;
-}
-
-@keyframes glyph-rotate-idle {
-    0% {
-        transform: rotate(calc(var(--glyph-index) * 45deg));
-        opacity: 0.6;
-    }
-    100% {
-        transform: rotate(calc(360deg + var(--glyph-index) * 45deg));
-        opacity: 0.6;
-    }
-}
-
-@keyframes glyph-rotate-hover {
-    0% {
-        transform: rotate(calc(var(--glyph-index) * 45deg));
-        opacity: 0.9;
-    }
-    100% {
-        transform: rotate(calc(360deg + var(--glyph-index) * 45deg));
-        opacity: 0.9;
-    }
-}
-
-@keyframes glyph-rotate-activate {
-    0% {
-        transform: rotate(calc(var(--glyph-index) * 45deg));
-        opacity: 1;
-    }
-    100% {
-        transform: rotate(calc(540deg + var(--glyph-index) * 45deg));
-        opacity: 1;
-    }
+    opacity: var(--glyph-opacity, 0.6);
 }
 
 .glyph-inner {
     position: absolute;
-    width: 20px;
-    height: 20px;
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -293,8 +256,8 @@
 
 .element-circle {
     position: relative;
-    width: 50%;
-    height: 50%;
+    width: 75%;
+    height: 75%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -383,8 +346,8 @@
 
 .vortex {
     position: relative;
-    width: 35%;
-    height: 35%;
+    width: 70%;
+    height: 70%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -468,7 +431,7 @@
    ====================================== */
 
 .particles-layer {
-    z-index: 50;
+    z-index: 30;
     pointer-events: none;
 }
 

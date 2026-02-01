@@ -6,7 +6,7 @@
     overflow: hidden;
     color: white; /* Default text color */
     font-family: 'Cinzel', serif; /* Font fantasy par excellence */
-    transition: opacity 1.5s ease;
+    transition: opacity 1.5s ease, color 0.6s ease;
     opacity: 0;
 }
 
@@ -31,8 +31,7 @@
 }
 
 .home-container.divine .background-layer {
-    background: url('/assets/backgrounds/Home_background_light.png') no-repeat center center fixed;
-    background-size: cover;
+    background: none;
 }
 
 .home-container.divine .divine-rays .ray {
@@ -64,8 +63,7 @@
 }
 
 .home-container.dark .background-layer {
-    background: url('/assets/backgrounds/Home_background_dark.png') no-repeat center center fixed;
-    background-size: cover;
+    background: none;
 }
 
 .home-container.dark .dark-fog {
@@ -98,6 +96,44 @@
     z-index: 0;
 }
 
+.background-layer::before,
+.background-layer::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    transition: opacity 0.8s ease;
+    will-change: opacity;
+}
+
+.background-layer::before {
+    background-image: url('/assets/backgrounds/Home_background_light.png');
+    opacity: 0;
+}
+
+.background-layer::after {
+    background-image: url('/assets/backgrounds/Home_background_dark.png');
+    opacity: 0;
+}
+
+.home-container.divine .background-layer::before {
+    opacity: 1;
+}
+
+.home-container.divine .background-layer::after {
+    opacity: 0;
+}
+
+.home-container.dark .background-layer::before {
+    opacity: 0;
+}
+
+.home-container.dark .background-layer::after {
+    opacity: 1;
+}
+
 /* =========================================
    TOP HUD
    ========================================= */
@@ -126,6 +162,7 @@
     padding: 10px 25px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.2);
     border: 1px solid var(--accent-color);
+    transition: background-color 0.6s ease, border-color 0.6s ease, box-shadow 0.6s ease;
 }
 
 /* Avatar */
@@ -152,6 +189,7 @@
     align-items: center;
     box-shadow: 0 0 10px var(--accent-glow);
     overflow: hidden;
+    transition: border-color 0.6s ease, box-shadow 0.6s ease;
 }
 .avatar-frame-image {
     position: absolute;
@@ -174,6 +212,7 @@
     color: var(--text-primary);
     font-weight: bold;
     font-size: 1rem;
+    transition: color 0.6s ease;
 }
 .level-info {
     display: flex;
@@ -181,6 +220,7 @@
     gap: 8px;
     font-size: 0.8rem;
     color: var(--text-primary);
+    transition: color 0.6s ease;
 }
 .xp-bar-container {
     width: 80px;
@@ -193,7 +233,7 @@
     height: 100%;
     background: var(--accent-color);
     width: 0%;
-    transition: width 1s ease-out;
+    transition: width 1s ease-out, background-color 0.6s ease;
 }
 
 /* Resources */
@@ -210,7 +250,7 @@
     border-radius: 15px;
     color: var(--text-primary);
     font-weight: bold;
-    transition: transform 0.2s;
+    transition: transform 0.2s, color 0.6s ease, background-color 0.6s ease;
 }
 .resource-item:hover {
     transform: translateY(-2px);
@@ -227,7 +267,7 @@
     justify-content: center;
     align-items: center;
     border-radius: 50%;
-    transition: background 0.3s;
+    transition: background 0.3s, color 0.6s ease;
 }
 .theme-toggle-wrapper:hover {
     background: rgba(255,255,255,0.2);
@@ -288,14 +328,14 @@
     align-items: center;
     gap: 8px;
     color: var(--text-primary);
-    transition: all 0.3s;
+    transition: transform 0.3s, color 0.6s ease;
     width: 80px;
 }
 
 .nav-icon {
     font-size: 2.5rem;
     filter: drop-shadow(0 0 5px var(--accent-glow));
-    transition: transform 0.3s;
+    transition: transform 0.3s, filter 0.6s ease;
 }
 
 .nav-icon-image {
@@ -303,7 +343,7 @@
     height: 100px;
     object-fit: contain;
     filter: drop-shadow(0 0 5px var(--accent-glow));
-    transition: transform 0.3s;
+    transition: transform 0.3s, filter 0.6s ease;
 }
 
 .nav-label {
@@ -311,7 +351,7 @@
     font-family: inherit;
     font-size: 0.8rem;
     transform: translateY(10px);
-    transition: all 0.3s;
+    transition: transform 0.3s, opacity 0.3s, color 0.6s ease;
 }
 .nav-item:hover .nav-label {
     opacity: 1;
@@ -327,6 +367,7 @@
     height: 40px;
     background: var(--accent-color);
     opacity: 0.5;
+    transition: background-color 0.6s ease;
 }
 
 /* =========================================
