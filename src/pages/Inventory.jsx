@@ -51,7 +51,8 @@ const Inventory = () => {
   console.log('Inventory - loading:', loading);
 
   // Utiliser les monstres du joueur si disponibles
-  const inventoryData = monsters.length > 0 ? monsters : MOCK_INVENTORY;
+  const inventoryData = monsters;// MOCK_INVENTORY;
+//   const inventoryData = monsters.length > 0 ? monsters : MOCK_INVENTORY;
 
   const [filterRarity, setFilterRarity] = useState('ALL');
   const [filterElement, setFilterElement] = useState('ALL');
@@ -63,7 +64,11 @@ const Inventory = () => {
   // Filter Logic
   const filteredCards = inventoryData.filter((card) => {
     if (filterRarity !== 'ALL' && card.rang !== filterRarity) return false;
-    if (filterElement !== 'ALL' && card.element?.toUpperCase() !== filterElement) return false;
+    if (
+      filterElement !== 'ALL' &&
+      card.element?.toUpperCase() !== filterElement
+    )
+      return false;
     return true;
   });
 

@@ -66,7 +66,7 @@ const GatchaCard = ({
     1
   );
   // Image handling moved to state
-  const lore = monstre.lore || monstre.description || '';
+  const lore = monstre.description || monstre.description_carte || '';
 
   return (
     <div
@@ -78,7 +78,7 @@ const GatchaCard = ({
         src={currentImage}
         alt=""
         style={{ display: 'none' }}
-        onError={(e) => {
+        onError={() => {
           if (currentImage !== '/assets/monsters/Default_Monster.png') {
             setCurrentImage('/assets/monsters/Default_Monster.png');
           }

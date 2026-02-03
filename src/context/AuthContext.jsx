@@ -7,6 +7,20 @@ import React, {
   useRef,
 } from 'react';
 import { authApi } from '../services/api';
+/**
+ * AuthContext - Responsabilité unique : AUTHENTIFICATION
+ *
+ * Gère uniquement :
+ * - Le token JWT (stockage cookie + state)
+ * - Les informations utilisateur de base (username)
+ * - Les actions d'authentification (login, logout, verifyToken)
+ *
+ * NE GÈRE PAS :
+ * - Les données métier du joueur (playerData) -> PlayerContext
+ * - Les monstres -> MonsterContext
+ *
+ * Principe SOLID respecté : Single Responsibility Principle (SRP)
+ */
 
 const AuthContext = createContext(null);
 
@@ -19,7 +33,6 @@ export const AuthProvider = ({ children }) => {
 
   const [token, setToken] = useState(getTokenFromCookie());
   const [user, setUser] = useState();
-  const [playerData, setPlayerData] = useState(null);
   const hasVerified = useRef(false);
   const verificationPromise = useRef(null);
 
@@ -34,7 +47,6 @@ export const AuthProvider = ({ children }) => {
     setToken(null);
     document.cookie = 'token=; path=/; max-age=0';
     setUser(null);
-    setPlayerData(null);
     hasVerified.current = false;
   }, []);
 
@@ -52,7 +64,6 @@ export const AuthProvider = ({ children }) => {
           console.log('Token verification response:', response.data);
           if (response.data && response.data.username) {
             setUser({ username: response.data.username });
-            setPlayerData(response.data);
             return response.data;
           } else {
             logout();
@@ -81,7 +92,7 @@ export const AuthProvider = ({ children }) => {
   }, [token, user, verifyToken]);
 
   return (
-    <AuthContext.Provider value={{ token, user, playerData, login, logout, verifyToken }}>
+    <AuthContext.Provider value={{ token, user, login, logout, verifyToken }}>
       {children}
     </AuthContext.Provider>
   );

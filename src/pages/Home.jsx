@@ -17,8 +17,6 @@ const Home = () => {
   // Simulation de chargement pour l'animation d'entrée
   useEffect(() => {
     setTimeout(() => setIsLoaded(true), 100);
-    // Rafraîchir les données joueur à l'arrivée
-    refreshPlayerData();
   }, []);
 
   // Placeholder pour les ressources (si non présentes dans l'API)

@@ -1,5 +1,28 @@
-import React, { createContext, useContext, useCallback, useState, useRef } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useCallback,
+  useState,
+  useRef,
+} from 'react';
 import { monstersApi } from '../services/api';
+/**
+ * MonsterContext - Cache global et gestion des monstres
+ *
+ * Responsabilités :
+ * - Fournir un cache global pour tous les monstres
+ * - Éviter les appels API redondants
+ * - Être réutilisable par plusieurs composants (Inventory, Gacha, etc.)
+ *
+ * Architecture :
+ * - Cache avec useRef (pas de re-render inutiles)
+ * - Fonction fetchMonsters : charge uniquement les monstres manquants
+ * - Indépendant des autres contexts (réutilisable)
+ *
+ * Principes SOLID respectés :
+ * - SRP : Gère uniquement le cache des monstres
+ * - OCP : Extensible sans modification
+ */
 
 const MonsterContext = createContext(null);
 
@@ -15,12 +38,16 @@ export const MonsterProvider = ({ children }) => {
     }
 
     // Vérifier quels monstres sont déjà en cache
-    const idsToFetch = ids.filter((id) => !monstersCache.current.has(String(id)));
+    const idsToFetch = ids.filter(
+      (id) => !monstersCache.current.has(String(id))
+    );
 
     // Si tous les monstres sont en cache, les retourner directement
     if (idsToFetch.length === 0) {
       console.log('All monsters in cache, returning from cache');
-      return ids.map((id) => monstersCache.current.get(String(id))).filter(Boolean);
+      return ids
+        .map((id) => monstersCache.current.get(String(id)))
+        .filter(Boolean);
     }
 
     setLoadingMonsters(true);
@@ -39,10 +66,14 @@ export const MonsterProvider = ({ children }) => {
       });
 
       // Retourner tous les monstres demandés (cache + nouvelles données)
-      return ids.map((id) => monstersCache.current.get(String(id))).filter(Boolean);
+      return ids
+        .map((id) => monstersCache.current.get(String(id)))
+        .filter(Boolean);
     } catch (err) {
       console.error('Erreur lors de la récupération des monstres:', err);
-      setErrorMonsters(err.message || 'Erreur lors de la récupération des monstres');
+      setErrorMonsters(
+        err.message || 'Erreur lors de la récupération des monstres'
+      );
       return [];
     } finally {
       setLoadingMonsters(false);
