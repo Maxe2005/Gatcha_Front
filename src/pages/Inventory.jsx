@@ -42,11 +42,16 @@ const MOCK_INVENTORY = Array.from({ length: 24 }).map((_, i) => ({
 
 const Inventory = () => {
   const { theme } = useTheme();
-  const { playerData } = usePlayer();
+  const { playerData, monsters, loadingMonsters, loading } = usePlayer();
   const navigate = useNavigate();
 
-  // Si playerData.inventory existe, on l'utilise, sinon Mock
-  const inventoryData = playerData?.inventory || MOCK_INVENTORY;
+  console.log('Inventory - playerData:', playerData);
+  console.log('Inventory - monsters:', monsters);
+  console.log('Inventory - loadingMonsters:', loadingMonsters);
+  console.log('Inventory - loading:', loading);
+
+  // Utiliser les monstres du joueur si disponibles
+  const inventoryData = monsters.length > 0 ? monsters : MOCK_INVENTORY;
 
   const [filterRarity, setFilterRarity] = useState('ALL');
   const [filterElement, setFilterElement] = useState('ALL');
@@ -58,7 +63,7 @@ const Inventory = () => {
   // Filter Logic
   const filteredCards = inventoryData.filter((card) => {
     if (filterRarity !== 'ALL' && card.rang !== filterRarity) return false;
-    if (filterElement !== 'ALL' && card.element !== filterElement) return false;
+    if (filterElement !== 'ALL' && card.element?.toUpperCase() !== filterElement) return false;
     return true;
   });
 
@@ -136,12 +141,12 @@ const Inventory = () => {
             onChange={(e) => setFilterElement(e.target.value)}
           >
             <option value="ALL">Tout</option>
-            <option value="fire">Feu</option>
-            <option value="water">Eau</option>
-            <option value="wind">Vent</option>
-            <option value="earth">Terre</option>
-            <option value="light">Lumière</option>
-            <option value="darkness">Ténèbres</option>
+            <option value="WATER">Eau</option>
+            <option value="FIRE">Feu</option>
+            <option value="WIND">Vent</option>
+            <option value="EARTH">Terre</option>
+            <option value="LIGHT">Lumière</option>
+            <option value="DARKNESS">Ténèbres</option>
           </select>
         </div>
 
@@ -163,6 +168,9 @@ const Inventory = () => {
 
       {/* MAIN GRID */}
       <div className="inventory-scroll-area">
+        {loadingMonsters && (
+          <div className="loading-message">Chargement des monstres...</div>
+        )}
         <div
           className="inventory-grid"
           style={{ '--cards-per-row': cardsPerRow }}

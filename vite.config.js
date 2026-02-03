@@ -8,6 +8,11 @@ export default defineConfig({
     host: true,
     port: 3000,
     proxy: {
+      '/monsters-service': {
+        target: 'http://localhost:8083',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/monsters-service/, ''),
+      },
       '/joueur-service': {
         target: 'http://localhost:8082',
         changeOrigin: true,

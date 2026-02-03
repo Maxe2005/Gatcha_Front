@@ -10,6 +10,7 @@ import Gacha from './pages/Gacha';
 import Inventory from './pages/Inventory';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { MonsterProvider } from './context/MonsterContext';
 import { PlayerProvider } from './context/PlayerContext';
 
 const PrivateRoute = ({ children }) => {
@@ -54,11 +55,13 @@ function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
-        <PlayerProvider>
-          <Router>
-            <AppRoutes />
-          </Router>
-        </PlayerProvider>
+        <MonsterProvider>
+          <PlayerProvider>
+            <Router>
+              <AppRoutes />
+            </Router>
+          </PlayerProvider>
+        </MonsterProvider>
       </AuthProvider>
     </ThemeProvider>
   );
