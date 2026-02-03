@@ -442,3 +442,11 @@
 
 .inventory-container.divine .nav-back-btn { color: #5c4d35; border-color: #ffd700; }
 .inventory-container.dark .nav-back-btn { color: #ffcccc; border-color: #c0392b; }
+
+.header-theme-toggle {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 30;
+}

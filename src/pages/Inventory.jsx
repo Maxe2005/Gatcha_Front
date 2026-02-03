@@ -6,6 +6,7 @@ import Header from '../components/Header'; // Assuming we reuse Header or build 
 import GatchaCard from '../components/GatchaCard';
 import SkillCard from '../components/SkillCard';
 import './Inventory.css';
+import ThemeToggle from '../components/ThemeToggle';
 
 // Mock Data pour le développement si playerData est vide
 const MOCK_INVENTORY = Array.from({ length: 24 }).map((_, i) => ({
@@ -90,15 +91,10 @@ const Inventory = () => {
             </div>
 
             {/* HEADER / HUD */}
-            <div className="inventory-header">
+            <div className="filter-bar glass-panel">
                 <button className="nav-back-btn glass-panel" onClick={() => navigate('/home')}>
                     ← Retour
                 </button>
-                <Header title="Grimoire d'Invocation" />
-            </div>
-
-            {/* FILTER BAR */}
-            <div className="filter-bar glass-panel">
                 <div className="filter-group">
                     <label>Rareté:</label>
                     <select value={filterRarity} onChange={(e) => setFilterRarity(e.target.value)}>
@@ -132,6 +128,10 @@ const Inventory = () => {
                         value={cardsPerRow} 
                         onChange={(e) => setCardsPerRow(Number(e.target.value))} 
                    />
+                </div>
+
+                <div className="header-theme-toggle">
+                    <ThemeToggle />
                 </div>
             </div>
 
