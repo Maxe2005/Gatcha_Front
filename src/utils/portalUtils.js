@@ -26,15 +26,15 @@ export class PortalParticleSystem {
         size,
         age: 0,
         maxAge: 120, // frames
-        element: document.createElement("div"),
+        element: document.createElement('div'),
       };
 
-      particle.element.className = "advanced-particle";
-      particle.element.style.position = "absolute";
+      particle.element.className = 'advanced-particle';
+      particle.element.style.position = 'absolute';
       particle.element.style.width = `${size}px`;
       particle.element.style.height = `${size}px`;
-      particle.element.style.borderRadius = "50%";
-      particle.element.style.pointerEvents = "none";
+      particle.element.style.borderRadius = '50%';
+      particle.element.style.pointerEvents = 'none';
 
       this.container.appendChild(particle.element);
       this.particles.push(particle);
@@ -182,7 +182,7 @@ export const PortalEasing = {
 export function createElementMorphAnimation(
   fromElement,
   toElement,
-  duration = 600,
+  duration = 600
 ) {
   const startTime = Date.now();
   const startOpacity = parseFloat(getComputedStyle(fromElement).opacity);
@@ -215,10 +215,10 @@ export function createElementMorphAnimation(
 export const PortalCapabilities = {
   supportsWebGL: () => {
     try {
-      const canvas = document.createElement("canvas");
+      const canvas = document.createElement('canvas');
       return !!(
         window.WebGLRenderingContext &&
-        (canvas.getContext("webgl") || canvas.getContext("experimental-webgl"))
+        (canvas.getContext('webgl') || canvas.getContext('experimental-webgl'))
       );
     } catch (e) {
       return false;
@@ -230,15 +230,15 @@ export const PortalCapabilities = {
   },
 
   supportsBackdropFilter: () => {
-    const el = document.createElement("div");
-    el.style.backdropFilter = "blur(1px)";
-    return el.style.backdropFilter !== "";
+    const el = document.createElement('div');
+    el.style.backdropFilter = 'blur(1px)';
+    return el.style.backdropFilter !== '';
   },
 
   supportsWillChange: () => {
-    const el = document.createElement("div");
-    el.style.willChange = "transform";
-    return el.style.willChange !== "";
+    const el = document.createElement('div');
+    el.style.willChange = 'transform';
+    return el.style.willChange !== '';
   },
 
   // GPU acceleration support check
@@ -255,12 +255,12 @@ export const PortalCapabilities = {
  */
 export class PortalStateMachine {
   constructor() {
-    this.state = "idle";
+    this.state = 'idle';
     this.transitions = {
-      idle: ["hover", "activating"],
-      hover: ["idle", "activating"],
-      activating: ["active"],
-      active: ["idle"],
+      idle: ['hover', 'activating'],
+      hover: ['idle', 'activating'],
+      activating: ['active'],
+      active: ['idle'],
     };
     this.callbacks = {};
   }

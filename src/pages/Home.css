@@ -1,17 +1,19 @@
 /* Reset & Base */
 .home-container {
-    position: relative;
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
-    color: white; /* Default text color */
-    font-family: 'Cinzel', serif; /* Font fantasy par excellence */
-    transition: opacity 1.5s ease, color 0.6s ease;
-    opacity: 0;
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+  color: white; /* Default text color */
+  font-family: 'Cinzel', serif; /* Font fantasy par excellence */
+  transition:
+    opacity 1.5s ease,
+    color 0.6s ease;
+  opacity: 0;
 }
 
 .home-container.loaded {
-    opacity: 1;
+  opacity: 1;
 }
 
 /* =========================================
@@ -20,118 +22,139 @@
 
 /* DIVINE THEME */
 .home-container.divine {
-    --bg-primary: #f0f8ff;
-    --bg-secondary: #e6e6fa;
-    --accent-color: #ffd700; /* Gold */
-    --accent-glow: rgba(255, 215, 0, 0.6);
-    --text-primary: #2c3e50;
-    --hud-bg: rgba(255, 255, 255, 0.85);
-    --portal-color: #00bfff;
-    --portal-glow: 0 0 30px #87ceeb;
+  --bg-primary: #f0f8ff;
+  --bg-secondary: #e6e6fa;
+  --accent-color: #ffd700; /* Gold */
+  --accent-glow: rgba(255, 215, 0, 0.6);
+  --text-primary: #2c3e50;
+  --hud-bg: rgba(255, 255, 255, 0.85);
+  --portal-color: #00bfff;
+  --portal-glow: 0 0 30px #87ceeb;
 }
 
 .home-container.divine .background-layer {
-    background: none;
+  background: none;
 }
 
 .home-container.divine .divine-rays .ray {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    width: 80px;
-    height: 100%;
-    background: linear-gradient(180deg, rgba(255,215,0,0.15), rgba(255,215,0,0.05), transparent);
-    transform-origin: top center;
-    animation: rayRotate 20s infinite linear;
-    filter: blur(15px);
-    pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 80px;
+  height: 100%;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 215, 0, 0.15),
+    rgba(255, 215, 0, 0.05),
+    transparent
+  );
+  transform-origin: top center;
+  animation: rayRotate 20s infinite linear;
+  filter: blur(15px);
+  pointer-events: none;
 }
-.ray.r1 { animation-duration: 25s; transform: rotate(25deg); width: 120px; }
-.ray.r2 { animation-duration: 35s; transform: rotate(-25deg); width: 100px; }
-.ray.r3 { animation-duration: 30s; transform: rotate(-5deg); opacity: 0.6; }
+.ray.r1 {
+  animation-duration: 25s;
+  transform: rotate(25deg);
+  width: 120px;
+}
+.ray.r2 {
+  animation-duration: 35s;
+  transform: rotate(-25deg);
+  width: 100px;
+}
+.ray.r3 {
+  animation-duration: 30s;
+  transform: rotate(-5deg);
+  opacity: 0.6;
+}
 
 /* DARK THEME */
 .home-container.dark {
-    --bg-primary: #0f0f0f;
-    --bg-secondary: #1a0b0b;
-    --accent-color: #c0392b; /* Blood Red */
-    --accent-glow: rgba(192, 57, 43, 0.6);
-    --text-primary: #ecf0f1;
-    --hud-bg: rgba(0, 0, 0, 0.75);
-    --portal-color: #800080;
-    --portal-glow: 0 0 40px #4b0082;
+  --bg-primary: #0f0f0f;
+  --bg-secondary: #1a0b0b;
+  --accent-color: #c0392b; /* Blood Red */
+  --accent-glow: rgba(192, 57, 43, 0.6);
+  --text-primary: #ecf0f1;
+  --hud-bg: rgba(0, 0, 0, 0.75);
+  --portal-color: #800080;
+  --portal-glow: 0 0 40px #4b0082;
 }
 
 .home-container.dark .background-layer {
-    background: none;
+  background: none;
 }
 
 .home-container.dark .dark-fog {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(to top, rgba(20,0,0,0.1), transparent 80%);
-    z-index: 0;
-    pointer-events: none;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to top, rgba(20, 0, 0, 0.1), transparent 80%);
+  z-index: 0;
+  pointer-events: none;
 }
 .home-container.dark .embers {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background-image: radial-gradient(circle, rgba(255,100,50,0.08) 1px, transparent 1px);
-    background-size: 50px 50px;
-    animation: embersFloat 15s infinite linear;
-    opacity: 0.4;
-    pointer-events: none;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-image: radial-gradient(
+    circle,
+    rgba(255, 100, 50, 0.08) 1px,
+    transparent 1px
+  );
+  background-size: 50px 50px;
+  animation: embersFloat 15s infinite linear;
+  opacity: 0.4;
+  pointer-events: none;
 }
 
 /* Base Background Layer - Common */
 .background-layer {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
 }
 
 .home-container .background-layer::before,
 .home-container .background-layer::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background-position: center center;
-    background-repeat: no-repeat;
-    background-size: cover;
-    transition: opacity 0.8s ease;
-    will-change: opacity;
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  transition: opacity 0.8s ease;
+  will-change: opacity;
 }
 
 .home-container .background-layer::before {
-    background-image: url('/assets/backgrounds/Home_background_light.png');
-    opacity: 0;
+  background-image: url('/assets/backgrounds/Home_background_light.png');
+  opacity: 0;
 }
 
 .home-container .background-layer::after {
-    background-image: url('/assets/backgrounds/Home_background_dark.png');
-    opacity: 0;
+  background-image: url('/assets/backgrounds/Home_background_dark.png');
+  opacity: 0;
 }
 
 .home-container.divine .background-layer::before {
-    opacity: 1;
+  opacity: 1;
 }
 
 .home-container.divine .background-layer::after {
-    opacity: 0;
+  opacity: 0;
 }
 
 .home-container.dark .background-layer::before {
-    opacity: 0;
+  opacity: 0;
 }
 
 .home-container.dark .background-layer::after {
-    opacity: 1;
+  opacity: 1;
 }
 
 /* ======================================
@@ -139,278 +162,311 @@
    ====================================== */
 
 .particles-layer {
-    z-index: 10;
-    pointer-events: none;
+  z-index: 10;
+  pointer-events: none;
 }
 
 .particle {
-    position: absolute;
-    border-radius: 50%;
-    background: var(--particle-color);
-    box-shadow: 0 0 6px var(--particle-color);
-    filter: blur(0.5px);
+  position: absolute;
+  border-radius: 50%;
+  background: var(--particle-color);
+  box-shadow: 0 0 6px var(--particle-color);
+  filter: blur(0.5px);
 }
 
 .particle.divine {
-    box-shadow: 0 0 6px #ffeb99, 0 0 12px rgba(255, 200, 0, 0.6);
+  box-shadow:
+    0 0 6px #ffeb99,
+    0 0 12px rgba(255, 200, 0, 0.6);
 }
 
 .particle.dark {
-    box-shadow: 0 0 6px #ff6b6b, 0 0 12px rgba(255, 50, 50, 0.7);
+  box-shadow:
+    0 0 6px #ff6b6b,
+    0 0 12px rgba(255, 50, 50, 0.7);
 }
 
 @keyframes float-to-center {
-    0% {
-        opacity: 1;
-        transform: translate(0, 0) scale(1);
-    }
-    85% {
-        opacity: 0.8;
-        transform: translate(calc(-50vw + 50%), calc(-50vh + 50%)) scale(0.6);
-    }
-    100% {
-        opacity: 0;
-        transform: translate(calc(-50vw + 50%), calc(-50vh + 50%)) scale(0);
-    }
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+  }
+  85% {
+    opacity: 0.8;
+    transform: translate(calc(-50vw + 50%), calc(-50vh + 50%)) scale(0.6);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(-50vw + 50%), calc(-50vh + 50%)) scale(0);
+  }
 }
 
 /* =========================================
    TOP HUD
    ========================================= */
 .top-hud {
-    position: absolute;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 85%;
-    max-width: 1000px;
-    height: 80px;
-    z-index: 10;
-    transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.27), opacity 0.6s ease, filter 0.6s ease;
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 85%;
+  max-width: 1000px;
+  height: 80px;
+  z-index: 10;
+  transition:
+    transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.27),
+    opacity 0.6s ease,
+    filter 0.6s ease;
 }
 .home-container:not(.loaded) .top-hud {
-    transform: translate(-50%, -50px);
+  transform: translate(-50%, -50px);
 }
 
 .hud-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: var(--hud-bg);
-    backdrop-filter: blur(10px);
-    border-radius: 40px;
-    padding: 10px 25px;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-    border: 1px solid var(--accent-color);
-    transition: background-color 0.6s ease, border-color 0.6s ease, box-shadow 0.6s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--hud-bg);
+  backdrop-filter: blur(10px);
+  border-radius: 40px;
+  padding: 10px 25px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--accent-color);
+  transition:
+    background-color 0.6s ease,
+    border-color 0.6s ease,
+    box-shadow 0.6s ease;
 }
 
 /* Avatar */
 .avatar-section {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    cursor: pointer;
-    transition: transform 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  cursor: pointer;
+  transition: transform 0.2s;
 }
 .avatar-section:hover {
-    transform: scale(1.05);
+  transform: scale(1.05);
 }
 
 .avatar-frame {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    border: 3px solid var(--accent-color);
-    position: relative;
-    background: #333;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    box-shadow: 0 0 10px var(--accent-glow);
-    overflow: hidden;
-    transition: border-color 0.6s ease, box-shadow 0.6s ease;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 3px solid var(--accent-color);
+  position: relative;
+  background: #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 0 10px var(--accent-glow);
+  overflow: hidden;
+  transition:
+    border-color 0.6s ease,
+    box-shadow 0.6s ease;
 }
 .avatar-frame-image {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 50%;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
 }
 .avatar-placeholder {
-    font-size: 1.5rem;
-    color: white;
-    font-weight: bold;
-    z-index: 1;
+  font-size: 1.5rem;
+  color: white;
+  font-weight: bold;
+  z-index: 1;
 }
 .player-info {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 .player-name {
-    color: var(--text-primary);
-    font-weight: bold;
-    font-size: 1rem;
-    transition: color 0.6s ease;
+  color: var(--text-primary);
+  font-weight: bold;
+  font-size: 1rem;
+  transition: color 0.6s ease;
 }
 .level-info {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 0.8rem;
-    color: var(--text-primary);
-    transition: color 0.6s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: var(--text-primary);
+  transition: color 0.6s ease;
 }
 .xp-bar-container {
-    width: 80px;
-    height: 6px;
-    background: rgba(0,0,0,0.3);
-    border-radius: 3px;
-    overflow: hidden;
+  width: 80px;
+  height: 6px;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 3px;
+  overflow: hidden;
 }
 .xp-bar {
-    height: 100%;
-    background: var(--accent-color);
-    width: 0%;
-    transition: width 1s ease-out, background-color 0.6s ease;
+  height: 100%;
+  background: var(--accent-color);
+  width: 0%;
+  transition:
+    width 1s ease-out,
+    background-color 0.6s ease;
 }
 
 /* Resources */
 .resources-section {
-    display: flex;
-    gap: 20px;
+  display: flex;
+  gap: 20px;
 }
 .resource-item {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    background: rgba(0,0,0,0.1);
-    padding: 5px 12px;
-    border-radius: 15px;
-    color: var(--text-primary);
-    font-weight: bold;
-    transition: transform 0.2s, color 0.6s ease, background-color 0.6s ease;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(0, 0, 0, 0.1);
+  padding: 5px 12px;
+  border-radius: 15px;
+  color: var(--text-primary);
+  font-weight: bold;
+  transition:
+    transform 0.2s,
+    color 0.6s ease,
+    background-color 0.6s ease;
 }
 .resource-item:hover {
-    transform: translateY(-2px);
-    background: rgba(0,0,0,0.2);
+  transform: translateY(-2px);
+  background: rgba(0, 0, 0, 0.2);
 }
 
 /* Theme Toggle */
 .theme-toggle-wrapper {
-    cursor: pointer;
-    font-size: 1.5rem;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 50%;
-    transition: background 0.3s, color 0.6s ease;
+  cursor: pointer;
+  font-size: 1.5rem;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
+  transition:
+    background 0.3s,
+    color 0.6s ease;
 }
 .theme-toggle-wrapper:hover {
-    background: rgba(255,255,255,0.2);
+  background: rgba(255, 255, 255, 0.2);
 }
 
 /* =========================================
    CENTRAL MONUMENT (GACHA PORTAL)
    ========================================= */
 .central-zone {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 100%;
-    height: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 5;
-    transition: transform 1.2s cubic-bezier(0.22, 0.8, 0.2, 1), opacity 0.8s ease;
-    will-change: transform, opacity;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 5;
+  transition:
+    transform 1.2s cubic-bezier(0.22, 0.8, 0.2, 1),
+    opacity 0.8s ease;
+  will-change: transform, opacity;
 }
 
 /* =========================================
    CENTRAL PORTAL ZONE
    ========================================= */
 .central-zone {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 100%;
-    height: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 5;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 5;
 }
 
 /* =========================================
    SECONDARY NAV
    ========================================= */
 .secondary-nav {
-    position: absolute;
-    bottom: 30px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: flex;
-    gap: 30px;
-    align-items: center;
-    z-index: 10;
-    transition: opacity 0.6s ease, transform 0.8s ease, filter 0.8s ease;
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 30px;
+  align-items: center;
+  z-index: 10;
+  transition:
+    opacity 0.6s ease,
+    transform 0.8s ease,
+    filter 0.8s ease;
 }
 
 .nav-item {
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    color: var(--text-primary);
-    transition: transform 0.3s, color 0.6s ease;
-    width: 80px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-primary);
+  transition:
+    transform 0.3s,
+    color 0.6s ease;
+  width: 80px;
 }
 
 .nav-icon {
-    font-size: 2.5rem;
-    filter: drop-shadow(0 0 5px var(--accent-glow));
-    transition: transform 0.3s, filter 0.6s ease;
+  font-size: 2.5rem;
+  filter: drop-shadow(0 0 5px var(--accent-glow));
+  transition:
+    transform 0.3s,
+    filter 0.6s ease;
 }
 
 .nav-icon-image {
-    width: 100px;
-    height: 100px;
-    object-fit: contain;
-    filter: drop-shadow(0 0 5px var(--accent-glow));
-    transition: transform 0.3s, filter 0.6s ease;
+  width: 100px;
+  height: 100px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 5px var(--accent-glow));
+  transition:
+    transform 0.3s,
+    filter 0.6s ease;
 }
 
 .nav-label {
-    opacity: 0;
-    font-family: inherit;
-    font-size: 0.8rem;
-    transform: translateY(10px);
-    transition: transform 0.3s, opacity 0.3s, color 0.6s ease;
+  opacity: 0;
+  font-family: inherit;
+  font-size: 0.8rem;
+  transform: translateY(10px);
+  transition:
+    transform 0.3s,
+    opacity 0.3s,
+    color 0.6s ease;
 }
 .nav-item:hover .nav-label {
-    opacity: 1;
-    transform: translateY(0);
+  opacity: 1;
+  transform: translateY(0);
 }
 .nav-item:hover .nav-icon,
 .nav-item:hover .nav-icon-image {
-    transform: translateY(-5px) scale(1.1);
+  transform: translateY(-5px) scale(1.1);
 }
 
 .nav-divider {
-    width: 1px;
-    height: 40px;
-    background: var(--accent-color);
-    opacity: 0.5;
-    transition: background-color 0.6s ease;
+  width: 1px;
+  height: 40px;
+  background: var(--accent-color);
+  opacity: 0.5;
+  transition: background-color 0.6s ease;
 }
 
 /* =========================================
@@ -418,64 +474,83 @@
    ========================================= */
 
 .home-container.transitioning .top-hud {
-    opacity: 0;
-    filter: blur(3px);
-    pointer-events: none;
-    transition: opacity 0.6s ease, filter 0.6s ease;
+  opacity: 0;
+  filter: blur(3px);
+  pointer-events: none;
+  transition:
+    opacity 0.6s ease,
+    filter 0.6s ease;
 }
 
 .home-container.transitioning .secondary-nav {
-    opacity: 0;
-    filter: blur(3px);
-    pointer-events: none;
-    transition: opacity 0.6s ease, filter 0.6s ease;
+  opacity: 0;
+  filter: blur(3px);
+  pointer-events: none;
+  transition:
+    opacity 0.6s ease,
+    filter 0.6s ease;
 }
 
 .home-container.transitioning .background-layer {
-    filter: blur(2px) brightness(0.92);
-    transition: filter 0.9s ease;
+  filter: blur(2px) brightness(0.92);
+  transition: filter 0.9s ease;
 }
 
 .home-transition-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 250;
-    opacity: 0;
-    pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 250;
+  opacity: 0;
+  pointer-events: none;
 }
 
 .home-transition-overlay.divine {
-    background: #ffffff;
+  background: #ffffff;
 }
 
 .home-transition-overlay.dark {
-    background: #0a0a0a;
+  background: #0a0a0a;
 }
 
 /* =========================================
    ANIMATIONS
    ========================================= */
 @keyframes rayRotate {
-    0% { opacity: 0.4; }
-    50% { opacity: 0.7; }
-    100% { opacity: 0.4; }
+  0% {
+    opacity: 0.4;
+  }
+  50% {
+    opacity: 0.7;
+  }
+  100% {
+    opacity: 0.4;
+  }
 }
 
 @keyframes embersFloat {
-    0% { background-position: 0 0; transform: translateX(0); }
-    50% { transform: translateX(10px); }
-    100% { background-position: 50px -50px; transform: translateX(0); }
+  0% {
+    background-position: 0 0;
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(10px);
+  }
+  100% {
+    background-position: 50px -50px;
+    transform: translateX(0);
+  }
 }
 
 /* Media Queries for Responsive */
 @media (max-width: 768px) {
-    .hud-content {
-        padding: 5px 15px;
-    }
-    .player-name, .level-info span {
-        display: none; /* Hide text on very small screens */
-    }
-    .top-hud {
-        width: 95%;
-    }
+  .hud-content {
+    padding: 5px 15px;
+  }
+  .player-name,
+  .level-info span {
+    display: none; /* Hide text on very small screens */
+  }
+  .top-hud {
+    width: 95%;
+  }
 }

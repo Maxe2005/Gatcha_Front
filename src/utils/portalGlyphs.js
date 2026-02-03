@@ -7,7 +7,7 @@ export const GLYPH_DEFINITIONS = {
   // Glyphes Divine
   divine: [
     {
-      id: "glyph-divine-1",
+      id: 'glyph-divine-1',
       svg: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
         <circle cx="50" cy="50" r="40" fill="none" stroke="#ffd700" stroke-width="2"/>
         <path d="M 50 20 L 60 35 L 50 50 L 40 35 Z" fill="#ffd700"/>
@@ -15,7 +15,7 @@ export const GLYPH_DEFINITIONS = {
       </svg>`,
     },
     {
-      id: "glyph-divine-2",
+      id: 'glyph-divine-2',
       svg: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
         <path d="M 50 20 L 70 40 L 80 50 L 70 60 L 50 80 L 30 60 L 20 50 L 30 40 Z" 
               fill="none" stroke="#ffd700" stroke-width="2"/>
@@ -23,7 +23,7 @@ export const GLYPH_DEFINITIONS = {
       </svg>`,
     },
     {
-      id: "glyph-divine-3",
+      id: 'glyph-divine-3',
       svg: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
         <circle cx="50" cy="50" r="40" fill="none" stroke="#ffd700" stroke-width="2"/>
         <line x1="50" y1="10" x2="50" y2="90" stroke="#ffd700" stroke-width="1"/>
@@ -33,7 +33,7 @@ export const GLYPH_DEFINITIONS = {
       </svg>`,
     },
     {
-      id: "glyph-divine-4",
+      id: 'glyph-divine-4',
       svg: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
         <polygon points="50,10 70,30 70,70 50,90 30,70 30,30" 
                  fill="none" stroke="#ffd700" stroke-width="2"/>
@@ -45,7 +45,7 @@ export const GLYPH_DEFINITIONS = {
   // Glyphes Dark
   dark: [
     {
-      id: "glyph-dark-1",
+      id: 'glyph-dark-1',
       svg: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
         <circle cx="50" cy="50" r="40" fill="none" stroke="#cc2222" stroke-width="2"/>
         <path d="M 50 30 L 65 50 L 50 70 L 35 50 Z" fill="#cc2222" opacity="0.8"/>
@@ -53,7 +53,7 @@ export const GLYPH_DEFINITIONS = {
       </svg>`,
     },
     {
-      id: "glyph-dark-2",
+      id: 'glyph-dark-2',
       svg: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
         <path d="M 50 20 L 70 40 L 80 50 L 70 60 L 50 80 L 30 60 L 20 50 L 30 40 Z" 
               fill="none" stroke="#cc2222" stroke-width="2"/>
@@ -62,14 +62,14 @@ export const GLYPH_DEFINITIONS = {
       </svg>`,
     },
     {
-      id: "glyph-dark-3",
+      id: 'glyph-dark-3',
       svg: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
         <circle cx="50" cy="50" r="40" fill="none" stroke="#cc2222" stroke-width="2" stroke-dasharray="5,5"/>
         <path d="M 50 10 L 60 50 L 50 90 L 40 50 Z" fill="#cc2222" opacity="0.6"/>
       </svg>`,
     },
     {
-      id: "glyph-dark-4",
+      id: 'glyph-dark-4',
       svg: `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
         <polygon points="50,15 75,40 75,60 50,85 25,60 25,40" 
                  fill="none" stroke="#cc2222" stroke-width="2"/>
@@ -82,7 +82,7 @@ export const GLYPH_DEFINITIONS = {
 /**
  * Component pour rendre les glyphes SVG
  */
-export const GlyphSVG = ({ glyph, theme = "divine" }) => {
+export const GlyphSVG = ({ glyph, theme = 'divine' }) => {
   const glyphDef =
     GLYPH_DEFINITIONS[theme]?.[glyph] || GLYPH_DEFINITIONS[theme]?.[0];
 
@@ -92,9 +92,9 @@ export const GlyphSVG = ({ glyph, theme = "divine" }) => {
     <div
       dangerouslySetInnerHTML={{ __html: glyphDef.svg }}
       style={{
-        width: "100%",
-        height: "100%",
-        filter: `drop-shadow(0 0 8px ${theme === "divine" ? "rgba(255, 223, 0, 0.8)" : "rgba(255, 50, 50, 0.9)"})`,
+        width: '100%',
+        height: '100%',
+        filter: `drop-shadow(0 0 8px ${theme === 'divine' ? 'rgba(255, 223, 0, 0.8)' : 'rgba(255, 50, 50, 0.9)'})`,
       }}
     />
   );
@@ -103,7 +103,7 @@ export const GlyphSVG = ({ glyph, theme = "divine" }) => {
 /**
  * Utilitaires pour générer les glyphes dynamiquement
  */
-export const generateGlyph = (index, theme = "divine") => {
+export const generateGlyph = (index, theme = 'divine') => {
   const glyphs = GLYPH_DEFINITIONS[theme];
   return glyphs[index % glyphs.length];
 };
@@ -205,9 +205,9 @@ export const ElementCircleSVG = ({ element }) => {
     <div
       dangerouslySetInnerHTML={{ __html: circleDef }}
       style={{
-        width: "100%",
-        height: "100%",
-        animation: "element-breathe 3s ease-in-out infinite",
+        width: '100%',
+        height: '100%',
+        animation: 'element-breathe 3s ease-in-out infinite',
       }}
     />
   );

@@ -10,7 +10,7 @@ export {
   createElementMorphAnimation,
   PortalCapabilities,
   PortalStateMachine,
-} from "./portalUtils";
+} from './portalUtils';
 
 export {
   GLYPH_DEFINITIONS,
@@ -19,16 +19,16 @@ export {
   ElementCircleSVG,
   generateGlyph,
   allGlyphVariations,
-} from "./portalGlyphs";
+} from './portalGlyphs';
 
 // Re-export Portal component
-export { default as Portal } from "../components/Portal";
+export { default as Portal } from '../components/Portal';
 
 // Re-export examples
-export * from "../components/PortalExamples";
+export * from '../components/PortalExamples';
 
 // Re-export debug tools
-export * from "../components/PortalDebug";
+export * from '../components/PortalDebug';
 
 /**
  * Constants & Configurations
@@ -36,26 +36,26 @@ export * from "../components/PortalDebug";
 export const PORTAL_CONFIG = {
   // States
   STATES: {
-    IDLE: "idle",
-    HOVER: "hover",
-    ACTIVATING: "activating",
-    ACTIVE: "active",
+    IDLE: 'idle',
+    HOVER: 'hover',
+    ACTIVATING: 'activating',
+    ACTIVE: 'active',
   },
 
   // Themes
   THEMES: {
-    DIVINE: "divine",
-    DARK: "dark",
+    DIVINE: 'divine',
+    DARK: 'dark',
   },
 
   // Elements
   ELEMENTS: {
-    FEU: "feu",
-    EAU: "eau",
-    TERRE: "terre",
-    VENT: "vent",
-    LUMIERE: "lumiere",
-    DARKNESS: "darkness",
+    FEU: 'feu',
+    EAU: 'eau',
+    TERRE: 'terre',
+    VENT: 'vent',
+    LUMIERE: 'lumiere',
+    DARKNESS: 'darkness',
   },
 
   // Animation Durations (ms)
@@ -100,29 +100,29 @@ export const PORTAL_CONFIG = {
   // Colors (for reference)
   COLORS: {
     DIVINE: {
-      PRIMARY: "#e8d5b7",
-      ACCENT: "#ffd700",
-      GLOW: "rgba(255, 223, 0, 0.8)",
-      PARTICLE: "#ffeb99",
-      VORTEX_GLOW: "rgba(255, 200, 100, 0.6)",
+      PRIMARY: '#e8d5b7',
+      ACCENT: '#ffd700',
+      GLOW: 'rgba(255, 223, 0, 0.8)',
+      PARTICLE: '#ffeb99',
+      VORTEX_GLOW: 'rgba(255, 200, 100, 0.6)',
     },
     DARK: {
-      PRIMARY: "#2a2a2a",
-      ACCENT: "#cc2222",
-      GLOW: "rgba(255, 50, 50, 0.9)",
-      PARTICLE: "#ff6b6b",
-      VORTEX_GLOW: "rgba(200, 0, 0, 0.7)",
+      PRIMARY: '#2a2a2a',
+      ACCENT: '#cc2222',
+      GLOW: 'rgba(255, 50, 50, 0.9)',
+      PARTICLE: '#ff6b6b',
+      VORTEX_GLOW: 'rgba(200, 0, 0, 0.7)',
     },
   },
 
   // Asset Paths
   ASSETS: {
-    ANNEAU_DIVINE: "/assets/portail/Anneau_portail_divine.png",
-    ANNEAU_DARK: "/assets/portail/Anneau_portail_dark.png",
-    VORTEX_DIVINE: "/assets/portail/Vortex_portail_divine.png",
-    VORTEX_DARK: "/assets/portail/Vortex_portail_dark.png",
-    ELEMENTS_PATH: "/assets/portail/cercles_elementaires/",
-    GLYPHES_PATH: "/assets/portail/glyphes/",
+    ANNEAU_DIVINE: '/assets/portail/Anneau_portail_divine.png',
+    ANNEAU_DARK: '/assets/portail/Anneau_portail_dark.png',
+    VORTEX_DIVINE: '/assets/portail/Vortex_portail_divine.png',
+    VORTEX_DARK: '/assets/portail/Vortex_portail_dark.png',
+    ELEMENTS_PATH: '/assets/portail/cercles_elementaires/',
+    GLYPHES_PATH: '/assets/portail/glyphes/',
   },
 };
 
@@ -134,12 +134,12 @@ export const getElementConfig = (element) => {
     image: `${PORTAL_CONFIG.ASSETS.ELEMENTS_PATH}Cercle_${element}.png`,
     key: element,
     displayName: {
-      feu: "🔥 Feu",
-      eau: "💧 Eau",
-      terre: "🌍 Terre",
-      vent: "🌪️ Vent",
-      lumiere: "☀️ Lumière",
-      darkness: "🌑 Obscurité",
+      feu: '🔥 Feu',
+      eau: '💧 Eau',
+      terre: '🌍 Terre',
+      vent: '🌪️ Vent',
+      lumiere: '☀️ Lumière',
+      darkness: '🌑 Obscurité',
     }[element],
   };
 };
@@ -148,7 +148,7 @@ export const getElementConfig = (element) => {
  * Helper function - Get theme-specific colors
  */
 export const getThemeColors = (theme) => {
-  return PORTAL_CONFIG.COLORS[theme === "divine" ? "DIVINE" : "DARK"];
+  return PORTAL_CONFIG.COLORS[theme === 'divine' ? 'DIVINE' : 'DARK'];
 };
 
 /**
@@ -163,10 +163,10 @@ export const formatDuration = (ms) => {
  */
 export const isValidStateTransition = (from, to) => {
   const transitions = {
-    idle: ["hover", "activating"],
-    hover: ["idle", "activating"],
-    activating: ["active"],
-    active: ["idle"],
+    idle: ['hover', 'activating'],
+    hover: ['idle', 'activating'],
+    activating: ['active'],
+    active: ['idle'],
   };
   return transitions[from]?.includes(to) || false;
 };
@@ -184,7 +184,7 @@ export const getRandomElement = () => {
  */
 export const getDefaultPortalProps = (overrides = {}) => {
   return {
-    onInvoke: () => console.log("Portal invoked"),
+    onInvoke: () => console.log('Portal invoked'),
     isLoading: false,
     ...overrides,
   };
@@ -205,7 +205,7 @@ export const PortalDev = {
 
   // Get current performance metrics
   getMetrics: () => {
-    const perf = performance.getEntriesByType("paint");
+    const perf = performance.getEntriesByType('paint');
     return {
       paints: perf,
       memory: performance.memory
@@ -219,11 +219,11 @@ export const PortalDev = {
 
   // Simulate state transitions
   simulateInteraction: async (duration = 2000) => {
-    const states = ["idle", "hover", "activating", "active", "idle"];
+    const states = ['idle', 'hover', 'activating', 'active', 'idle'];
     for (const state of states) {
       PortalDev.log(`State transition: ${state}`);
       await new Promise((resolve) =>
-        setTimeout(resolve, duration / states.length),
+        setTimeout(resolve, duration / states.length)
       );
     }
   },
@@ -232,17 +232,17 @@ export const PortalDev = {
   listUtilities: () => {
     return {
       components: [
-        "Portal",
-        "PortalTestSuite",
-        "PortalDebug",
-        "PortalExamples",
+        'Portal',
+        'PortalTestSuite',
+        'PortalDebug',
+        'PortalExamples',
       ],
       utilities: [
-        "PortalParticleSystem",
-        "PortalSoundManager",
-        "PortalStateMachine",
+        'PortalParticleSystem',
+        'PortalSoundManager',
+        'PortalStateMachine',
       ],
-      config: ["PORTAL_CONFIG", "getElementConfig", "getThemeColors"],
+      config: ['PORTAL_CONFIG', 'getElementConfig', 'getThemeColors'],
     };
   },
 };

@@ -1,78 +1,81 @@
 :root {
-    /* Light Theme (Default) */
-    --primary-color: #F1C40F;
-    --secondary-color: #F8F9FA;
-    --accent-color: #5DADE2;
-    --bg-color: rgba(255, 255, 255, 0.65);
-    --card-bg: rgba(255, 255, 255, 0.65);
-    --input-bg: rgba(255, 255, 255, 0.4);
-    --input-text-color: #1A1A1A;
-    --border-color: #F1C40F;
-    --shadow-color: rgba(241, 196, 15, 0.3);
-    --text-primary: #FFFFFF;
-    --text-secondary: #BDC3C7;
-    --label-color: #2C3E50;
-    --font-title: 'Cinzel', serif;
-    --font-body: 'Montserrat', sans-serif;
-    --particle-color: rgba(255, 255, 255, 0.8);
-    --button-gradient: linear-gradient(135deg, #f1c40f 0%, #d4ac0d 100%);
-    --button-shadow: rgba(241, 196, 15, 0.5);
-    --error-bg: rgba(231, 76, 60, 0.15);
-    --error-border: #C0392B;
-    --error-text: #8B0000;
+  /* Light Theme (Default) */
+  --primary-color: #f1c40f;
+  --secondary-color: #f8f9fa;
+  --accent-color: #5dade2;
+  --bg-color: rgba(255, 255, 255, 0.65);
+  --card-bg: rgba(255, 255, 255, 0.65);
+  --input-bg: rgba(255, 255, 255, 0.4);
+  --input-text-color: #1a1a1a;
+  --border-color: #f1c40f;
+  --shadow-color: rgba(241, 196, 15, 0.3);
+  --text-primary: #ffffff;
+  --text-secondary: #bdc3c7;
+  --label-color: #2c3e50;
+  --font-title: 'Cinzel', serif;
+  --font-body: 'Montserrat', sans-serif;
+  --particle-color: rgba(255, 255, 255, 0.8);
+  --button-gradient: linear-gradient(135deg, #f1c40f 0%, #d4ac0d 100%);
+  --button-shadow: rgba(241, 196, 15, 0.5);
+  --error-bg: rgba(231, 76, 60, 0.15);
+  --error-border: #c0392b;
+  --error-text: #8b0000;
 }
 
-[data-theme="dark"],
+[data-theme='dark'],
 .theme-dark {
-    /* Dark Theme */
-    --primary-color: #922B21;
-    --secondary-color: #D5D8DC;
-    --accent-color: #5B2C6F;
-    --bg-color: #0D0D0D;
-    --card-bg: rgba(15, 15, 15, 0.85);
-    --input-bg: rgba(0, 0, 0, 0.4);
-    --input-text-color: #ECF0F1;
-    --border-color: #566573;
-    --shadow-color: rgba(146, 43, 33, 0.4);
-    --text-primary: #ECF0F1;
-    --text-secondary: #95A5A6;
-    --label-color: #D5D8DC;
-    --font-title: 'Metal Mania', cursive;
-    --font-body: 'Crimson Text', serif;
-    --particle-color: rgba(200, 120, 220, 0.8);
-    --button-gradient: linear-gradient(135deg, #641E16 0%, #922B21 100%);
-    --button-shadow: rgba(146, 43, 33, 0.6);
-    --error-bg: rgba(146, 43, 33, 0.25);
-    --error-border: #E74C3C;
-    --error-text: #F5B7B1;
+  /* Dark Theme */
+  --primary-color: #922b21;
+  --secondary-color: #d5d8dc;
+  --accent-color: #5b2c6f;
+  --bg-color: #0d0d0d;
+  --card-bg: rgba(15, 15, 15, 0.85);
+  --input-bg: rgba(0, 0, 0, 0.4);
+  --input-text-color: #ecf0f1;
+  --border-color: #566573;
+  --shadow-color: rgba(146, 43, 33, 0.4);
+  --text-primary: #ecf0f1;
+  --text-secondary: #95a5a6;
+  --label-color: #d5d8dc;
+  --font-title: 'Metal Mania', cursive;
+  --font-body: 'Crimson Text', serif;
+  --particle-color: rgba(200, 120, 220, 0.8);
+  --button-gradient: linear-gradient(135deg, #641e16 0%, #922b21 100%);
+  --button-shadow: rgba(146, 43, 33, 0.6);
+  --error-bg: rgba(146, 43, 33, 0.25);
+  --error-border: #e74c3c;
+  --error-text: #f5b7b1;
 }
 
 body {
-    margin: 0;
-    font-family: var(--font-body);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    background-color: var(--bg-color);
-    color: var(--text-primary);
-    min-height: 100vh;
-    transition: background-color 0.3s ease, color 0.3s ease;
+  margin: 0;
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  min-height: 100vh;
+  transition:
+    background-color 0.3s ease,
+    color 0.3s ease;
 
-    /* Prevent text selection globally */
-    -webkit-user-select: none; /* Safari */
-    -moz-user-select: none; /* Firefox */
-    -ms-user-select: none; /* IE10+/Edge */
-    user-select: none; /* Standard */
+  /* Prevent text selection globally */
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+/Edge */
+  user-select: none; /* Standard */
 }
 
 /* Allow text selection in inputs and textareas */
-input, textarea {
-    -webkit-user-select: text;
-    -moz-user-select: text;
-    -ms-user-select: text;
-    user-select: text;
+input,
+textarea {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
 }
 
 /* Prevent image dragging */
 img {
-    -webkit-user-drag: none;
+  -webkit-user-drag: none;
 }

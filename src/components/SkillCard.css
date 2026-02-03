@@ -1,111 +1,111 @@
 .skill-card {
-    display: flex;
-    align-items: center;
-    padding: 10px;
-    border-radius: 8px;
-    backdrop-filter: blur(5px);
-    margin-bottom: 10px;
-    transition: all 0.3s ease;
-    border: 1px solid transparent;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border-radius: 8px;
+  backdrop-filter: blur(5px);
+  margin-bottom: 10px;
+  transition: all 0.3s ease;
+  border: 1px solid transparent;
 }
 
 /* Divine Theme */
 .skill-card.divine {
-    background: rgba(255, 255, 255, 0.15);
-    border-color: rgba(255, 215, 0, 0.3);
-    color: #4a3b22;
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 215, 0, 0.3);
+  color: #4a3b22;
 }
 .skill-card.divine:hover {
-    background: rgba(255, 255, 255, 0.25);
-    box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
+  background: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.2);
 }
 .skill-card.divine .skill-name {
-    color: #5c4d35;
-    text-shadow: 0 0 2px rgba(255, 215, 0, 0.5);
+  color: #5c4d35;
+  text-shadow: 0 0 2px rgba(255, 215, 0, 0.5);
 }
 
 /* Dark Theme */
 .skill-card.dark {
-    background: rgba(0, 0, 0, 0.6);
-    border-color: rgba(139, 0, 0, 0.4);
-    color: #e0e0e0;
+  background: rgba(0, 0, 0, 0.6);
+  border-color: rgba(139, 0, 0, 0.4);
+  color: #e0e0e0;
 }
 .skill-card.dark:hover {
-    background: rgba(40, 0, 0, 0.7);
-    box-shadow: 0 0 10px rgba(139, 0, 0, 0.3);
+  background: rgba(40, 0, 0, 0.7);
+  box-shadow: 0 0 10px rgba(139, 0, 0, 0.3);
 }
 .skill-card.dark .skill-name {
-    color: #ff4d4d;
+  color: #ff4d4d;
 }
 
 .skill-icon-container {
-    width: 48px;
-    height: 48px;
-    flex-shrink: 0;
-    margin-right: 12px;
-    border-radius: 6px;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background: rgba(0,0,0,0.1);
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  margin-right: 12px;
+  border-radius: 6px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.1);
 }
 
 .skill-icon {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .skill-icon-placeholder {
-    font-size: 24px;
+  font-size: 24px;
 }
 
 .skill-info {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .skill-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
 }
 
 .skill-name {
-    margin: 0;
-    font-size: 1rem;
-    font-weight: bold;
-    font-family: 'Cinzel', serif; /* Assuming global serif font */
+  margin: 0;
+  font-size: 1rem;
+  font-weight: bold;
+  font-family: 'Cinzel', serif; /* Assuming global serif font */
 }
 
 .skill-cost {
-    font-size: 0.8rem;
-    font-weight: 600;
-    opacity: 0.8;
+  font-size: 0.8rem;
+  font-weight: 600;
+  opacity: 0.8;
 }
 
 .skill-description {
-    margin: 0;
-    font-size: 0.85rem;
-    line-height: 1.2;
-    opacity: 0.9;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.2;
+  opacity: 0.9;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .skill-footer {
-    margin-top: 4px;
-    display: flex;
-    justify-content: flex-end;
+  margin-top: 4px;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .skill-cd {
-    font-size: 0.75rem;
-    font-style: italic;
-    opacity: 0.7;
+  font-size: 0.75rem;
+  font-style: italic;
+  opacity: 0.7;
 }

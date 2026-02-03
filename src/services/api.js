@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios from 'axios';
 
 // Create flexible instances that can work with proxy in dev
 // In production/docker, we might need a different strategy (e.g. nginx routing)
@@ -9,29 +9,29 @@ import axios from "axios";
 // We will use the relative paths matching the proxy.
 
 export const joueurApi = axios.create({
-  baseURL: "/joueur-service",
+  baseURL: '/joueur-service',
   headers: {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   },
 });
 
 export const authApi = axios.create({
-  baseURL: "/auth-service",
+  baseURL: '/auth-service',
   headers: {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   },
 });
 
 export const invocationApi = axios.create({
-  baseURL: "/invocation-service",
+  baseURL: '/invocation-service',
   headers: {
-    "Content-Type": "application/json",
+    'Content-Type': 'application/json',
   },
 });
 
 // Add token interceptor
 const addToken = (config) => {
-  const match = document.cookie.match(new RegExp("(^| )token=([^;]+)"));
+  const match = document.cookie.match(new RegExp('(^| )token=([^;]+)'));
   const token = match ? match[2] : null;
   if (token) {
     config.headers.Authorization = `Bearer ${token}`; // Assuming Bearer token

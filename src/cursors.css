@@ -13,25 +13,27 @@
    ============================================ */
 :root,
 .theme-divine {
-    /* Divine Cursors - Élégant et Lumineux */
-    --cursor-default: url('/assets/cursors/Pointeur_plume.cur'), default;
-    --cursor-pointer: url('/assets/cursors/Pointeur_plume.cur'), pointer;
-    --cursor-text: url('/assets/cursors/Pointeur_sceptre_light.cur'), text;
-    --cursor-wait: url('/assets/cursors/Pointeur_griffes.cur'), wait;
-    --cursor-not-allowed: url('/assets/cursors/Pointeur_croix_dark.cur'), not-allowed;
+  /* Divine Cursors - Élégant et Lumineux */
+  --cursor-default: url('/assets/cursors/Pointeur_plume.cur'), default;
+  --cursor-pointer: url('/assets/cursors/Pointeur_plume.cur'), pointer;
+  --cursor-text: url('/assets/cursors/Pointeur_sceptre_light.cur'), text;
+  --cursor-wait: url('/assets/cursors/Pointeur_griffes.cur'), wait;
+  --cursor-not-allowed:
+    url('/assets/cursors/Pointeur_croix_dark.cur'), not-allowed;
 }
 
 /* ============================================
    2. CURSOR DEFINITIONS (Dark Theme)
    ============================================ */
-[data-theme="dark"],
+[data-theme='dark'],
 .theme-dark {
-    /* Dark Cursors - Mystérieux et Menaçant */
-    --cursor-default: url('/assets/cursors/Pointeur_griffes.cur'), default;
-    --cursor-pointer: url('/assets/cursors/Pointeur_griffes.cur'), pointer;
-    --cursor-text: url('/assets/cursors/Pointeur_sceptre_dark.cur'), text;
-    --cursor-wait: url('/assets/cursors/Pointeur_griffes.cur'), wait;
-    --cursor-not-allowed: url('/assets/cursors/Pointeur_dague_dark.cur'), not-allowed;
+  /* Dark Cursors - Mystérieux et Menaçant */
+  --cursor-default: url('/assets/cursors/Pointeur_griffes.cur'), default;
+  --cursor-pointer: url('/assets/cursors/Pointeur_griffes.cur'), pointer;
+  --cursor-text: url('/assets/cursors/Pointeur_sceptre_dark.cur'), text;
+  --cursor-wait: url('/assets/cursors/Pointeur_griffes.cur'), wait;
+  --cursor-not-allowed:
+    url('/assets/cursors/Pointeur_dague_dark.cur'), not-allowed;
 }
 
 /* ============================================
@@ -42,7 +44,7 @@
 html,
 body,
 * {
-    cursor: var(--cursor-default);
+  cursor: var(--cursor-default);
 }
 
 /* ============================================
@@ -53,15 +55,15 @@ body,
 button,
 a,
 summary,
-[role="button"],
-[role="link"],
-[type="submit"],
-[type="button"],
+[role='button'],
+[role='link'],
+[type='submit'],
+[type='button'],
 .clickable,
 .MuiButton-root,
 .MuiIconButton-root,
 .login-toggle-btn {
-    cursor: var(--cursor-pointer) !important;
+  cursor: var(--cursor-pointer) !important;
 }
 
 /* ============================================
@@ -69,17 +71,17 @@ summary,
    ============================================ */
 
 /* Text editable areas - Text cursor */
-input[type="text"],
-input[type="password"],
-input[type="email"],
-input[type="search"],
-input[type="tel"],
-input[type="url"],
+input[type='text'],
+input[type='password'],
+input[type='email'],
+input[type='search'],
+input[type='tel'],
+input[type='url'],
 textarea,
-[contenteditable="true"],
+[contenteditable='true'],
 .MuiTextField-root input,
 .MuiInputBase-input {
-    cursor: var(--cursor-text) !important;
+  cursor: var(--cursor-text) !important;
 }
 
 /* ============================================
@@ -91,10 +93,10 @@ button:disabled,
 input:disabled,
 textarea:disabled,
 select:disabled,
-[aria-disabled="true"],
+[aria-disabled='true'],
 .MuiButton-root:disabled,
 .disabled {
-    cursor: var(--cursor-not-allowed) !important;
+  cursor: var(--cursor-not-allowed) !important;
 }
 
 /* ============================================
@@ -105,8 +107,8 @@ select:disabled,
 .is-loading,
 .is-loading *,
 .loading-spinner,
-[aria-busy="true"] {
-    cursor: var(--cursor-wait) !important;
+[aria-busy='true'] {
+  cursor: var(--cursor-wait) !important;
 }
 
 /* ============================================
@@ -120,6 +122,5 @@ button,
 a,
 input,
 textarea {
-    transition: cursor 0.2s ease;
+  transition: cursor 0.2s ease;
 }
-

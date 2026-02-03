@@ -5,17 +5,17 @@ import { LightMode, DarkMode } from '@mui/icons-material';
 import './ThemeToggle.css';
 
 const ThemeToggle = () => {
-    const { theme, toggleTheme } = useTheme();
+  const { theme, toggleTheme } = useTheme();
 
-    return (
-        <IconButton
-            onClick={toggleTheme}
-            className="theme-toggle-btn"
-            title={theme === 'dark' ? 'Mode Divin' : 'Mode Sombre'}
-        >
-            {theme === 'divine' || theme === 'light' ? <DarkMode /> : <LightMode />}
-        </IconButton>
-    );
+  return (
+    <IconButton
+      onClick={toggleTheme}
+      className="theme-toggle-btn"
+      title={theme === 'dark' ? 'Mode Divin' : 'Mode Sombre'}
+    >
+      {theme === 'divine' || theme === 'light' ? <DarkMode /> : <LightMode />}
+    </IconButton>
+  );
 };
 
 export default ThemeToggle;

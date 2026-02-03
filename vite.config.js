@@ -1,5 +1,5 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -8,24 +8,24 @@ export default defineConfig({
     host: true,
     port: 3000,
     proxy: {
-      "/joueur-service": {
-        target: "http://localhost:8082",
+      '/joueur-service': {
+        target: 'http://localhost:8082',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/joueur-service/, ""),
+        rewrite: (path) => path.replace(/^\/joueur-service/, ''),
       },
-      "/auth-service": {
-        target: "http://localhost:8081",
+      '/auth-service': {
+        target: 'http://localhost:8081',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/auth-service/, ""),
+        rewrite: (path) => path.replace(/^\/auth-service/, ''),
       },
-      "/invocation-service": {
-        target: "http://localhost:8080",
+      '/invocation-service': {
+        target: 'http://localhost:8080',
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/invocation-service/, ""),
+        rewrite: (path) => path.replace(/^\/invocation-service/, ''),
       },
     },
   },
   optimizeDeps: {
-    include: ["@emotion/react", "@emotion/styled", "@mui/material/Tooltip"],
+    include: ['@emotion/react', '@emotion/styled', '@mui/material/Tooltip'],
   },
 });

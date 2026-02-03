@@ -1,18 +1,18 @@
 .theme-toggle-btn {
-    color: var(--primary-color) !important;
-    background: rgba(0, 0, 0, 0.3) !important;
-    backdrop-filter: blur(5px);
-    border: 1px solid var(--border-color) !important;
-    z-index: 10;
-    transition: all 0.3s ease !important;
+  color: var(--primary-color) !important;
+  background: rgba(0, 0, 0, 0.3) !important;
+  backdrop-filter: blur(5px);
+  border: 1px solid var(--border-color) !important;
+  z-index: 10;
+  transition: all 0.3s ease !important;
 }
 
 .theme-toggle-btn:hover {
-    box-shadow: 0 0 15px var(--shadow-color);
-    transform: rotate(30deg);
+  box-shadow: 0 0 15px var(--shadow-color);
+  transform: rotate(30deg);
 }
 
 /* Cibler l'icône SVG à l'intérieur */
 .theme-toggle-btn svg {
-    display: block !important;
+  display: block !important;
 }

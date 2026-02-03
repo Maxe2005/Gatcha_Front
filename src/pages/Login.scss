@@ -3,238 +3,249 @@
 
 /* Light Theme (Default) */
 .theme-divine {
-    --bg-image: url('/assets/backgrounds/background_login_divine.png');
+  --bg-image: url('/assets/backgrounds/background_login_divine.png');
 }
 
 /* Dark Theme Overrides */
 .theme-dark {
-    --bg-image: url('/assets/backgrounds/background_login_dark.png');
+  --bg-image: url('/assets/backgrounds/background_login_dark.png');
 }
 
 /* Container */
 .login-container {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: var(--bg-color);
-    background-image: var(--bg-image);
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    position: relative;
-    overflow: hidden;
-    transition: background-image 0.5s ease;
-    font-family: var(--font-body);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-color);
+  background-image: var(--bg-image);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+  overflow: hidden;
+  transition: background-image 0.5s ease;
+  font-family: var(--font-body);
 }
 
 /* Background Effects */
 .login-bg-glow {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(circle at 50% 120%, var(--shadow-color) 0%, transparent 60%);
-    z-index: 0;
-    opacity: 0.5;
-    animation: pulseGlow 5s infinite alternate;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(
+    circle at 50% 120%,
+    var(--shadow-color) 0%,
+    transparent 60%
+  );
+  z-index: 0;
+  opacity: 0.5;
+  animation: pulseGlow 5s infinite alternate;
 }
 
 .theme-divine .login-bg-glow::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -50%;
-    width: 200%;
-    height: 100%;
-    background: linear-gradient(45deg, transparent 40%,rgba(255, 255, 255, 0.65) 45%, transparent 50%);
-    animation: godRays 8s infinite linear;
-    pointer-events: none;
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -50%;
+  width: 200%;
+  height: 100%;
+  background: linear-gradient(
+    45deg,
+    transparent 40%,
+    rgba(255, 255, 255, 0.65) 45%,
+    transparent 50%
+  );
+  animation: godRays 8s infinite linear;
+  pointer-events: none;
 }
 
 .theme-dark .login-bg-glow::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    box-shadow: inset 0 0 150px #000;
-    pointer-events: none;
+  content: '';
+  position: absolute;
+  inset: 0;
+  box-shadow: inset 0 0 150px #000;
+  pointer-events: none;
 }
 
 /* Card */
 .login-card {
-    width: 100%;
-    max-width: 450px;
-    margin: 16px;
-    padding: 32px;
-    background-color: var(--card-bg);
-    border-radius: 16px;
-    border: 1px solid var(--border-color);
-    box-shadow: 0 0 30px var(--shadow-color);
-    backdrop-filter: blur(10px);
-    z-index: 2;
-    position: relative;
-    transition: all 0.5s ease;
+  width: 100%;
+  max-width: 450px;
+  margin: 16px;
+  padding: 32px;
+  background-color: var(--card-bg);
+  border-radius: 16px;
+  border: 1px solid var(--border-color);
+  box-shadow: 0 0 30px var(--shadow-color);
+  backdrop-filter: blur(10px);
+  z-index: 2;
+  position: relative;
+  transition: all 0.5s ease;
 }
 
 /* Typography */
 .login-title {
-    font-family: var(--font-title) !important;
-    font-weight: 700 !important;
-    color: var(--primary-color);
-    letter-spacing: 0.1em !important;
-    text-transform: uppercase;
-    text-shadow: 0 0 20px var(--shadow-color);
-    text-align: center;
-    margin-bottom: 8px !important;
+  font-family: var(--font-title) !important;
+  font-weight: 700 !important;
+  color: var(--primary-color);
+  letter-spacing: 0.1em !important;
+  text-transform: uppercase;
+  text-shadow: 0 0 20px var(--shadow-color);
+  text-align: center;
+  margin-bottom: 8px !important;
 }
 
 /* Responsive font size for title */
 @media (min-width: 600px) {
-    .login-title {
-        font-size: 2.5rem !important;
-    }
+  .login-title {
+    font-size: 2.5rem !important;
+  }
 }
 @media (max-width: 599px) {
-    .login-title {
-        font-size: 2rem !important;
-    }
+  .login-title {
+    font-size: 2rem !important;
+  }
 }
 
 .login-subtitle {
-    color: var(--text-secondary);
-    text-align: center;
-    margin-bottom: 32px !important;
-    font-style: italic;
-    font-family: var(--font-body);
+  color: var(--text-secondary);
+  text-align: center;
+  margin-bottom: 32px !important;
+  font-style: italic;
+  font-family: var(--font-body);
 }
 
 /* Inputs */
 .input-wrapper {
-    position: relative;
-    margin-bottom: 24px;
+  position: relative;
+  margin-bottom: 24px;
 }
 
 .login-input {
-    width: 100%;
+  width: 100%;
 }
 
 .login-input .MuiOutlinedInput-root {
-    background-color: var(--input-bg);
-    color: var(--input-text-color);
-    border-radius: 4px; /* More angular for games */
-    transition: all 0.3s ease;
+  background-color: var(--input-bg);
+  color: var(--input-text-color);
+  border-radius: 4px; /* More angular for games */
+  transition: all 0.3s ease;
 }
 
 .login-input .MuiOutlinedInput-root input {
-    color: var(--input-text-color) !important;
+  color: var(--input-text-color) !important;
 }
 
 .login-input .MuiOutlinedInput-root fieldset {
-    border-color: rgba(255, 255, 255, 0.2);
-    border-width: 1px;
+  border-color: rgba(255, 255, 255, 0.2);
+  border-width: 1px;
 }
 
 .login-input .MuiOutlinedInput-root:hover fieldset {
-    border-color: var(--primary-color);
-    border-width: 1px;
+  border-color: var(--primary-color);
+  border-width: 1px;
 }
 
 .login-input .MuiOutlinedInput-root.Mui-focused fieldset {
-    border-color: var(--primary-color);
-    border-width: 1px;
-    box-shadow: 0 0 10px var(--shadow-color);
+  border-color: var(--primary-color);
+  border-width: 1px;
+  box-shadow: 0 0 10px var(--shadow-color);
 }
 
 .login-input .MuiInputLabel-root {
-    color: var(--label-color) !important;
-    font-family: var(--font-body);
-    font-weight: 500 !important;
+  color: var(--label-color) !important;
+  font-family: var(--font-body);
+  font-weight: 500 !important;
 }
 
 .login-input .MuiInputLabel-root.Mui-focused {
-    color: var(--primary-color) !important;
+  color: var(--primary-color) !important;
 }
 
 /* Icons */
 .login-icon-primary {
-    color: var(--primary-color);
+  color: var(--primary-color);
 }
 .login-icon-secondary {
-    color: var(--text-secondary);
+  color: var(--text-secondary);
 }
 
 /* Alert */
 .login-alert {
-    background-color: var(--error-bg) !important;
-    color: var(--error-text) !important;
-    border: 1px solid var(--error-border) !important;
-    font-family: var(--font-body);
-    margin-bottom: 24px !important;
-    font-weight: 500;
+  background-color: var(--error-bg) !important;
+  color: var(--error-text) !important;
+  border: 1px solid var(--error-border) !important;
+  font-family: var(--font-body);
+  margin-bottom: 24px !important;
+  font-weight: 500;
 }
 
 /* Alert text color override for all child elements */
 .login-alert .MuiAlert-message {
-    color: var(--error-text) !important;
+  color: var(--error-text) !important;
 }
 
 /* Button */
 .login-button {
-    background: var(--button-gradient) !important;
-    color: white !important; /* Always white text for contrast on strong gradients */
-    padding: 14px 0 !important;
-    font-size: 1.1rem !important;
-    font-weight: bold !important;
-    font-family: var(--font-title) !important;
-    letter-spacing: 1px !important;
-    border-radius: 4px !important;
-    box-shadow: 0 0 15px var(--button-shadow) !important;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    text-transform: uppercase;
-    position: relative;
-    overflow: hidden;
-    border: 1px solid rgba(255,255,255,0.2) !important;
+  background: var(--button-gradient) !important;
+  color: white !important; /* Always white text for contrast on strong gradients */
+  padding: 14px 0 !important;
+  font-size: 1.1rem !important;
+  font-weight: bold !important;
+  font-family: var(--font-title) !important;
+  letter-spacing: 1px !important;
+  border-radius: 4px !important;
+  box-shadow: 0 0 15px var(--button-shadow) !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  text-transform: uppercase;
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
 }
 
 .login-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 0 25px var(--shadow-color), inset 0 0 10px rgba(255,255,255,0.3) !important;
-    filter: brightness(1.1);
+  transform: translateY(-2px);
+  box-shadow:
+    0 0 25px var(--shadow-color),
+    inset 0 0 10px rgba(255, 255, 255, 0.3) !important;
+  filter: brightness(1.1);
 }
 
 .login-button:active {
-    transform: scale(0.98);
+  transform: scale(0.98);
 }
 
 .login-button:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 
 /* Theme Toggle */
 .login-theme-toggle {
-    position: absolute !important;
-    top: 24px;
-    right: 24px;
+  position: absolute !important;
+  top: 24px;
+  right: 24px;
 }
 
 /* Toggle Link */
 .login-toggle-container {
-    margin-top: 24px;
-    text-align: center;
+  margin-top: 24px;
+  text-align: center;
 }
 .login-toggle-text {
-    color: var(--text-secondary);
-    font-family: var(--font-body);
+  color: var(--text-secondary);
+  font-family: var(--font-body);
 }
 .login-toggle-btn {
-    color: var(--primary-color) !important;
-    font-weight: 700 !important;
-    text-transform: none !important;
-    font-family: var(--font-body) !important;
-    margin-left: 4px !important;
+  color: var(--primary-color) !important;
+  font-weight: 700 !important;
+  text-transform: none !important;
+  font-family: var(--font-body) !important;
+  margin-left: 4px !important;
 }
 .login-toggle-btn:hover {
-    text-decoration: underline;
-    text-shadow: 0 0 8px var(--shadow-color);
-    background: transparent !important;
+  text-decoration: underline;
+  text-shadow: 0 0 8px var(--shadow-color);
+  background: transparent !important;
 }

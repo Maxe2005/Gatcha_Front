@@ -1,57 +1,57 @@
 .header {
-    transition: all 0.3s ease;
-    background-color: var(--header-bg);
-    box-shadow: 0 2px 8px var(--shadow-color);
+  transition: all 0.3s ease;
+  background-color: var(--header-bg);
+  box-shadow: 0 2px 8px var(--shadow-color);
 }
 
 .header-light {
-    background-color: rgba(255, 255, 255, 0.95) !important;
+  background-color: rgba(255, 255, 255, 0.95) !important;
 }
 
 .header-dark {
-    background-color: rgba(15, 15, 15, 0.95) !important;
+  background-color: rgba(15, 15, 15, 0.95) !important;
 }
 
 .header-toolbar {
-    min-height: 64px;
-    display: flex;
-    align-items: center;
+  min-height: 64px;
+  display: flex;
+  align-items: center;
 }
 
 .header-title {
-    flex-grow: 1;
-    font-family: var(--font-title);
-    color: var(--primary-color);
-    font-weight: bold;
-    display: flex;
-    align-items: center;
+  flex-grow: 1;
+  font-family: var(--font-title);
+  color: var(--primary-color);
+  font-weight: bold;
+  display: flex;
+  align-items: center;
 }
 
 .header-actions {
-    display: flex;
-    align-items: center;
-    gap: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
 }
 
 .header-username {
-    color: var(--text-primary);
-    font-family: var(--font-body);
+  color: var(--text-primary);
+  font-family: var(--font-body);
 }
 
 .header-logout {
-    color: var(--primary-color);
-    border-color: var(--primary-color);
-    font-family: var(--font-body);
-    transition: all 0.3s ease;
+  color: var(--primary-color);
+  border-color: var(--primary-color);
+  font-family: var(--font-body);
+  transition: all 0.3s ease;
 }
 
 .header-logout:hover {
-    border-color: var(--primary-color);
-    background-color: var(--shadow-color);
+  border-color: var(--primary-color);
+  background-color: var(--shadow-color);
 }
 
 .header-theme-toggle {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
