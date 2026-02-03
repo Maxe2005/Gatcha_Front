@@ -19,7 +19,7 @@ export const PlayerProvider = ({ children }) => {
         }
 
         if (!user || !user.username) {
-            await verifyToken(token);
+            return;
         }
 
         setLoading(true);

@@ -138,7 +138,7 @@ const Gacha = () => {
         setMonster(null);
         try {
             // GET /api/invocation/invoque
-            const response = await invocationApi.get('/api/invocation/invoque');
+            const response = await invocationApi.get('/api/invocation/global-invoque/'+user.username);
             setMonster(response.data);
         } catch (err) {
             console.error("Invocation error", err);

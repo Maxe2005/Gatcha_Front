@@ -40,15 +40,6 @@ const Home = () => {
             navigate('/gacha');
         }, 2050); // Durée totale de la warp animation
     };
-
-    // Génération des particules (changer aléatoirement l'élément actif)
-        useEffect(() => {
-            const elementInterval = setInterval(() => {
-                setActiveElement(elements[Math.floor(Math.random() * elements.length)]);
-            }, 6000); // Changement tous les 6s
-    
-            return () => clearInterval(elementInterval);
-        }, []);
     
         // Système de particules
         useEffect(() => {

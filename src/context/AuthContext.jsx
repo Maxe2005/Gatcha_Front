@@ -13,6 +13,7 @@ export const AuthProvider = ({ children }) => {
     const [token, setToken] = useState(getTokenFromCookie());
     const [user, setUser] = useState();
     const hasVerified = useRef(false);
+    const verificationPromise = useRef(null);
 
     const login = useCallback((newToken, username) => {
         // Store in cookie FIRST: secure flag should be added in production with https
@@ -28,14 +29,32 @@ export const AuthProvider = ({ children }) => {
         hasVerified.current = false;
     }, []);
 
-    const verifyToken = useCallback(async (token) => {
-        const response = await authApi.post('/user/verify-token', { token })
-        console.log('Token verification response:', response.data);
-        if (response.data && response.data.username) {
-            setUser({ username: response.data.username });
-        } else {
-            logout();
+    const verifyToken = useCallback(async (tokenToVerify) => {
+        if (verificationPromise.current) {
+            return verificationPromise.current;
         }
+
+        verificationPromise.current = (async () => {
+            try {
+                const response = await authApi.post('/user/verify-token', { token: tokenToVerify });
+                console.log('Token verification response:', response.data);
+                if (response.data && response.data.username) {
+                    setUser({ username: response.data.username });
+                    return response.data;
+                } else {
+                    logout();
+                    return null;
+                }
+            } catch (error) {
+                console.error("Token verification failed", error);
+                logout();
+                return null;
+            } finally {
+                verificationPromise.current = null;
+            }
+        })();
+
+        return verificationPromise.current;
     }, [logout]);
 
     // Vérifier le token au chargement si user est null mais token existe
