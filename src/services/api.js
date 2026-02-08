@@ -36,6 +36,13 @@ export const invocationApi = axios.create({
   },
 });
 
+export const adminApi = axios.create({
+  baseURL: 'http://localhost:8000/api/v1/admin',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
 // Add token interceptor
 const addToken = (config) => {
   const match = document.cookie.match(new RegExp('(^| )token=([^;]+)'));
@@ -50,3 +57,5 @@ monstersApi.interceptors.request.use(addToken);
 joueurApi.interceptors.request.use(addToken);
 authApi.interceptors.request.use(addToken);
 invocationApi.interceptors.request.use(addToken);
+
+adminApi.interceptors.request.use(addToken);

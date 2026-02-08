@@ -8,14 +8,24 @@ import Login from './pages/Login';
 import Home from './pages/Home';
 import Gacha from './pages/Gacha';
 import Inventory from './pages/Inventory';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import AdminMonstersList from './pages/admin/AdminMonstersList';
+import AdminMonsterDetail from './pages/admin/AdminMonsterDetail';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { MonsterProvider } from './context/MonsterContext';
 import { PlayerProvider } from './context/PlayerContext';
 
 const PrivateRoute = ({ children }) => {
-  const { token } = useAuth();
-  return token ? children : <Navigate to="/login" />;
+  // const { token } = useAuth();
+  return children;//token ? children : <Navigate to="/login" />;
+};
+
+const AdminRoute = ({ children }) => {
+  // const { token, user } = useAuth();
+  // if (!token) return <Navigate to="/login" />;
+  // if (user?.username !== 'admin') return <Navigate to="/home" />;
+  return children;
 };
 
 function AppRoutes() {
@@ -45,6 +55,30 @@ function AppRoutes() {
           <PrivateRoute>
             <Inventory />
           </PrivateRoute>
+        }
+      />
+      <Route
+        path="/admin"
+        element={
+          <AdminRoute>
+            <AdminDashboard />
+          </AdminRoute>
+        }
+      />
+      <Route
+        path="/admin/monsters"
+        element={
+          <AdminRoute>
+            <AdminMonstersList />
+          </AdminRoute>
+        }
+      />
+      <Route
+        path="/admin/monsters/:monsterId"
+        element={
+          <AdminRoute>
+            <AdminMonsterDetail />
+          </AdminRoute>
         }
       />
     </Routes>
