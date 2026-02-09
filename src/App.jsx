@@ -4,6 +4,8 @@ import {
   Route,
   Navigate,
 } from 'react-router-dom';
+import { Toaster } from 'react-hot-toast';
+import ErrorBoundary from './components/ErrorBoundary';
 import Login from './pages/Login';
 import Home from './pages/Home';
 import Gacha from './pages/Gacha';
@@ -15,7 +17,8 @@ import { PlayerProvider } from './context/PlayerContext';
 
 const PrivateRoute = ({ children }) => {
   const { token } = useAuth();
-  return token ? children : <Navigate to="/login" />;
+  if (!token) return <Navigate to="/login" />;
+  return children;
 };
 
 function AppRoutes() {
@@ -53,17 +56,20 @@ function AppRoutes() {
 
 function App() {
   return (
-    <ThemeProvider>
-      <AuthProvider>
-        <MonsterProvider>
-          <PlayerProvider>
-            <Router>
-              <AppRoutes />
-            </Router>
-          </PlayerProvider>
-        </MonsterProvider>
-      </AuthProvider>
-    </ThemeProvider>
+    <ErrorBoundary>
+      <Toaster position="bottom-right" reverseOrder={false} />
+      <ThemeProvider>
+        <AuthProvider>
+          <MonsterProvider>
+            <PlayerProvider>
+              <Router>
+                <AppRoutes />
+              </Router>
+            </PlayerProvider>
+          </MonsterProvider>
+        </AuthProvider>
+      </ThemeProvider>
+    </ErrorBoundary>
   );
 }
 

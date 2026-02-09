@@ -5,7 +5,8 @@ import React, {
   useState,
   useRef,
 } from 'react';
-import { monstersApi } from '../services/api';
+import { monstersService } from '../services/monstersService';
+import { logger } from '../services/logger';
 /**
  * MonsterContext - Cache global et gestion des monstres
  *
@@ -44,7 +45,7 @@ export const MonsterProvider = ({ children }) => {
 
     // Si tous les monstres sont en cache, les retourner directement
     if (idsToFetch.length === 0) {
-      console.log('All monsters in cache, returning from cache');
+      logger.debug('MonsterContext', 'All monsters in cache');
       return ids
         .map((id) => monstersCache.current.get(String(id)))
         .filter(Boolean);
@@ -54,14 +55,17 @@ export const MonsterProvider = ({ children }) => {
     setErrorMonsters(null);
 
     try {
-      const idsString = idsToFetch.join(',');
-      console.log('Fetching monsters with IDs:', idsString);
-      const response = await monstersApi.get(`/api/monsters?ids=${idsString}`);
-      console.log('Monsters fetched:', response.data);
+      logger.debug('MonsterContext', 'Fetching monsters with IDs', {
+        ids: idsToFetch,
+      });
+      const monstersList = await monstersService.getMonsters(idsToFetch);
+      logger.debug('MonsterContext', 'Monsters fetched successfully', {
+        count: monstersList.length,
+      });
 
       // Mettre en cache les nouveaux monstres
-      response.data.forEach((monster, index) => {
-        const monsterId = String(idsToFetch[index]);
+      monstersList.forEach((monster) => {
+        const monsterId = String(monster.id);
         monstersCache.current.set(monsterId, monster);
       });
 
@@ -70,7 +74,7 @@ export const MonsterProvider = ({ children }) => {
         .map((id) => monstersCache.current.get(String(id)))
         .filter(Boolean);
     } catch (err) {
-      console.error('Erreur lors de la récupération des monstres:', err);
+      logger.error('MonsterContext', 'Error fetching monsters:', err);
       setErrorMonsters(
         err.message || 'Erreur lors de la récupération des monstres'
       );

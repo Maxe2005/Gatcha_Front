@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
-import { authApi, joueurApi } from '../services/api';
+import { authService } from '../services/authService';
+import { joueurService } from '../services/joueurService';
 import './Login.scss';
 import {
   Box,
@@ -70,16 +71,16 @@ const Login = () => {
     }
 
     try {
-      const endpoint = isLogin ? '/user/login' : '/user';
-      const payload = { username, password };
-
-      const response = await authApi.post(endpoint, payload);
+      let token, user;
 
       if (isLogin) {
-        if (response.data && response.data.token) {
-          // Stocker le token ET le mettre dans le cookie AVANT la transition
-          // C'est crucial car le PrivateRoute doit pouvoir lire le token immédiatement
-          login(response.data.token, username);
+        // Login flow
+        const response = await authService.login(username, password);
+        token = response.token;
+        user = response.username;
+
+        if (token) {
+          login(token, user);
 
           // Ajouter la classe de sortie à la carte de login
           const loginCard = document.querySelector('.login-card');
@@ -90,8 +91,6 @@ const Login = () => {
           // Déclencher la transition avec particules
           if (window.triggerParticleTransition) {
             window.triggerParticleTransition(() => {
-              // La navigation se fait avec le token déjà stocké
-              // Le PrivateRoute lira le token depuis le cookie si besoin
               navigate('/home', { replace: true });
             });
           } else {
@@ -105,13 +104,15 @@ const Login = () => {
         }
       } else {
         // Register flow
-        // If the backend logs in automatically after register
-        if (response.data && response.data.token) {
-          // Stocker le token AVANT la transition
-          login(response.data.token, username);
+        const response = await authService.register(username, password);
+        token = response.token;
+        user = response.username;
+
+        if (token) {
+          login(token, user);
 
           try {
-            await joueurApi.post('/api/players', { username });
+            await joueurService.getPlayer(user);
           } catch (playerErr) {
             setError(
               "Compte créé, mais le profil joueur n'a pas pu être initialisé. Réessaie plus tard."
@@ -148,20 +149,26 @@ const Login = () => {
         }
       }
     } catch (err) {
-      console.error('Auth error', err);
-      const status = err.response?.status;
-      if (status === 401 || status === 403) {
+      const errorMessage =
+        err.message || 'Une erreur mystique est survenue. Réessayez.';
+
+      if (
+        errorMessage.includes('401') ||
+        errorMessage.includes('403') ||
+        errorMessage.includes('Identifiants incorrects')
+      ) {
         setError(
           isLogin
             ? 'Identifiants incorrects, voyageur.'
             : 'Ce pseudo est peut-être déjà pris.'
         );
-      } else if (status === 409) {
-        setError(
-          isLogin ? 'Conflit de données.' : "Ce nom d'utilisateur existe déjà."
-        );
+      } else if (
+        errorMessage.includes('409') ||
+        errorMessage.includes('existe déjà')
+      ) {
+        setError("Ce nom d'utilisateur existe déjà.");
       } else {
-        setError('Une erreur mystique est survenue. Réessayez.');
+        setError(errorMessage);
       }
     } finally {
       setIsLoading(false);

@@ -7,7 +7,8 @@ import React, {
 } from 'react';
 import { useAuth } from './AuthContext';
 import { useMonster } from './MonsterContext';
-import { joueurApi } from '../services/api';
+import { joueurService } from '../services/joueurService';
+import { logger } from '../services/logger';
 /**
  * PlayerContext - Source unique de vérité pour les données du joueur
  *
@@ -49,15 +50,16 @@ export const PlayerProvider = ({ children }) => {
       setLoading(true);
       setError(null);
       try {
-        console.log('PlayerContext: Loading player data for', user.username);
-        const response = await joueurApi.get(`/api/players/${user.username}`);
-        console.log('PlayerContext: Player data loaded', response.data);
-        setPlayerData(response.data);
+        logger.debug('PlayerContext', 'Loading player data for', {
+          username: user.username,
+        });
+        const playerDataResponse = await joueurService.getPlayer(user.username);
+        logger.debug('PlayerContext', 'Player data loaded', {
+          playerData: playerDataResponse,
+        });
+        setPlayerData(playerDataResponse);
       } catch (err) {
-        console.error(
-          'Erreur lors de la récupération des données du joueur:',
-          err
-        );
+        logger.error('PlayerContext', 'Error loading player data:', err);
         setError(err.message || 'Erreur lors de la récupération des données');
       } finally {
         setLoading(false);
@@ -71,21 +73,22 @@ export const PlayerProvider = ({ children }) => {
   useEffect(() => {
     const loadPlayerMonsters = async () => {
       if (!playerData?.monsterIds || playerData.monsterIds.length === 0) {
-        console.log('PlayerContext: No monsters to load');
+        logger.debug('PlayerContext', 'No monsters to load');
         setMonsters([]);
         return;
       }
 
       try {
-        console.log(
-          'PlayerContext: Loading monsters with IDs',
-          playerData.monsterIds
-        );
+        logger.debug('PlayerContext', 'Loading monsters with IDs', {
+          monsterIds: playerData.monsterIds,
+        });
         const playerMonsters = await fetchMonsters(playerData.monsterIds);
-        console.log('PlayerContext: Monsters loaded', playerMonsters);
+        logger.debug('PlayerContext', 'Monsters loaded', {
+          count: playerMonsters.length,
+        });
         setMonsters(playerMonsters);
       } catch (err) {
-        console.error('Erreur lors du chargement des monstres du joueur:', err);
+        logger.error('PlayerContext', 'Error loading player monsters:', err);
         setMonsters([]);
       }
     };
@@ -101,16 +104,11 @@ export const PlayerProvider = ({ children }) => {
 
     setLoading(true);
     try {
-      const response = await joueurApi.get(
-        `/api/players/${playerData.username}`
-      );
-      setPlayerData(response.data);
-      return response.data;
+      const dataResponse = await joueurService.getPlayer(playerData.username);
+      setPlayerData(dataResponse);
+      return dataResponse;
     } catch (err) {
-      console.error(
-        'Erreur lors de la récupération des données du joueur:',
-        err
-      );
+      logger.error('PlayerContext', 'Error refreshing player data:', err);
       return null;
     } finally {
       setLoading(false);

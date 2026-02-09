@@ -6,7 +6,7 @@ import React, {
   useEffect,
   useRef,
 } from 'react';
-import { authApi } from '../services/api';
+import { authService } from '../services/authService';
 /**
  * AuthContext - Responsabilité unique : AUTHENTIFICATION
  *
@@ -58,19 +58,15 @@ export const AuthProvider = ({ children }) => {
 
       verificationPromise.current = (async () => {
         try {
-          const response = await authApi.post('/user/verify-token', {
-            token: tokenToVerify,
-          });
-          console.log('Token verification response:', response.data);
-          if (response.data && response.data.username) {
-            setUser({ username: response.data.username });
-            return response.data;
+          const response = await authService.verifyToken(tokenToVerify);
+          if (response && response.username) {
+            setUser({ username: response.username });
+            return response;
           } else {
             logout();
             return null;
           }
         } catch (error) {
-          console.error('Token verification failed', error);
           logout();
           return null;
         } finally {

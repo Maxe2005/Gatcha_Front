@@ -1,7 +1,8 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
-import { invocationApi } from '../services/api';
+import { invocationService } from '../services/invocationService';
+import { notifySuccess, notifyError } from '../services/notificationService';
 import {
   Container,
   Box,
@@ -129,7 +130,6 @@ const Gacha = () => {
   const { theme } = useTheme();
   const [monster, setMonster] = useState(monster_mock);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
   const [isRevealed, setIsRevealed] = useState(false);
   const navigate = useNavigate();
 
@@ -142,17 +142,14 @@ const Gacha = () => {
 
   const handleInvoke = async () => {
     setLoading(true);
-    setError('');
     setMonster(null);
     try {
-      // GET /api/invocation/invoque
-      const response = await invocationApi.get(
-        '/api/invocation/global-invoque/' + user.username
-      );
-      setMonster(response.data);
+      const invokedMonster = await invocationService.invoke(user.username);
+      setMonster(invokedMonster);
+      notifySuccess('✨ Invocation réussie!');
     } catch (err) {
-      console.error('Invocation error', err);
-      setError('Failed to summon monster. ' + (err.message || ''));
+      notifyError(err);
+      setMonster(null);
     } finally {
       setLoading(false);
     }

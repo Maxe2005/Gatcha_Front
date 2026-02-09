@@ -1,0 +1,119 @@
+.error-boundary-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 20px;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.error-content {
+  background: white;
+  border-radius: 10px;
+  padding: 40px;
+  max-width: 500px;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+}
+
+.error-title {
+  font-size: 2.5rem;
+  margin: 0 0 20px 0;
+  color: #e74c3c;
+  font-family: 'Cinzel', serif;
+}
+
+.error-message {
+  font-size: 1.1rem;
+  color: #555;
+  margin-bottom: 30px;
+  line-height: 1.6;
+}
+
+.error-details {
+  background: #f8f9fa;
+  border-left: 4px solid #e74c3c;
+  padding: 15px;
+  margin: 20px 0;
+  text-align: left;
+  overflow-x: auto;
+  border-radius: 4px;
+}
+
+.error-details summary {
+  cursor: pointer;
+  font-weight: bold;
+  color: #e74c3c;
+  user-select: none;
+}
+
+.error-details summary:hover {
+  text-decoration: underline;
+}
+
+.error-details pre {
+  font-size: 0.85rem;
+  color: #333;
+  margin: 10px 0 0 0;
+  overflow-x: auto;
+  max-height: 200px;
+}
+
+.error-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  margin-top: 30px;
+  flex-wrap: wrap;
+}
+
+.error-actions button {
+  padding: 12px 30px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+}
+
+.btn-reset {
+  background: #27ae60;
+  color: white;
+}
+
+.btn-reset:hover {
+  background: #229954;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(39, 174, 96, 0.3);
+}
+
+.btn-home {
+  background: #3498db;
+  color: white;
+}
+
+.btn-home:hover {
+  background: #2980b9;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+}
+
+@media (max-width: 600px) {
+  .error-content {
+    padding: 20px;
+  }
+
+  .error-title {
+    font-size: 2rem;
+  }
+
+  .error-actions {
+    flex-direction: column;
+  }
+
+  .error-actions button {
+    width: 100%;
+  }
+}
