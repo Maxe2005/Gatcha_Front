@@ -2,11 +2,17 @@
  * Monsters Service
  * Centralise tous les appels au service Monstres
  * Gère les informations des monstres, leurs stats et compétences
+ * Utilise IndexedDB cache pour performance
  */
 
 import { monstersApi } from './api';
 import { ApiError, ErrorTypes, parseApiError } from './apiClient';
 import { logger } from './logger';
+import {
+  getMonsterFromCache,
+  cacheMonster,
+  cacheMonsters,
+} from './indexedDBService';
 
 /**
  * Routes disponibles sur le service Monstres
@@ -106,6 +112,7 @@ const normalizeMonsterData = (data) => {
 export const monstersService = {
   /**
    * Récupère un monstre par ID
+   * Utilise le cache IndexedDB si disponible
    * @param {string|number} monsterId - ID du monstre
    * @returns {Promise<MonsterData>}
    */
@@ -119,12 +126,25 @@ export const monstersService = {
         );
       }
 
+      // Chercher dans le cache d'abord
+      const cached = await getMonsterFromCache(String(monsterId));
+      if (cached) {
+        logger.debug('MonstersService', 'Monster found in cache', {
+          monsterId,
+        });
+        return cached;
+      }
+
       logger.debug('MonstersService', 'Fetching monster', { monsterId });
 
       const url = MonstersRoutes.GET_MONSTER.replace(':id', monsterId);
       const response = await monstersApi.get(url);
 
       const normalizedData = normalizeMonsterData(response.data);
+
+      // Ajouter au cache
+      await cacheMonster(normalizedData);
+
       logger.debug('MonstersService', 'Monster fetched', {
         monsterId,
         nom: normalizedData.nom,
@@ -145,6 +165,7 @@ export const monstersService = {
 
   /**
    * Récupère plusieurs monstres par IDs
+   * Utilise le cache IndexedDB pour éviter appels API
    * @param {Array<string|number>} monsterIds - Array d'IDs de monstres
    * @returns {Promise<Array<MonsterData>>}
    */
@@ -162,7 +183,29 @@ export const monstersService = {
         count: monsterIds.length,
       });
 
-      const idsString = monsterIds.join(',');
+      // Chercher tous les monstres dans le cache
+      const idsToFetch = [];
+      const cachedMonsters = [];
+
+      for (const id of monsterIds) {
+        const cached = await getMonsterFromCache(String(id));
+        if (cached) {
+          cachedMonsters.push(cached);
+        } else {
+          idsToFetch.push(id);
+        }
+      }
+
+      // Si tous en cache, retourner immédiatement
+      if (idsToFetch.length === 0) {
+        logger.debug('MonstersService', 'All monsters found in cache');
+        // Retourner dans le même ordre que demandé
+        return monsterIds.map((id) =>
+          cachedMonsters.find((m) => String(m.id) === String(id))
+        );
+      }
+
+      const idsString = idsToFetch.join(',');
       const url = MonstersRoutes.GET_MONSTERS_BY_IDS.replace(':ids', idsString);
       const response = await monstersApi.get(url);
 
@@ -177,11 +220,19 @@ export const monstersService = {
       const normalizedData = response.data.map((monsterData) =>
         normalizeMonsterData(monsterData)
       );
+
+      // Ajouter les nouveaux monstres au cache
+      await cacheMonsters(normalizedData);
+
       logger.debug('MonstersService', 'Monsters fetched', {
         count: normalizedData.length,
       });
 
-      return normalizedData;
+      // Combiner les monstres cachés + nouveaux dans l'ordre demandé
+      const allMonsters = [...cachedMonsters, ...normalizedData];
+      return monsterIds.map((id) =>
+        allMonsters.find((m) => String(m.id) === String(id))
+      );
     } catch (error) {
       logger.error('MonstersService', 'Failed to fetch monsters', {
         count: monsterIds.length,

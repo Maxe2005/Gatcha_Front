@@ -33,4 +33,46 @@ export default defineConfig({
   optimizeDeps: {
     include: ['@emotion/react', '@emotion/styled', '@mui/material/Tooltip'],
   },
+  build: {
+    // Optimiser la compression et le splitting
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Vendor chunks
+          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          'vendor-animation': ['framer-motion'],
+          'vendor-ui': ['@mui/material', '@mui/icons-material'],
+          'vendor-utils': ['axios', 'react-hot-toast'],
+          // Feature chunks
+          'chunk-auth': [
+            './src/services/authService.js',
+            './src/context/AuthContext.jsx',
+          ],
+          'chunk-player': [
+            './src/services/joueurService.js',
+            './src/context/PlayerContext.jsx',
+          ],
+          'chunk-monster': [
+            './src/services/monstersService.js',
+            './src/context/MonsterContext.jsx',
+          ],
+          'chunk-invocation': [
+            './src/services/invocationService.js',
+            './src/pages/Gacha.jsx',
+          ],
+        },
+      },
+    },
+    // Compression et minification
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true, // Enlever les console.log en production
+        drop_debugger: true,
+      },
+    },
+    // Optimisation des assets
+    assetsInlineLimit: 4096, // Inline assets < 4KB
+    chunkSizeWarningLimit: 600,
+  },
 });
