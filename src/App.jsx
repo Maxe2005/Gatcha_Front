@@ -17,14 +17,14 @@ import { MonsterProvider } from './context/MonsterContext';
 import { PlayerProvider } from './context/PlayerContext';
 
 const PrivateRoute = ({ children }) => {
-  // const { token } = useAuth();
-  return children;//token ? children : <Navigate to="/login" />;
+  const { token } = useAuth();
+  return token ? children : <Navigate to="/login" />;
 };
 
 const AdminRoute = ({ children }) => {
-  // const { token, user } = useAuth();
-  // if (!token) return <Navigate to="/login" />;
-  // if (user?.username !== 'admin') return <Navigate to="/home" />;
+  const { token, user } = useAuth();
+  if (!token) return <Navigate to="/login" />;
+  if (user?.username !== 'admin') return <Navigate to="/home" />;
   return children;
 };
 

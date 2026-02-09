@@ -37,7 +37,7 @@ export const invocationApi = axios.create({
 });
 
 export const adminApi = axios.create({
-  baseURL: 'http://localhost:8000/api/v1/admin',
+  baseURL: '/admin-service/api/v1/admin',
   headers: {
     'Content-Type': 'application/json',
   },
