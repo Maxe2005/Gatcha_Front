@@ -18,7 +18,8 @@ import { PlayerProvider } from './context/PlayerContext';
 
 const PrivateRoute = ({ children }) => {
   const { token } = useAuth();
-  return token ? children : <Navigate to="/login" />;
+   if (!token) return <Navigate to="/login" />;
+  return children;
 };
 
 const AdminRoute = ({ children }) => {

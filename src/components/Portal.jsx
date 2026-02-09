@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../context/ThemeContext';
@@ -7,45 +7,10 @@ import './Portal.css';
 const Portal = ({ onInvoke, isLoading = false, transitioning = false }) => {
   const { theme } = useTheme();
   const [state, setState] = useState('idle'); // idle, hover, activating, active
-  const [activeElement, setActiveElement] = useState('feu');
-  const [particles, setParticles] = useState([]);
   const portalRef = useRef(null);
   const hoverTimestampRef = useRef(null);
   const HOVER_MIN_DURATION = 3000;
-
-  const elements = ['feu', 'eau', 'terre', 'vent', 'lumiere', 'darkness'];
   const transitionDuration = 2.0;
-
-  // Changement d'élément actif
-  useEffect(() => {
-    const elementInterval = setInterval(() => {
-      setActiveElement(elements[Math.floor(Math.random() * elements.length)]);
-    }, 6000);
-
-    return () => clearInterval(elementInterval);
-  }, []);
-
-  // Système de particules
-  useEffect(() => {
-    const particleInterval = setInterval(() => {
-      if (!transitioning && (state === 'idle' || state === 'hover')) {
-        const newParticle = {
-          id: Math.random(),
-          x: Math.cos(Math.random() * Math.PI * 2) * 120 + 50,
-          y: Math.sin(Math.random() * Math.PI * 2) * 120 + 50,
-          duration: 2 + Math.random() * 1,
-          size: 2 + Math.random() * 4,
-          delay: 0,
-        };
-        setParticles((prev) => {
-          const updated = [...prev, newParticle];
-          return updated.length > 40 ? updated.slice(-40) : updated;
-        });
-      }
-    }, 150);
-
-    return () => clearInterval(particleInterval);
-  }, [state, transitioning]);
 
   const handleMouseEnter = () => {
     if (!isLoading) {
@@ -56,19 +21,18 @@ const Portal = ({ onInvoke, isLoading = false, transitioning = false }) => {
 
   const handleMouseLeave = () => {
     if (!isLoading && state === 'hover') {
-      const elapsedTime =
-        Date.now() - (hoverTimestampRef.current || Date.now());
+      // const elapsedTime =
+      //   Date.now() - (hoverTimestampRef.current || Date.now());
 
-      if (elapsedTime < HOVER_MIN_DURATION) {
-        const remainingTime = HOVER_MIN_DURATION - elapsedTime;
-        setTimeout(() => {
-          setState('idle');
-          hoverTimestampRef.current = null;
-        }, remainingTime);
-      } else {
-        setState('idle');
-        hoverTimestampRef.current = null;
-      }
+      // if (elapsedTime < HOVER_MIN_DURATION) {
+      //   setTimeout(() => {
+      //     setState('idle');
+      //     hoverTimestampRef.current = null;
+      //   }, HOVER_MIN_DURATION);
+      // } else {
+      setState('idle');
+      hoverTimestampRef.current = null;
+      // }
     }
   };
 
@@ -82,7 +46,7 @@ const Portal = ({ onInvoke, isLoading = false, transitioning = false }) => {
       setState('activating');
       setTimeout(() => {
         setState('active');
-        if (onInvoke) onInvoke(activeElement);
+        if (onInvoke) onInvoke();
         setTimeout(() => {
           setState('idle');
         }, 1200);
@@ -205,9 +169,6 @@ const Portal = ({ onInvoke, isLoading = false, transitioning = false }) => {
       <div
         ref={portalRef}
         className={`portal-container ${theme} ${state}`}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
-        onClick={handleClick}
         role="button"
         tabIndex={0}
         aria-label="Portal d'invocation - Cliquez pour invoquer"
@@ -227,13 +188,6 @@ const Portal = ({ onInvoke, isLoading = false, transitioning = false }) => {
             <div className="vortex-glow"></div>
             {state === 'activating' && <div className="vortex-pulse"></div>}
           </motion.div>
-        </div>
-
-        {/* COUCHE C : Cercle élémentaire */}
-        <div className="portal-layer element-circle-layer">
-          <div className={`element-circle element-${activeElement}`}>
-            {state === 'hover' && <div className="element-ripple"></div>}
-          </div>
         </div>
 
         {/* COUCHE B : Glyphes & Runes */}
@@ -266,7 +220,12 @@ const Portal = ({ onInvoke, isLoading = false, transitioning = false }) => {
         </div>
 
         {/* COUCHE A : Anneau externe */}
-        <div className="portal-layer ring-layer">
+        <div
+          className="portal-layer ring-layer"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          onClick={handleClick}
+        >
           <motion.div
             className={`ring ring-${theme}`}
             animate={transitioning ? 'hidden' : state}
