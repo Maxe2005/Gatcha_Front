@@ -7,6 +7,16 @@ import React, {
 } from 'react';
 import { monstersService } from '../services/monstersService';
 import { logger } from '../services/logger';
+
+/** @typedef {import('../types/monster').MonsterData} MonsterData */
+/**
+ * @typedef {object} MonsterContextValue
+ * @property {(ids: Array<string | number>) => Promise<Array<MonsterData>>} fetchMonsters
+ * @property {(id: string | number) => MonsterData | null} getMonster
+ * @property {() => void} clearCache
+ * @property {boolean} loadingMonsters
+ * @property {string | null} errorMonsters
+ */
 /**
  * MonsterContext - Cache global et gestion des monstres
  *
@@ -25,6 +35,7 @@ import { logger } from '../services/logger';
  * - OCP : Extensible sans modification
  */
 
+/** @type {React.Context<MonsterContextValue | null>} */
 const MonsterContext = createContext(null);
 
 export const MonsterProvider = ({ children }) => {
@@ -94,6 +105,7 @@ export const MonsterProvider = ({ children }) => {
     monstersCache.current = new Map();
   }, []);
 
+  /** @type {MonsterContextValue} */
   const value = {
     fetchMonsters,
     getMonster,
@@ -107,4 +119,5 @@ export const MonsterProvider = ({ children }) => {
   );
 };
 
+/** @returns {MonsterContextValue | null} */
 export const useMonster = () => useContext(MonsterContext);

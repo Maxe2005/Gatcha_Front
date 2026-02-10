@@ -13,8 +13,14 @@ import {
   cacheMonster,
   cacheMonsters,
 } from './indexedDBService';
+import type { MonsterData, MonsterSkill, MonsterStats } from '../types/monster';
 
-/** @typedef {import('../types/monster').MonsterData} MonsterData */
+type MonsterSearchCriteria = {
+  element?: string;
+  rang?: string;
+  minLevel?: number;
+  maxLevel?: number;
+};
 
 /**
  * Routes disponibles sur le service Monstres
@@ -31,7 +37,7 @@ export const MonstersRoutes = {
 /**
  * Valide les stats d'un monstre
  */
-const validateMonsterStats = (stats) => {
+const validateMonsterStats = (stats: any): string[] => {
   const requiredStats = ['hp', 'atk', 'def', 'vit'];
   const errors = [];
 
@@ -55,7 +61,7 @@ const validateMonsterStats = (stats) => {
 /**
  * Normalise les données d'un monstre
  */
-const normalizeMonsterData = (data) => {
+const normalizeMonsterData = (data: any): MonsterData => {
   const errors = [];
 
   if (!data.id && !data.nom && !data.name) {
@@ -118,7 +124,7 @@ export const monstersService = {
    * @param {string|number} monsterId - ID du monstre
    * @returns {Promise<MonsterData>}
    */
-  async getMonster(monsterId) {
+  async getMonster(monsterId: string | number): Promise<MonsterData> {
     try {
       if (!monsterId) {
         throw new ApiError(
@@ -171,7 +177,9 @@ export const monstersService = {
    * @param {Array<string|number>} monsterIds - Array d'IDs de monstres
    * @returns {Promise<Array<MonsterData>>}
    */
-  async getMonsters(monsterIds) {
+  async getMonsters(
+    monsterIds: Array<string | number>
+  ): Promise<Array<MonsterData>> {
     try {
       if (!Array.isArray(monsterIds) || monsterIds.length === 0) {
         throw new ApiError(
@@ -252,7 +260,7 @@ export const monstersService = {
    * @param {string|number} monsterId - ID du monstre
    * @returns {Promise<{hp, atk, def, vit}>}
    */
-  async getMonsterStats(monsterId) {
+  async getMonsterStats(monsterId: string | number): Promise<MonsterStats> {
     try {
       if (!monsterId) {
         throw new ApiError(
@@ -305,7 +313,7 @@ export const monstersService = {
    * @param {string|number} monsterId - ID du monstre
    * @returns {Promise<Array<SkillData>>}
    */
-  async getMonsterSkills(monsterId) {
+  async getMonsterSkills(monsterId: string | number): Promise<MonsterSkill[]> {
     try {
       if (!monsterId) {
         throw new ApiError(
@@ -328,7 +336,7 @@ export const monstersService = {
         );
       }
 
-      const skills = response.data.map((skill) => ({
+      const skills = response.data.map((skill: any) => ({
         name: skill.name || 'Unknown Skill',
         description: skill.description || '',
         damage: Number(skill.damage || 0),
@@ -360,7 +368,9 @@ export const monstersService = {
    * @param {object} criteria - Critères de recherche {element, rang, minLevel, maxLevel}
    * @returns {Promise<Array<MonsterData>>}
    */
-  async searchMonsters(criteria = {}) {
+  async searchMonsters(
+    criteria: MonsterSearchCriteria = {}
+  ): Promise<MonsterData[]> {
     try {
       const validElements = [
         'fire',

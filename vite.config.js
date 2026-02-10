@@ -45,20 +45,20 @@ export default defineConfig({
           'vendor-utils': ['axios', 'react-hot-toast'],
           // Feature chunks
           'chunk-auth': [
-            './src/services/authService.js',
-            './src/context/AuthContext.jsx',
+            './src/services/authService.ts',
+            './src/context/AuthContext.tsx',
           ],
           'chunk-player': [
-            './src/services/joueurService.js',
-            './src/context/PlayerContext.jsx',
+            './src/services/joueurService.ts',
+            './src/context/PlayerContext.tsx',
           ],
           'chunk-monster': [
-            './src/services/monstersService.js',
-            './src/context/MonsterContext.jsx',
+            './src/services/monstersService.ts',
+            './src/context/MonsterContext.tsx',
           ],
           'chunk-invocation': [
-            './src/services/invocationService.js',
-            './src/pages/Gacha.jsx',
+            './src/services/invocationService.ts',
+            './src/pages/Gacha.tsx',
           ],
         },
       },

@@ -7,15 +7,13 @@
 import { joueurApi } from './api';
 import { ApiError, ErrorTypes, parseApiError } from './apiClient';
 import { logger } from './logger';
-
-/** @typedef {import('../types/player').PlayerData} PlayerData */
+import type { PlayerData } from '../types/player';
 
 /**
  * Routes disponibles sur le service Joueur
  */
 export const JoueurRoutes = {
   GET_PLAYER: '/api/players/:username',
-  UPDATE_RESOURCES: '/api/players/:username/resources',
   ADD_EXPERIENCE: '/api/players/:username/xp',
   ADD_MONSTER: '/api/players/:username/add_monster',
   REMOVE_MONSTER: '/api/players/:username/monsters/:monsterId',
@@ -28,7 +26,7 @@ export const JoueurRoutes = {
  * @param {unknown} data
  * @returns {string[]}
  */
-const validatePlayerData = (data) => {
+const validatePlayerData = (data: any): string[] => {
   const errors = [];
 
   if (!data.username || typeof data.username !== 'string') {
@@ -51,7 +49,7 @@ const validatePlayerData = (data) => {
  * @param {unknown} data
  * @returns {PlayerData}
  */
-const normalizePlayerData = (data) => {
+const normalizePlayerData = (data: any): PlayerData => {
   const validationErrors = validatePlayerData(data);
   if (validationErrors.length > 0) {
     throw new ApiError(
@@ -82,7 +80,7 @@ export const joueurService = {
    * @param {string} username - Nom d'utilisateur
    * @returns {Promise<PlayerData>}
    */
-  async getPlayer(username) {
+  async getPlayer(username: string): Promise<PlayerData> {
     try {
       if (!username || typeof username !== 'string') {
         throw new ApiError(
@@ -117,13 +115,121 @@ export const joueurService = {
   },
 
   /**
+   * Met à jour les données du joueur
+   * @param {string} username - Nom d'utilisateur
+   * @param {object} updateData - Données à mettre à jour
+   * @returns {Promise<PlayerData>}
+   */
+  async updatePlayer(
+    username: string,
+    updateData: Record<string, unknown>
+  ): Promise<PlayerData> {
+    try {
+      if (!username || typeof username !== 'string') {
+        throw new ApiError(
+          ErrorTypes.VALIDATION,
+          'Username must be a non-empty string',
+          400
+        );
+      }
+
+      if (!updateData || typeof updateData !== 'object') {
+        throw new ApiError(
+          ErrorTypes.VALIDATION,
+          'Update data must be a valid object',
+          400
+        );
+      }
+
+      logger.debug('JoueurService', 'Updating player', {
+        username,
+        updates: Object.keys(updateData),
+      });
+
+      const url = JoueurRoutes.UPDATE_PLAYER.replace(':username', username);
+      const response = await joueurApi.patch(url, updateData);
+
+      const normalizedData = normalizePlayerData(response.data);
+      logger.info('JoueurService', 'Player updated successfully', { username });
+
+      return normalizedData;
+    } catch (error) {
+      logger.error('JoueurService', 'Failed to update player', {
+        username,
+        error: error.message,
+      });
+      if (error instanceof ApiError) {
+        throw error;
+      }
+      throw parseApiError(error);
+    }
+  },
+
+  /**
+   * Récupère les ressources du joueur
+   * @param {string} username - Nom d'utilisateur
+   * @returns {Promise<{gold, gems, tickets}>}
+   */
+  async getResources(
+    username: string
+  ): Promise<{ gold: number; gems: number; tickets: number }> {
+    try {
+      if (!username || typeof username !== 'string') {
+        throw new ApiError(
+          ErrorTypes.VALIDATION,
+          'Username must be a non-empty string',
+          400
+        );
+      }
+
+      logger.debug('JoueurService', 'Fetching resources', { username });
+
+      const url = JoueurRoutes.GET_RESOURCES.replace(':username', username);
+      const response = await joueurApi.get(url);
+
+      const resources = {
+        gold: Number(response.data.gold) || 0,
+        gems: Number(response.data.gems) || 0,
+        tickets: Number(response.data.tickets) || 0,
+      };
+
+      // Validation
+      Object.values(resources).forEach((val) => {
+        if (!Number.isFinite(val) || val < 0) {
+          throw new ApiError(
+            ErrorTypes.VALIDATION,
+            'Invalid resource values in response',
+            200
+          );
+        }
+      });
+
+      logger.debug('JoueurService', 'Resources fetched', { resources });
+      return resources;
+    } catch (error) {
+      logger.error('JoueurService', 'Failed to fetch resources', {
+        username,
+        error: error.message,
+      });
+      if (error instanceof ApiError) {
+        throw error;
+      }
+      throw parseApiError(error);
+    }
+  },
+
+  /**
    * Ajoute une ressource au joueur
    * @param {string} username - Nom d'utilisateur
    * @param {string} resourceType - Type: 'gold', 'gems', 'tickets'
    * @param {number} amount - Quantité à ajouter
    * @returns {Promise<{gold, gems, tickets}>}
    */
-  async addResource(username, resourceType, amount) {
+  async addResource(
+    username: string,
+    resourceType: 'gold' | 'gems' | 'tickets',
+    amount: number
+  ): Promise<{ gold: number; gems: number; tickets: number }> {
     try {
       if (!username || typeof username !== 'string') {
         throw new ApiError(
@@ -188,12 +294,64 @@ export const joueurService = {
   },
 
   /**
+   * Récupère les monstres du joueur
+   * @param {string} username - Nom d'utilisateur
+   * @returns {Promise<Array<string>>} - Tableau d'IDs de monstres
+   */
+  async getMonsters(username: string): Promise<Array<string | number>> {
+    try {
+      if (!username || typeof username !== 'string') {
+        throw new ApiError(
+          ErrorTypes.VALIDATION,
+          'Username must be a non-empty string',
+          400
+        );
+      }
+
+      logger.debug('JoueurService', 'Fetching player monsters', { username });
+
+      const url = JoueurRoutes.GET_MONSTERS.replace(':username', username);
+      const response = await joueurApi.get(url);
+
+      const monsterIds = Array.isArray(response.data)
+        ? response.data
+        : response.data.monsterIds || [];
+
+      if (!Array.isArray(monsterIds)) {
+        throw new ApiError(
+          ErrorTypes.VALIDATION,
+          'Invalid monster list format',
+          200
+        );
+      }
+
+      logger.debug('JoueurService', 'Monsters fetched', {
+        username,
+        count: monsterIds.length,
+      });
+      return monsterIds;
+    } catch (error) {
+      logger.error('JoueurService', 'Failed to fetch monsters', {
+        username,
+        error: error.message,
+      });
+      if (error instanceof ApiError) {
+        throw error;
+      }
+      throw parseApiError(error);
+    }
+  },
+
+  /**
    * Ajoute un monstre au joueur
    * @param {string} username - Nom d'utilisateur
    * @param {string|number} monsterId - ID du monstre
    * @returns {Promise<Array<string>>}
    */
-  async addMonster(username, monsterId) {
+  async addMonster(
+    username: string,
+    monsterId: string | number
+  ): Promise<Array<string | number>> {
     try {
       if (!username || typeof username !== 'string') {
         throw new ApiError(
@@ -226,119 +384,6 @@ export const joueurService = {
       logger.error('JoueurService', 'Failed to add monster', {
         username,
         monsterId,
-        error: error.message,
-      });
-      if (error instanceof ApiError) {
-        throw error;
-      }
-      throw parseApiError(error);
-    }
-  },
-
-  /**
-   * Supprime un monstre du joueur
-   * @param {string} username - Nom d'utilisateur
-   * @param {string|number} monsterId - ID du monstre à supprimer
-   * @returns {Promise<Array<string>>}
-   */
-  async removeMonster(username, monsterId) {
-    try {
-      if (!username || typeof username !== 'string') {
-        throw new ApiError(
-          ErrorTypes.VALIDATION,
-          'Username must be a non-empty string',
-          400
-        );
-      }
-
-      if (!monsterId) {
-        throw new ApiError(
-          ErrorTypes.VALIDATION,
-          'Monster ID is required',
-          400
-        );
-      }
-
-      logger.debug('JoueurService', 'Removing monster', {
-        username,
-        monsterId,
-      });
-
-      const url = JoueurRoutes.REMOVE_MONSTER.replace(
-        ':username',
-        username
-      ).replace(':monsterId', String(monsterId));
-      const response = await joueurApi.delete(url);
-
-      const monsterIds = Array.isArray(response.data)
-        ? response.data
-        : response.data.monsterIds || [];
-
-      logger.info('JoueurService', 'Monster removed', {
-        username,
-        monsterId,
-      });
-      return monsterIds;
-    } catch (error) {
-      logger.error('JoueurService', 'Failed to remove monster', {
-        username,
-        monsterId,
-        error: error.message,
-      });
-      if (error instanceof ApiError) {
-        throw error;
-      }
-      throw parseApiError(error);
-    }
-  },
-
-  /**
-   * Ajoute de l'expérience au joueur
-   * @param {string} username - Nom d'utilisateur
-   * @param {number} amount - Quantité d'expérience à ajouter
-   * @returns {Promise<{level: number, experience: number}>}
-   */
-  async addExperience(username, amount) {
-    try {
-      if (!username || typeof username !== 'string') {
-        throw new ApiError(
-          ErrorTypes.VALIDATION,
-          'Username must be a non-empty string',
-          400
-        );
-      }
-
-      if (!Number.isFinite(amount) || amount < 0) {
-        throw new ApiError(
-          ErrorTypes.VALIDATION,
-          'Amount must be a positive number',
-          400
-        );
-      }
-
-      logger.debug('JoueurService', 'Adding experience', {
-        username,
-        amount,
-      });
-
-      const url = JoueurRoutes.ADD_EXPERIENCE.replace(':username', username);
-      const response = await joueurApi.post(url, { amount });
-
-      const result = {
-        level: Number(response.data.level) || 1,
-        experience: Number(response.data.experience) || 0,
-      };
-
-      logger.info('JoueurService', 'Experience added', {
-        username,
-        amount,
-        newLevel: result.level,
-      });
-      return result;
-    } catch (error) {
-      logger.error('JoueurService', 'Failed to add experience', {
-        username,
-        amount,
         error: error.message,
       });
       if (error instanceof ApiError) {

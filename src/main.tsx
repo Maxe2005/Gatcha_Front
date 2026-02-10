@@ -4,7 +4,7 @@ import App from './App';
 import './index.css';
 import './cursors.css';
 import './transitions.css';
-import './particleSystem.js';
+import './particleSystem';
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
 
 const theme = createTheme({

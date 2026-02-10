@@ -7,8 +7,7 @@
 import { invocationApi } from './api';
 import { ApiError, ErrorTypes, parseApiError } from './apiClient';
 import { logger } from './logger';
-
-/** @typedef {import('../types/monster').MonsterData} MonsterData */
+import type { MonsterData } from '../types/monster';
 
 /**
  * Routes disponibles sur le service d'Invocation
@@ -20,7 +19,7 @@ export const InvocationRoutes = {
 /**
  * Valide les données d'un monstre invoqué
  */
-const validateInvokedMonster = (data) => {
+const validateInvokedMonster = (data: any): string[] => {
   const errors = [];
 
   if (!data.id && !data.nom && !data.name) {
@@ -39,7 +38,7 @@ const validateInvokedMonster = (data) => {
 /**
  * Normalise les données d'un monstre invoqué
  */
-const normalizeInvokedMonster = (data) => {
+const normalizeInvokedMonster = (data: any): MonsterData => {
   const errors = validateInvokedMonster(data);
   if (errors.length > 0) {
     throw new ApiError(
@@ -76,7 +75,7 @@ export const invocationService = {
    * @param {string} username - Nom d'utilisateur
    * @returns {Promise<MonsterData>}
    */
-  async invoke(username) {
+  async invoke(username: string): Promise<MonsterData> {
     try {
       if (!username || typeof username !== 'string') {
         throw new ApiError(

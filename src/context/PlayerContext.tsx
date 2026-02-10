@@ -5,23 +5,23 @@ import React, {
   useState,
   useEffect,
 } from 'react';
+import type { PropsWithChildren } from 'react';
 import { useAuth } from './AuthContext';
 import { useMonster } from './MonsterContext';
 import { joueurService } from '../services/joueurService';
 import { logger } from '../services/logger';
+import type { PlayerData } from '../types/player';
+import type { MonsterData } from '../types/monster';
 
-/** @typedef {import('../types/player').PlayerData} PlayerData */
-/** @typedef {import('../types/monster').MonsterData} MonsterData */
-/**
- * @typedef {object} PlayerContextValue
- * @property {PlayerData | null} playerData
- * @property {Array<MonsterData>} monsters
- * @property {boolean} loading
- * @property {string | null} error
- * @property {boolean} loadingMonsters
- * @property {string | null} errorMonsters
- * @property {() => Promise<PlayerData | null>} refreshPlayerData
- */
+type PlayerContextValue = {
+  playerData: PlayerData | null;
+  monsters: MonsterData[];
+  loading: boolean;
+  error: string | null;
+  loadingMonsters: boolean;
+  errorMonsters: string | null;
+  refreshPlayerData: () => Promise<PlayerData | null>;
+};
 /**
  * PlayerContext - Source unique de vérité pour les données du joueur
  *
@@ -41,17 +41,15 @@ import { logger } from '../services/logger';
  * - Dependency Inversion : Dépend d'abstractions (contexts)
  */
 
-/** @type {React.Context<PlayerContextValue | null>} */
-const PlayerContext = createContext(null);
+const PlayerContext = createContext<PlayerContextValue | null>(null);
 
-export const PlayerProvider = ({ children }) => {
+export const PlayerProvider = ({ children }: PropsWithChildren) => {
   const { user, token } = useAuth();
   const { fetchMonsters, loadingMonsters, errorMonsters } = useMonster();
-  /** @type {PlayerData | null} */
-  const [playerData, setPlayerData] = useState(null);
-  const [monsters, setMonsters] = useState([]);
+  const [playerData, setPlayerData] = useState<PlayerData | null>(null);
+  const [monsters, setMonsters] = useState<MonsterData[]>([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   // Charger les données complètes du joueur depuis l'API
   useEffect(() => {
@@ -112,26 +110,26 @@ export const PlayerProvider = ({ children }) => {
   }, [playerData?.monsterIds, fetchMonsters]);
 
   // Fonction pour rafraîchir les données du joueur manuellement
-  const refreshPlayerData = useCallback(async () => {
-    if (!token || !playerData?.username) {
-      return null;
-    }
+  const refreshPlayerData =
+    useCallback(async (): Promise<PlayerData | null> => {
+      if (!token || !playerData?.username) {
+        return null;
+      }
 
-    setLoading(true);
-    try {
-      const dataResponse = await joueurService.getPlayer(playerData.username);
-      setPlayerData(dataResponse);
-      return dataResponse;
-    } catch (err) {
-      logger.error('PlayerContext', 'Error refreshing player data:', err);
-      return null;
-    } finally {
-      setLoading(false);
-    }
-  }, [token, playerData?.username]);
+      setLoading(true);
+      try {
+        const dataResponse = await joueurService.getPlayer(playerData.username);
+        setPlayerData(dataResponse);
+        return dataResponse;
+      } catch (err) {
+        logger.error('PlayerContext', 'Error refreshing player data:', err);
+        return null;
+      } finally {
+        setLoading(false);
+      }
+    }, [token, playerData?.username]);
 
-  /** @type {PlayerContextValue} */
-  const value = {
+  const value: PlayerContextValue = {
     playerData,
     monsters,
     loading,
@@ -146,5 +144,5 @@ export const PlayerProvider = ({ children }) => {
   );
 };
 
-/** @returns {PlayerContextValue | null} */
-export const usePlayer = () => useContext(PlayerContext);
+export const usePlayer = (): PlayerContextValue | null =>
+  useContext(PlayerContext);
