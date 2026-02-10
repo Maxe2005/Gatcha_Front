@@ -67,6 +67,27 @@ const validateRegisterInput = (username, password, passwordConfirm) => {
 };
 
 /**
+ * Hash le mot de passe en SHA-256 (hex) avant envoi
+ */
+const hashPassword = async (password) => {
+  if (!window.crypto?.subtle) {
+    throw new ApiError(
+      ErrorTypes.VALIDATION,
+      'Crypto API unavailable for password hashing',
+      400
+    );
+  }
+
+  const encoder = new TextEncoder();
+  const data = encoder.encode(password);
+  const digest = await window.crypto.subtle.digest('SHA-256', data);
+
+  return Array.from(new Uint8Array(digest))
+    .map((byte) => byte.toString(16).padStart(2, '0'))
+    .join('');
+};
+
+/**
  * Normalise la réponse de login
  */
 const normalizeLoginResponse = (data) => {
@@ -132,9 +153,11 @@ export const authService = {
 
       logger.debug('AuthService', 'Attempting login', { username });
 
+      const hashedPassword = await hashPassword(password);
+
       const response = await authApi.post(AuthRoutes.LOGIN, {
         username,
-        password,
+        password: hashedPassword,
       });
 
       const normalizedData = normalizeLoginResponse(response.data);
@@ -181,9 +204,11 @@ export const authService = {
 
       logger.debug('AuthService', 'Attempting registration', { username });
 
+      const hashedPassword = await hashPassword(password);
+
       const response = await authApi.post(AuthRoutes.REGISTER, {
         username,
-        password,
+        password: hashedPassword,
       });
 
       const normalizedData = normalizeLoginResponse(response.data);

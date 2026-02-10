@@ -9,9 +9,7 @@ import {
   Typography,
   Button,
   CircularProgress,
-  IconButton,
 } from '@mui/material';
-import Header from '../components/Header';
 import GatchaCard from '../components/GatchaCard';
 import { useNavigate } from 'react-router-dom';
 import './Gacha.css';
@@ -43,15 +41,6 @@ const normalizeMonster = (data) => {
       vit: parseNumber(stats.vit ?? data.vit),
     },
   };
-};
-
-const first_monster = {
-  nom: 'Pyrolosse',
-  element: 'FIRE',
-  rang: 'COMMON',
-  stats: { hp: 450, atk: 65, def: 40, vit: 35 },
-  description:
-    "Un petit bouledogue de lave avec des charbons ardents en guise de fourrure. Ses yeux brillent d'un jaune vif. Style cartoon 2D, contours nets, fond volcanique flou.",
 };
 
 const secondary_monster = {
@@ -126,7 +115,7 @@ const secondary_monster = {
 const monster_mock = secondary_monster;
 
 const Gacha = () => {
-  const { logout, user } = useAuth();
+  const { user } = useAuth();
   const { theme } = useTheme();
   const [monster, setMonster] = useState(monster_mock);
   const [loading, setLoading] = useState(false);
@@ -172,7 +161,7 @@ const Gacha = () => {
           gutterBottom
           sx={{ color: 'var(--text-primary)', fontFamily: 'Cinzel, serif' }}
         >
-          Chambre d'Invocation
+          Chambre d&apos;Invocation
         </Typography>
 
         <Button
@@ -199,8 +188,6 @@ const Gacha = () => {
             'INVOQUER'
           )}
         </Button>
-
-        {error && <Typography color="error">{error}</Typography>}
 
         {normalizedMonster && (
           <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>

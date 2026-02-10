@@ -104,7 +104,11 @@ const Login = () => {
         }
       } else {
         // Register flow
-        const response = await authService.register(username, password);
+        const response = await authService.register(
+          username,
+          password,
+          confirmPassword
+        );
         token = response.token;
         user = response.username;
 
