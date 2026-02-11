@@ -5,7 +5,11 @@ import './index.css';
 import './cursors.css';
 import './transitions.css';
 import './particleSystem.js';
+import { injectColorsToCSS } from './pages/admin/colors';
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
+
+// Inject CSS variables from color constants at startup
+injectColorsToCSS();
 
 const theme = createTheme({
   palette: {

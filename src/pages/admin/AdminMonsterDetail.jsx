@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { adminApi } from '../../services/api';
+import ThemeToggle from '../../components/ThemeToggle';
 import '../admin/AdminMonsterDetail.css';
 
 const AdminMonsterDetail = () => {
@@ -153,12 +154,24 @@ const AdminMonsterDetail = () => {
         >
           ← Retour
         </button>
-        <h1>{monster?.metadata?.filename}</h1>
+        <div className="header-title">
+          {monster?.monster_data && (
+            <h1 className="monster-name-subtitle">
+              {monster.monster_data.name ||
+                monster.monster_data.title ||
+                monster.monster_data.nom ||
+                (typeof monster.monster_data === 'object'
+                  ? Object.values(monster.monster_data)[0]
+                  : monster.monster_data)}
+            </h1>
+          )}
+        </div>
         <span
           className={`state-badge state-${monster?.metadata?.state.toLowerCase()}`}
         >
           {monster?.metadata?.state}
         </span>
+        <ThemeToggle />
       </div>
 
       {actionError && <div className="error-message">{actionError}</div>}
@@ -194,77 +207,82 @@ const AdminMonsterDetail = () => {
         {activeTab === 'summary' && (
           <div className="summary-tab">
             <h2>Informations du Monstre</h2>
-            <div className="info-grid">
-              <div className="info-item">
-                <label>ID</label>
-                <span>{monster?.metadata?.monster_id}</span>
-              </div>
-              <div className="info-item">
-                <label>État</label>
-                <span
-                  className={`state-badge state-${monster?.metadata?.state.toLowerCase()}`}
-                >
-                  {monster?.metadata?.state}
-                </span>
-              </div>
-              <div className="info-item">
-                <label>Créé le</label>
-                <span>
-                  {new Date(monster?.metadata?.created_at).toLocaleString(
-                    'fr-FR'
-                  )}
-                </span>
-              </div>
-              <div className="info-item">
-                <label>Mis à jour le</label>
-                <span>
-                  {new Date(monster?.metadata?.updated_at).toLocaleString(
-                    'fr-FR'
-                  )}
-                </span>
-              </div>
-              <div className="info-item">
-                <label>Valide</label>
-                <span
-                  className={monster?.metadata?.is_valid ? 'valid' : 'invalid'}
-                >
-                  {monster?.metadata?.is_valid ? 'Oui' : 'Non'}
-                </span>
-              </div>
-              {monster?.metadata?.reviewed_by && (
-                <>
+            <div className="summary-container">
+              <div className="info-section">
+                <div className="info-grid">
                   <div className="info-item">
-                    <label>Révisé par</label>
-                    <span>{monster.metadata.reviewed_by}</span>
+                    <label>ID</label>
+                    <span>{monster?.metadata?.monster_id}</span>
                   </div>
                   <div className="info-item">
-                    <label>Date de révision</label>
+                    <label>État</label>
+                    <span
+                      className={`state-badge state-${monster?.metadata?.state.toLowerCase()}`}
+                    >
+                      {monster?.metadata?.state}
+                    </span>
+                  </div>
+                  <div className="info-item">
+                    <label>Créé le</label>
                     <span>
-                      {new Date(monster.metadata.review_date).toLocaleString(
+                      {new Date(monster?.metadata?.created_at).toLocaleString(
                         'fr-FR'
                       )}
                     </span>
                   </div>
-                </>
-              )}
-              {monster?.metadata?.review_notes && (
-                <div className="info-item full-width">
-                  <label>Notes de révision</label>
-                  <p>{monster.metadata.review_notes}</p>
+                  <div className="info-item">
+                    <label>Mis à jour le</label>
+                    <span>
+                      {new Date(monster?.metadata?.updated_at).toLocaleString(
+                        'fr-FR'
+                      )}
+                    </span>
+                  </div>
+                  <div className="info-item">
+                    <label>Valide</label>
+                    <span
+                      className={
+                        monster?.metadata?.is_valid ? 'valid' : 'invalid'
+                      }
+                    >
+                      {monster?.metadata?.is_valid ? 'Oui' : 'Non'}
+                    </span>
+                  </div>
+                  {monster?.metadata?.reviewed_by && (
+                    <>
+                      <div className="info-item">
+                        <label>Révisé par</label>
+                        <span>{monster.metadata.reviewed_by}</span>
+                      </div>
+                      <div className="info-item">
+                        <label>Date de révision</label>
+                        <span>
+                          {new Date(
+                            monster.metadata.review_date
+                          ).toLocaleString('fr-FR')}
+                        </span>
+                      </div>
+                    </>
+                  )}
+                  {monster?.metadata?.review_notes && (
+                    <div className="info-item full-width">
+                      <label>Notes de révision</label>
+                      <p>{monster.metadata.review_notes}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {monster?.image_url && (
+                <div className="image-section">
+                  <img
+                    src={monster.image_url}
+                    alt="Monster"
+                    className="monster-image"
+                  />
                 </div>
               )}
             </div>
-
-            {monster?.image_url && (
-              <div className="image-section">
-                <h3>Image du Monstre</h3>
-                <img
-                  src={monster.image_url}
-                  alt="Monster"
-                  className="monster-image"
-                />
-              </div>
-            )}
 
             <div className="actions-section">
               {canApproveReject && (

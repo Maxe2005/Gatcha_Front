@@ -1,5 +1,11 @@
 /* Admin Monsters List Styles */
 
+/* 
+ * CSS Variables for colors are injected at runtime from colors.js
+ * This ensures a SINGLE SOURCE OF TRUTH for all colors
+ * See: injectColorsToCSS() in colors.js
+ */
+
 .admin-monsters-list {
   max-width: 1400px;
   margin: 0 auto;
@@ -24,6 +30,38 @@
   margin: 0;
 }
 
+.filters-container {
+  background: var(--card-bg, #f9f9f9);
+  padding: 1.5rem;
+  border-radius: 12px;
+  border: 1px solid var(--border-color, #ddd);
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.filters-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.filters-row:last-child {
+  margin-bottom: 0;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.filter-group label {
+  font-weight: 600;
+  color: var(--text-primary, #000);
+  font-size: 0.9rem;
+}
+
 .filters {
   display: flex;
   gap: 1rem;
@@ -33,6 +71,30 @@
 .filters label {
   font-weight: 500;
   color: var(--text-primary, #000);
+}
+
+.filter-search {
+  padding: 0.6rem 1rem;
+  border: 1px solid var(--border-color, #ddd);
+  border-radius: 6px;
+  background: var(--bg-primary, #fff);
+  color: var(--text-primary, #000);
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.filter-search::placeholder {
+  color: var(--text-secondary, #999);
+}
+
+.filter-search:hover {
+  border-color: #667eea;
+}
+
+.filter-search:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 .filter-select {
@@ -54,6 +116,31 @@
   outline: none;
   border-color: #667eea;
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.btn-reset-filters {
+  position: absolute;
+  top: 1.5rem;
+  left: 1.5rem;
+  padding: 0.5rem 1rem;
+  background: transparent;
+  color: var(--text-secondary, #999);
+  border: 1px solid var(--border-color, #ddd);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 400;
+  transition: all 0.3s ease;
+}
+
+.btn-reset-filters:hover {
+  background: var(--card-bg, #f5f5f5);
+  border-color: var(--text-secondary, #999);
+  color: var(--text-primary, #000);
+}
+
+.btn-reset-filters:active {
+  transform: scale(0.98);
 }
 
 .error-message {
@@ -94,7 +181,8 @@
 
 .monsters-table th {
   padding: 1rem;
-  text-align: left;
+  text-align: center;
+  vertical-align: middle;
   font-weight: 600;
   color: var(--text-primary, #000);
   font-size: 0.9rem;
@@ -102,8 +190,14 @@
   letter-spacing: 0.5px;
 }
 
+.monsters-table th:first-child {
+  text-align: left;
+}
+
 .monsters-table td {
   padding: 1rem;
+  text-align: center;
+  vertical-align: middle;
   border-bottom: 1px solid var(--border-color, #ddd);
   color: var(--text-primary, #000);
 }
@@ -116,6 +210,60 @@
   font-weight: 600;
   font-size: 1.2rem;
   color: #667eea;
+  text-align: left !important;
+  vertical-align: middle;
+}
+
+/* Rank colors */
+.rank-text {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.rank-text.rank-common {
+  color: var(--rank-color-common);
+}
+
+.rank-text.rank-rare {
+  color: var(--rank-color-rare);
+}
+
+.rank-text.rank-epic {
+  color: var(--rank-color-epic);
+}
+
+.rank-text.rank-legendary {
+  color: var(--rank-color-legendary);
+}
+
+/* Element colors */
+.element-text {
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+.element-text.element-fire {
+  color: var(--element-color-fire);
+}
+
+.element-text.element-water {
+  color: var(--element-color-water);
+}
+
+.element-text.element-wind {
+  color: var(--element-color-wind);
+}
+
+.element-text.element-earth {
+  color: var(--element-color-earth);
+}
+
+.element-text.element-light {
+  color: var(--element-color-light);
+}
+
+.element-text.element-darkness {
+  color: var(--element-color-darkness);
 }
 
 .state-badge {
@@ -130,41 +278,41 @@
 }
 
 .state-badge.state-generated {
-  background: #a0aec0;
+  background: var(--state-color-generated);
 }
 
 .state-badge.state-defective {
-  background: #e53e3e;
+  background: var(--state-color-defective);
 }
 
 .state-badge.state-corrected {
-  background: #f6ad55;
+  background: var(--state-color-corrected);
 }
 
 .state-badge.state-pending_review {
-  background: #ecc94b;
-  color: #000;
+  background: var(--state-color-pending-review);
+  color: var(--state-color-pending-review-text);
 }
 
 .state-badge.state-approved {
-  background: #48bb78;
+  background: var(--state-color-approved);
 }
 
 .state-badge.state-transmitted {
-  background: #4299e1;
+  background: var(--state-color-transmitted);
 }
 
 .state-badge.state-rejected {
-  background: #ed8936;
+  background: var(--state-color-rejected);
 }
 
 .valid {
-  color: #48bb78;
+  color: var(--color-valid);
   font-weight: 600;
 }
 
 .invalid {
-  color: #e53e3e;
+  color: var(--color-invalid);
   font-weight: 600;
 }
 
@@ -240,11 +388,33 @@
     border-color: var(--border-color, #444);
   }
 
+  .filters-container {
+    background: var(--card-bg, #2a2a2a);
+    border-color: var(--border-color, #444);
+  }
+
   .filter-select,
+  .filter-search,
   .monsters-table table {
     background: var(--bg-primary, #1a1a1a);
     color: var(--text-primary, #fff);
     border-color: var(--border-color, #444);
+  }
+
+  .filter-search::placeholder {
+    color: var(--text-secondary, #666);
+  }
+
+  .btn-reset-filters {
+    background: transparent;
+    border-color: var(--border-color, #444);
+    color: var(--text-secondary, #999);
+  }
+
+  .btn-reset-filters:hover {
+    background: var(--card-bg, #2a2a2a);
+    border-color: var(--text-secondary, #999);
+    color: var(--text-primary, #fff);
   }
 
   .monsters-table thead {
@@ -258,6 +428,48 @@
 
   .monster-row:hover {
     background: var(--card-bg, #2a2a2a);
+  }
+
+  /* Rank colors in dark mode */
+  .rank-text.rank-common {
+    color: var(--rank-color-common-dark);
+  }
+
+  .rank-text.rank-rare {
+    color: var(--rank-color-rare-dark);
+  }
+
+  .rank-text.rank-epic {
+    color: var(--rank-color-epic-dark);
+  }
+
+  .rank-text.rank-legendary {
+    color: var(--rank-color-legendary-dark);
+  }
+
+  /* Element colors in dark mode */
+  .element-text.element-fire {
+    color: var(--element-color-fire-dark);
+  }
+
+  .element-text.element-water {
+    color: var(--element-color-water-dark);
+  }
+
+  .element-text.element-wind {
+    color: var(--element-color-wind-dark);
+  }
+
+  .element-text.element-earth {
+    color: var(--element-color-earth-dark);
+  }
+
+  .element-text.element-light {
+    color: var(--element-color-light-dark);
+  }
+
+  .element-text.element-darkness {
+    color: var(--element-color-darkness-dark);
   }
 
   .pagination {
@@ -279,6 +491,10 @@
 
   .filter-select {
     width: 200px;
+  }
+
+  .filters-row {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   }
 }
 

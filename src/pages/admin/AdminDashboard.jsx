@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { adminApi } from '../../services/api';
+import ThemeToggle from '../../components/ThemeToggle';
 import '../admin/AdminDashboard.css';
 
 const AdminDashboard = () => {
@@ -54,9 +55,12 @@ const AdminDashboard = () => {
     <div className="admin-dashboard">
       <div className="admin-header">
         <h1>Tableau de Bord Admin</h1>
-        <button className="btn-primary" onClick={handleViewMonsters}>
-          Voir les Monstres
-        </button>
+        <div className="admin-header-actions">
+          <button className="btn-primary" onClick={handleViewMonsters}>
+            Voir les Monstres
+          </button>
+          <ThemeToggle />
+        </div>
       </div>
 
       {stats && (
