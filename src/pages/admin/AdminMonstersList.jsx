@@ -13,6 +13,8 @@ const AdminMonstersList = () => {
   // Pagination and filters
   const [limit] = useState(20);
   const [offset, setOffset] = useState(0);
+  const [sortColumn, setSortColumn] = useState(null);
+  const [sortDirection, setSortDirection] = useState('asc');
 
   // Initialize from localStorage
   const getInitialState = (key) => {
@@ -116,7 +118,7 @@ const AdminMonstersList = () => {
 
   // Filter monsters based on current filters
   const getFilteredMonsters = useCallback(() => {
-    return allMonsters.filter((monster) => {
+    let filtered = allMonsters.filter((monster) => {
       // Search by name
       if (
         searchKeyword &&
@@ -153,6 +155,53 @@ const AdminMonstersList = () => {
 
       return true;
     });
+
+    // Apply sorting
+    if (sortColumn) {
+      filtered.sort((a, b) => {
+        let aValue, bValue;
+        let comparison = 0;
+
+        switch (sortColumn) {
+          case 'name':
+            aValue = a.name.toLowerCase();
+            bValue = b.name.toLowerCase();
+            comparison = aValue.localeCompare(bValue);
+            break;
+          case 'element':
+            aValue = MONSTER_ELEMENTS.indexOf((a.element || '').toLowerCase());
+            bValue = MONSTER_ELEMENTS.indexOf((b.element || '').toLowerCase());
+            comparison = aValue - bValue;
+            break;
+          case 'rank':
+            aValue = MONSTER_RANKS.indexOf(a.rank);
+            bValue = MONSTER_RANKS.indexOf(b.rank);
+            comparison = aValue - bValue;
+            break;
+          case 'state':
+            aValue = MONSTER_STATES.indexOf(a.state);
+            bValue = MONSTER_STATES.indexOf(b.state);
+            comparison = aValue - bValue;
+            break;
+          case 'valid':
+            aValue = a.is_valid ? 1 : 0;
+            bValue = b.is_valid ? 1 : 0;
+            comparison = aValue - bValue;
+            break;
+          case 'created_at':
+            aValue = new Date(a.created_at).getTime();
+            bValue = new Date(b.created_at).getTime();
+            comparison = aValue - bValue;
+            break;
+          default:
+            return 0;
+        }
+
+        return sortDirection === 'asc' ? comparison : -comparison;
+      });
+    }
+
+    return filtered;
   }, [
     allMonsters,
     searchKeyword,
@@ -160,6 +209,8 @@ const AdminMonstersList = () => {
     selectedRank,
     selectedElement,
     selectedValid,
+    sortColumn,
+    sortDirection,
   ]);
 
   const filteredMonsters = getFilteredMonsters();
@@ -192,6 +243,25 @@ const AdminMonstersList = () => {
   const handleSearchKeywordChange = (e) => {
     setSearchKeyword(e.target.value);
     setOffset(0);
+  };
+
+  const handleSort = (column) => {
+    if (sortColumn === column) {
+      // If clicking the same column, toggle direction
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      // If clicking a new column, sort ascending
+      setSortColumn(column);
+      setSortDirection('asc');
+    }
+    setOffset(0);
+  };
+
+  const getSortIcon = (column) => {
+    if (sortColumn !== column) {
+      return ' ↕';
+    }
+    return sortDirection === 'asc' ? ' ↑' : ' ↓';
   };
 
   const handleResetFilters = () => {
@@ -325,18 +395,52 @@ const AdminMonstersList = () => {
             <table>
               <thead>
                 <tr>
-                  <th>Nom</th>
-                  <th>Élément</th>
-                  <th>Rang</th>
-                  <th>État</th>
-                  <th>Valide</th>
-                  <th>Créé le</th>
+                  <th
+                    onClick={() => handleSort('name')}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    Nom{getSortIcon('name')}
+                  </th>
+                  <th
+                    onClick={() => handleSort('element')}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    Élément{getSortIcon('element')}
+                  </th>
+                  <th
+                    onClick={() => handleSort('rank')}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    Rang{getSortIcon('rank')}
+                  </th>
+                  <th
+                    onClick={() => handleSort('state')}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    État{getSortIcon('state')}
+                  </th>
+                  <th
+                    onClick={() => handleSort('valid')}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    Valide{getSortIcon('valid')}
+                  </th>
+                  <th
+                    onClick={() => handleSort('created_at')}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    Créé le{getSortIcon('created_at')}
+                  </th>
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {paginatedMonsters.map((monster) => (
-                  <tr key={monster.monster_id} className="monster-row">
+                  <tr
+                    key={monster.monster_id}
+                    className="monster-row"
+                    onDoubleClick={() => handleMonsterClick(monster.monster_id)}
+                  >
                     <td className="monster-name">{monster.name}</td>
                     <td>
                       <span className={getElementClass(monster.element)}>
