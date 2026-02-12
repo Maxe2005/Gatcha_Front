@@ -2,6 +2,17 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const ThemeContext = createContext(null);
 
+const isEditableTarget = (target) => {
+  if (!target) return false;
+  const tagName = target.tagName;
+  return (
+    tagName === 'INPUT' ||
+    tagName === 'TEXTAREA' ||
+    tagName === 'SELECT' ||
+    target.isContentEditable
+  );
+};
+
 export const ThemeProvider = ({ children }) => {
   // Get theme from localStorage or default to 'divine'
   const [theme, setTheme] = useState(() => {
@@ -28,6 +39,23 @@ export const ThemeProvider = ({ children }) => {
       new CustomEvent('themeChanged', { detail: { theme } })
     );
   }, [theme]);
+
+  // Keyboard shortcut: T to toggle theme
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (isEditableTarget(event.target)) return;
+      if (event.repeat) return;
+      if (event.ctrlKey || event.metaKey || event.altKey) return;
+
+      if (event.code === 'KeyT') {
+        event.preventDefault();
+        setTheme((prevTheme) => (prevTheme === 'divine' ? 'dark' : 'divine'));
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const toggleTheme = () => {
     setTheme((prevTheme) => (prevTheme === 'divine' ? 'dark' : 'divine'));

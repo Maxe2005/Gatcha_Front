@@ -79,3 +79,25 @@ textarea {
 img {
   -webkit-user-drag: none;
 }
+
+/* Background view mode */
+body.background-view-active .notification-stack {
+  opacity: 0;
+  pointer-events: none;
+}
+
+body.background-view-active .home-container > :not(.background-layer),
+body.background-view-active .inventory-container > :not(.background-layer) {
+  opacity: 0;
+  pointer-events: none;
+}
+
+body.background-view-active .login-container > *,
+body.background-view-active .generate-page > *,
+body.background-view-active .gacha-page > *,
+body.background-view-active .admin-dashboard > *,
+body.background-view-active .admin-monsters-list > *,
+body.background-view-active .admin-monster-detail > * {
+  opacity: 0;
+  pointer-events: none;
+}

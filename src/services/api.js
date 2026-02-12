@@ -43,6 +43,14 @@ export const adminApi = axios.create({
   },
 });
 
+// API for generation endpoints
+export const generationApi = axios.create({
+  baseURL: '/admin-service/api/v1',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
 // Add token interceptor
 const addToken = (config) => {
   const match = document.cookie.match(new RegExp('(^| )token=([^;]+)'));
@@ -59,3 +67,26 @@ authApi.interceptors.request.use(addToken);
 invocationApi.interceptors.request.use(addToken);
 
 adminApi.interceptors.request.use(addToken);
+generationApi.interceptors.request.use(addToken);
+
+// Generation API functions
+export const generateMonster = async (prompt) => {
+  try {
+    const response = await generationApi.post('/monsters/generate', { prompt });
+    return response.data;
+  } catch (error) {
+    throw error.response?.data?.detail || error.message;
+  }
+};
+
+export const generateMonsterBatch = async (n, prompt) => {
+  try {
+    const response = await generationApi.post('/monsters/generate-batch', {
+      n,
+      prompt,
+    });
+    return response.data;
+  } catch (error) {
+    throw error.response?.data?.detail || error.message;
+  }
+};

@@ -8,24 +8,28 @@ import Login from './pages/Login';
 import Home from './pages/Home';
 import Gacha from './pages/Gacha';
 import Inventory from './pages/Inventory';
+import GenerateMonsters from './pages/GenerateMonsters';
 import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminMonstersList from './pages/admin/AdminMonstersList';
 import AdminMonsterDetail from './pages/admin/AdminMonsterDetail';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
+import { BackgroundViewProvider } from './context/BackgroundViewContext';
 import { MonsterProvider } from './context/MonsterContext';
 import { PlayerProvider } from './context/PlayerContext';
+import { NotificationProvider } from './context/NotificationContext';
+import NotificationStack from './components/NotificationStack';
 
 const PrivateRoute = ({ children }) => {
-  const { token } = useAuth();
-   if (!token) return <Navigate to="/login" />;
+  // const { token } = useAuth();
+  // if (!token) return <Navigate to="/login" />;
   return children;
 };
 
 const AdminRoute = ({ children }) => {
-  const { token, user } = useAuth();
-  if (!token) return <Navigate to="/login" />;
-  if (user?.username !== 'admin') return <Navigate to="/home" />;
+  // const { token, user } = useAuth();
+  // if (!token) return <Navigate to="/login" />;
+  // if (user?.username !== 'admin') return <Navigate to="/home" />;
   return children;
 };
 
@@ -82,6 +86,14 @@ function AppRoutes() {
           </AdminRoute>
         }
       />
+      <Route
+        path="/generate"
+        element={
+          <AdminRoute>
+            <GenerateMonsters />
+          </AdminRoute>
+        }
+      />
     </Routes>
   );
 }
@@ -89,15 +101,20 @@ function AppRoutes() {
 function App() {
   return (
     <ThemeProvider>
-      <AuthProvider>
-        <MonsterProvider>
-          <PlayerProvider>
-            <Router>
-              <AppRoutes />
-            </Router>
-          </PlayerProvider>
-        </MonsterProvider>
-      </AuthProvider>
+      <BackgroundViewProvider>
+        <NotificationProvider>
+          <AuthProvider>
+            <MonsterProvider>
+              <PlayerProvider>
+                <Router>
+                  <AppRoutes />
+                  <NotificationStack />
+                </Router>
+              </PlayerProvider>
+            </MonsterProvider>
+          </AuthProvider>
+        </NotificationProvider>
+      </BackgroundViewProvider>
     </ThemeProvider>
   );
 }

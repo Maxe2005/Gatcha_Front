@@ -1,23 +1,1006 @@
+/* ============================================
+   GÉNÉRATEUR DE MONSTRES - STYLE ADMIN MYSTIQUE
+   Architecture visuelle basée sur les thèmes Divine & Dark
+   ============================================ */
+
+/* ====== BACKGROUND & BASE STYLES ====== */
 .generate-page {
   min-height: 100vh;
-  transition: background-color 0.3s ease;
+  position: relative;
+  overflow-x: hidden;
+  transition:
+    background 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.generate-page.light {
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+/* Animation de fade lors du changement de thème */
+.generate-page.theme-switching {
+  animation: themeSwitch 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.generate-page.dark {
-  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+@keyframes themeSwitch {
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
-.generate-page.dark {
-  color: #e0e0e0;
+/* Thème Divine - Atmosphère céleste et lumineuse */
+.generate-page.theme-divine {
+  background:
+    url('/assets/backgrounds/generate/background_generate_monster_divine.png')
+      center/cover no-repeat fixed,
+    radial-gradient(
+      ellipse at top,
+      rgba(255, 245, 220, 0.5) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse at bottom,
+      rgba(200, 170, 255, 0.4) 0%,
+      transparent 60%
+    ),
+    linear-gradient(
+      135deg,
+      rgba(254, 249, 231, 0.7) 0%,
+      rgba(232, 244, 248, 0.7) 25%,
+      rgba(243, 229, 245, 0.7) 50%,
+      rgba(225, 245, 254, 0.7) 75%,
+      rgba(255, 249, 196, 0.7) 100%
+    );
+  color: #2c1810;
 }
 
-/* Responsive adjustments */
+/* Effet de particules divines flottantes */
+.generate-page.theme-divine::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  background-image:
+    radial-gradient(
+      circle at 20% 30%,
+      rgba(255, 215, 0, 0.15) 0%,
+      transparent 3%
+    ),
+    radial-gradient(
+      circle at 80% 10%,
+      rgba(255, 182, 193, 0.2) 0%,
+      transparent 2%
+    ),
+    radial-gradient(
+      circle at 40% 70%,
+      rgba(186, 85, 211, 0.15) 0%,
+      transparent 2%
+    ),
+    radial-gradient(
+      circle at 90% 80%,
+      rgba(135, 206, 250, 0.2) 0%,
+      transparent 2%
+    ),
+    radial-gradient(
+      circle at 10% 90%,
+      rgba(255, 228, 181, 0.15) 0%,
+      transparent 3%
+    );
+  background-size: 200% 200%;
+  animation: divineParticles 20s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes divineParticles {
+  0%,
+  100% {
+    background-position:
+      0% 0%,
+      100% 0%,
+      0% 100%,
+      100% 100%,
+      50% 50%;
+    opacity: 0.6;
+  }
+  25% {
+    background-position:
+      100% 0%,
+      0% 100%,
+      100% 0%,
+      0% 0%,
+      0% 100%;
+    opacity: 0.8;
+  }
+  50% {
+    background-position:
+      100% 100%,
+      0% 0%,
+      100% 100%,
+      0% 100%,
+      100% 0%;
+    opacity: 0.7;
+  }
+  75% {
+    background-position:
+      0% 100%,
+      100% 100%,
+      0% 0%,
+      100% 0%,
+      100% 100%;
+    opacity: 0.85;
+  }
+}
+
+/* Thème Dark - Atmosphère sombre et mystérieuse */
+.generate-page.theme-dark {
+  background:
+    url('/assets/backgrounds/generate/background_generate_monster_dark.png')
+      center/cover no-repeat fixed,
+    radial-gradient(
+      ellipse at top left,
+      rgba(75, 0, 130, 0.4) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse at bottom right,
+      rgba(25, 25, 112, 0.5) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      ellipse at center,
+      rgba(139, 0, 139, 0.3) 0%,
+      transparent 60%
+    ),
+    linear-gradient(
+      135deg,
+      rgba(10, 10, 10, 0.8) 0%,
+      rgba(26, 10, 46, 0.85) 25%,
+      rgba(22, 33, 62, 0.8) 50%,
+      rgba(15, 11, 40, 0.85) 75%,
+      rgba(26, 15, 46, 0.8) 100%
+    );
+  color: #e8e8e8;
+}
+
+/* Effet de brume sombre animée */
+.generate-page.theme-dark::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  background-image:
+    radial-gradient(
+      circle at 10% 20%,
+      rgba(148, 0, 211, 0.2) 0%,
+      transparent 4%
+    ),
+    radial-gradient(
+      circle at 90% 30%,
+      rgba(75, 0, 130, 0.25) 0%,
+      transparent 3%
+    ),
+    radial-gradient(
+      circle at 30% 80%,
+      rgba(72, 61, 139, 0.2) 0%,
+      transparent 3%
+    ),
+    radial-gradient(
+      circle at 70% 60%,
+      rgba(138, 43, 226, 0.15) 0%,
+      transparent 2%
+    ),
+    radial-gradient(
+      circle at 50% 50%,
+      rgba(123, 104, 238, 0.1) 0%,
+      transparent 5%
+    );
+  background-size: 300% 300%;
+  animation: darkMist 25s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+@keyframes darkMist {
+  0%,
+  100% {
+    background-position:
+      0% 0%,
+      100% 0%,
+      0% 100%,
+      100% 100%,
+      50% 50%;
+    opacity: 0.4;
+  }
+  33% {
+    background-position:
+      100% 50%,
+      0% 100%,
+      50% 0%,
+      100% 100%,
+      0% 50%;
+    opacity: 0.6;
+  }
+  66% {
+    background-position:
+      50% 100%,
+      100% 0%,
+      100% 50%,
+      0% 0%,
+      100% 100%;
+    opacity: 0.5;
+  }
+}
+
+/* Étoiles scintillantes pour le thème Dark */
+.generate-page.theme-dark::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    radial-gradient(1px 1px at 20% 30%, white, transparent),
+    radial-gradient(1px 1px at 60% 70%, white, transparent),
+    radial-gradient(1px 1px at 50% 50%, white, transparent),
+    radial-gradient(1px 1px at 80% 10%, white, transparent),
+    radial-gradient(1px 1px at 90% 60%, white, transparent),
+    radial-gradient(
+      1.5px 1.5px at 33% 80%,
+      rgba(255, 255, 255, 0.8),
+      transparent
+    ),
+    radial-gradient(1px 1px at 15% 90%, rgba(255, 255, 255, 0.6), transparent);
+  background-size:
+    200% 200%,
+    200% 200%,
+    250% 250%,
+    300% 300%,
+    200% 200%,
+    250% 250%,
+    300% 300%;
+  animation: twinkle 3s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.7;
+  transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+/* Container principal avec profondeur */
+.generate-page .MuiContainer-root {
+  position: relative;
+  z-index: 1;
+}
+
+/* ====== TRANSITIONS SMOOTH POUR TOUS LES ÉLÉMENTS MUI ====== */
+.generate-page * {
+  transition:
+    background 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    color 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.generate-page .MuiTypography-root,
+.generate-page .MuiChip-root,
+.generate-page .MuiAlert-root,
+.generate-page .MuiCard-root,
+.generate-page .MuiCardContent-root {
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ====== PAPER FORMS - Panneau principal de génération ====== */
+.generate-page .MuiPaper-root {
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.generate-page .MuiPaper-root::before {
+  transition:
+    opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.generate-page.theme-divine .MuiPaper-root {
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.75),
+    rgba(252, 248, 242, 0.7)
+  ) !important;
+  backdrop-filter: blur(12px);
+  border: 2px solid transparent !important;
+  border-image: linear-gradient(
+      135deg,
+      rgba(255, 215, 0, 0.5),
+      rgba(186, 85, 211, 0.4),
+      rgba(135, 206, 250, 0.5)
+    )
+    1 !important;
+  box-shadow:
+    0 8px 32px rgba(255, 215, 0, 0.15),
+    0 4px 16px rgba(186, 85, 211, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.generate-page.theme-divine .MuiPaper-root::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 215, 0, 0.08) 0%,
+    transparent 70%
+  );
+  animation: gentleGlow 6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes gentleGlow {
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translate(10%, 10%) scale(1.1);
+    opacity: 0.8;
+  }
+}
+
+.generate-page.theme-dark .MuiPaper-root {
+  background: linear-gradient(
+    145deg,
+    rgba(30, 20, 50, 0.8),
+    rgba(20, 15, 35, 0.75)
+  ) !important;
+  backdrop-filter: blur(15px);
+  border: 2px solid transparent !important;
+  border-image: linear-gradient(
+      135deg,
+      rgba(138, 43, 226, 0.6),
+      rgba(75, 0, 130, 0.5),
+      rgba(148, 0, 211, 0.6)
+    )
+    1 !important;
+  box-shadow:
+    0 8px 32px rgba(138, 43, 226, 0.3),
+    0 4px 16px rgba(75, 0, 130, 0.2),
+    inset 0 1px 0 rgba(186, 85, 211, 0.2) !important;
+  position: relative;
+  overflow: hidden;
+}
+
+.generate-page.theme-dark .MuiPaper-root::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle,
+    rgba(138, 43, 226, 0.15) 0%,
+    transparent 70%
+  );
+  animation: mysticalPulse 8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes mysticalPulse {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translate(-10%, 10%) rotate(180deg) scale(1.2);
+    opacity: 0.7;
+  }
+}
+
+/* ====== TEXT FIELDS & INPUTS ====== */
+.generate-page.theme-divine .MuiTextField-root .MuiOutlinedInput-root {
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 0.7),
+    rgba(254, 252, 245, 0.65)
+  ) !important;
+  border-color: rgba(212, 175, 55, 0.4) !important;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.generate-page.theme-divine .MuiTextField-root .MuiOutlinedInput-root:hover {
+  background: rgba(255, 255, 255, 0.85) !important;
+  border-color: rgba(212, 175, 55, 0.6) !important;
+  box-shadow: 0 4px 12px rgba(255, 215, 0, 0.2);
+}
+
+/* Couleur du texte dans les inputs en mode divine */
+.generate-page.theme-divine .MuiInputBase-input {
+  color: #2c3e50 !important;
+}
+
+.generate-page.theme-divine .MuiInputLabel-root {
+  color: #5a4a3a !important;
+}
+
+.generate-page.theme-divine .MuiInputLabel-root.Mui-focused {
+  color: #d4af37 !important;
+}
+
+.generate-page.theme-divine
+  .MuiTextField-root
+  .MuiOutlinedInput-root.Mui-focused {
+  box-shadow:
+    0 0 0 3px rgba(255, 215, 0, 0.2),
+    0 4px 16px rgba(186, 85, 211, 0.15);
+}
+
+.generate-page.theme-dark .MuiTextField-root .MuiOutlinedInput-root {
+  background: linear-gradient(
+    to bottom,
+    rgba(42, 30, 60, 0.75),
+    rgba(30, 20, 45, 0.7)
+  ) !important;
+  border-color: rgba(138, 43, 226, 0.3) !important;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.generate-page.theme-dark .MuiTextField-root .MuiOutlinedInput-root:hover {
+  background: rgba(42, 30, 60, 1) !important;
+  border-color: rgba(138, 43, 226, 0.5) !important;
+  box-shadow: 0 4px 12px rgba(138, 43, 226, 0.3);
+}
+
+.generate-page.theme-dark
+  .MuiTextField-root
+  .MuiOutlinedInput-root.Mui-focused {
+  border-color: rgba(138, 43, 226, 0.8) !important;
+  box-shadow:
+    0 0 0 3px rgba(138, 43, 226, 0.2),
+    0 4px 16px rgba(148, 0, 211, 0.3);
+}
+
+/* ====== BUTTONS - Boutons magiques ====== */
+.generate-page.theme-divine .MuiButton-root {
+  position: relative;
+  overflow: hidden;
+  font-weight: 700 !important;
+  text-transform: none !important;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.generate-page.theme-divine .MuiButton-containedPrimary {
+  background: linear-gradient(
+    135deg,
+    #ffd700 0%,
+    #ffed4e 50%,
+    #ffa500 100%
+  ) !important;
+  color: #2c1810 !important;
+  box-shadow: 0 4px 15px rgba(255, 215, 0, 0.4) !important;
+}
+
+.generate-page.theme-divine .MuiButton-containedPrimary:hover {
+  background: linear-gradient(
+    135deg,
+    #ffed4e 0%,
+    #ffd700 50%,
+    #ff8c00 100%
+  ) !important;
+  box-shadow: 0 6px 25px rgba(255, 215, 0, 0.6) !important;
+  transform: translateY(-2px);
+}
+
+.generate-page.theme-divine .MuiButton-containedSecondary {
+  background: linear-gradient(
+    135deg,
+    #ba55d3 0%,
+    #da70d6 50%,
+    #9370db 100%
+  ) !important;
+  color: white !important;
+  box-shadow: 0 4px 15px rgba(186, 85, 211, 0.4) !important;
+}
+
+.generate-page.theme-divine .MuiButton-containedSecondary:hover {
+  background: linear-gradient(
+    135deg,
+    #da70d6 0%,
+    #ba55d3 50%,
+    #8a2be2 100%
+  ) !important;
+  box-shadow: 0 6px 25px rgba(186, 85, 211, 0.6) !important;
+  transform: translateY(-2px);
+}
+
+.generate-page.theme-dark .MuiButton-root {
+  position: relative;
+  overflow: hidden;
+  font-weight: 700 !important;
+  text-transform: none !important;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.generate-page.theme-dark .MuiButton-containedPrimary {
+  background: linear-gradient(
+    135deg,
+    #8a2be2 0%,
+    #9370db 50%,
+    #7b68ee 100%
+  ) !important;
+  box-shadow:
+    0 4px 15px rgba(138, 43, 226, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+.generate-page.theme-dark .MuiButton-containedPrimary:hover {
+  background: linear-gradient(
+    135deg,
+    #9370db 0%,
+    #8a2be2 50%,
+    #6a5acd 100%
+  ) !important;
+  box-shadow:
+    0 6px 25px rgba(138, 43, 226, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+  transform: translateY(-2px);
+}
+
+.generate-page.theme-dark .MuiButton-containedSecondary {
+  background: linear-gradient(
+    135deg,
+    #9400d3 0%,
+    #ba55d3 50%,
+    #8b008b 100%
+  ) !important;
+  box-shadow:
+    0 4px 15px rgba(148, 0, 211, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+.generate-page.theme-dark .MuiButton-containedSecondary:hover {
+  background: linear-gradient(
+    135deg,
+    #ba55d3 0%,
+    #9400d3 50%,
+    #800080 100%
+  ) !important;
+  box-shadow:
+    0 6px 25px rgba(148, 0, 211, 0.7),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15) !important;
+  transform: translateY(-2px);
+}
+
+/* Effet shimmer sur les boutons */
+.generate-page .MuiButton-root::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transition: left 0.5s;
+}
+
+.generate-page .MuiButton-root:hover::before {
+  left: 100%;
+}
+
+/* ====== CARDS - Cartes de monstres générés ====== */
+.generate-page.theme-divine .MuiCard-root {
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.8),
+    rgba(252, 248, 242, 0.75)
+  ) !important;
+  backdrop-filter: blur(12px);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  position: relative;
+  overflow: visible !important;
+}
+
+.generate-page .MuiCard-root::after {
+  transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.generate-page.theme-divine .MuiCard-root:hover {
+  box-shadow:
+    0 20px 40px rgba(255, 215, 0, 0.25),
+    0 10px 20px rgba(186, 85, 211, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+}
+
+.generate-page.theme-divine .MuiCard-root::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 215, 0, 0.3),
+    rgba(186, 85, 211, 0.2),
+    rgba(135, 206, 250, 0.3)
+  );
+  border-radius: inherit;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.generate-page.theme-divine .MuiCard-root:hover::after {
+  opacity: 1;
+}
+
+.generate-page.theme-dark .MuiCard-root {
+  background: linear-gradient(
+    145deg,
+    rgba(30, 20, 50, 0.8),
+    rgba(20, 15, 35, 0.75)
+  ) !important;
+  backdrop-filter: blur(14px);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  position: relative;
+  overflow: visible !important;
+}
+
+.generate-page.theme-dark .MuiCard-root:hover {
+  box-shadow:
+    0 20px 40px rgba(138, 43, 226, 0.4),
+    0 10px 20px rgba(148, 0, 211, 0.3),
+    inset 0 1px 0 rgba(186, 85, 211, 0.2) !important;
+}
+
+.generate-page.theme-dark .MuiCard-root::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(
+    135deg,
+    rgba(138, 43, 226, 0.5),
+    rgba(75, 0, 130, 0.4),
+    rgba(148, 0, 211, 0.5)
+  );
+  border-radius: inherit;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.5s;
+}
+
+.generate-page.theme-dark .MuiCard-root:hover::after {
+  opacity: 1;
+}
+
+/* ====== ALERTS & NOTIFICATIONS ====== */
+.generate-page.theme-divine .MuiAlert-root {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.8),
+    rgba(254, 250, 245, 0.75)
+  ) !important;
+  border-left-width: 4px !important;
+  backdrop-filter: blur(10px);
+  color: #2c3e50 !important;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Texte lisible dans les alerts divine */
+.generate-page.theme-divine .MuiAlert-root .MuiTypography-root {
+  color: #2c3e50 !important;
+}
+
+.generate-page.theme-dark .MuiAlert-root {
+  background: linear-gradient(
+    135deg,
+    rgba(35, 25, 55, 0.8),
+    rgba(25, 18, 40, 0.75)
+  ) !important;
+  border-left-width: 4px !important;
+  backdrop-filter: blur(10px);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ====== PROGRESS BAR ====== */
+.generate-page.theme-divine .MuiLinearProgress-root {
+  background: rgba(255, 215, 0, 0.2) !important;
+  height: 8px !important;
+  border-radius: 4px !important;
+  overflow: hidden;
+}
+
+.generate-page.theme-divine .MuiLinearProgress-bar {
+  background: linear-gradient(
+    90deg,
+    #ffd700,
+    #ffed4e,
+    #ffa500,
+    #ffed4e,
+    #ffd700
+  ) !important;
+  background-size: 200% 100%;
+  animation: progressShimmer 2s linear infinite;
+}
+
+.generate-page.theme-dark .MuiLinearProgress-root {
+  background: rgba(138, 43, 226, 0.2) !important;
+  height: 8px !important;
+  border-radius: 4px !important;
+  overflow: hidden;
+}
+
+.generate-page.theme-dark .MuiLinearProgress-bar {
+  background: linear-gradient(
+    90deg,
+    #8a2be2,
+    #9370db,
+    #ba55d3,
+    #9370db,
+    #8a2be2
+  ) !important;
+  background-size: 200% 100%;
+  animation: progressShimmer 2s linear infinite;
+}
+
+@keyframes progressShimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* ====== CHIPS - Badges d'éléments et rangs ====== */
+.generate-page .MuiChip-root {
+  font-weight: 700 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.generate-page .MuiChip-root:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* ====== TYPOGRAPHY ENHANCEMENTS ====== */
+/* Titres avec gradients */
+.generate-page.theme-divine .MuiTypography-h4,
+.generate-page.theme-divine .MuiTypography-h5 {
+  background: linear-gradient(135deg, #8b6914, #d4af37, #996515);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 2px 10px rgba(212, 175, 55, 0.3);
+  font-weight: 800 !important;
+}
+
+/* Textes normaux et body en mode divine - lisibles */
+.generate-page.theme-divine .MuiTypography-body1,
+.generate-page.theme-divine .MuiTypography-body2 {
+  color: #2c3e50 !important;
+}
+
+.generate-page.theme-divine .MuiTypography-caption {
+  color: #5a6c7d !important;
+}
+
+/* Texte dans les cartes */
+.generate-page.theme-divine .MuiCardContent-root .MuiTypography-root {
+  color: #2c3e50 !important;
+}
+
+.generate-page.theme-divine .MuiCardContent-root .MuiTypography-h6 {
+  color: #1a252f !important;
+  font-weight: 700 !important;
+}
+
+/* Boîtes de stats - transparence et lisibilité */
+.generate-page.theme-divine .MuiBox-root[style*='backgroundColor'] {
+  background-color: rgba(245, 245, 245, 0.7) !important;
+}
+
+.generate-page.theme-divine .MuiBox-root .MuiTypography-caption,
+.generate-page.theme-divine .MuiBox-root .MuiTypography-body2 {
+  color: #34495e !important;
+  font-weight: 600 !important;
+}
+
+/* Labels et textes secondaires */
+.generate-page.theme-divine .MuiFormLabel-root {
+  color: #5a4a3a !important;
+}
+
+.generate-page.theme-divine p,
+.generate-page.theme-divine span:not(.MuiChip-label) {
+  color: #2c3e50;
+}
+
+.generate-page.theme-dark .MuiTypography-h4,
+.generate-page.theme-dark .MuiTypography-h5 {
+  background: linear-gradient(135deg, #ba55d3, #da70d6, #9370db);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0 2px 10px rgba(186, 85, 211, 0.5);
+  font-weight: 800 !important;
+}
+
+/* ====== SCROLLBAR STYLING ====== */
+.generate-page.theme-divine ::-webkit-scrollbar {
+  width: 12px;
+}
+
+.generate-page.theme-divine ::-webkit-scrollbar-track {
+  background: rgba(255, 248, 240, 0.5);
+  border-radius: 6px;
+}
+
+.generate-page.theme-divine ::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #ffd700, #daa520);
+  border-radius: 6px;
+  border: 2px solid rgba(255, 248, 240, 0.5);
+}
+
+.generate-page.theme-divine ::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #ffed4e, #ffa500);
+}
+
+.generate-page.theme-dark ::-webkit-scrollbar {
+  width: 12px;
+}
+
+.generate-page.theme-dark ::-webkit-scrollbar-track {
+  background: rgba(20, 15, 35, 0.5);
+  border-radius: 6px;
+}
+
+.generate-page.theme-dark ::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #8a2be2, #6a5acd);
+  border-radius: 6px;
+  border: 2px solid rgba(20, 15, 35, 0.5);
+}
+
+.generate-page.theme-dark ::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #9370db, #7b68ee);
+}
+
+/* ====== ACCORDION ====== */
+.generate-page.theme-divine .MuiAccordion-root {
+  background: rgba(255, 250, 240, 0.7) !important;
+  backdrop-filter: blur(8px);
+}
+
+.generate-page.theme-divine .MuiAccordion-root .MuiTypography-root {
+  color: #34495e !important;
+}
+
+.generate-page.theme-divine .MuiAccordionSummary-expandIconWrapper {
+  color: #d4af37 !important;
+}
+
+.generate-page.theme-dark .MuiAccordion-root {
+  background: rgba(30, 20, 45, 0.7) !important;
+  backdrop-filter: blur(8px);
+}
+
+/* ====== RESPONSIVE ADJUSTMENTS ====== */
 @media (max-width: 768px) {
   .generate-page {
     padding: 10px;
   }
+
+  .generate-page.theme-divine::before,
+  .generate-page.theme-dark::before {
+    animation-duration: 15s;
+  }
+
+  .generate-page .MuiCard-root:hover {
+    transform: translateY(-4px) !important;
+  }
+}
+
+/* ====== LOADING ANIMATIONS ====== */
+.generate-page .MuiCircularProgress-root {
+  filter: drop-shadow(0 0 8px currentColor);
+}
+
+.generate-page.theme-divine .MuiCircularProgress-root {
+  color: #d4af37 !important;
+}
+
+.generate-page.theme-dark .MuiCircularProgress-root {
+  color: #ba55d3 !important;
+}
+
+/* Amélioration des images de monstres */
+.generate-page .MuiCardMedia-root {
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.generate-page .MuiCard-root:hover .MuiCardMedia-root {
+  transform: scale(1.05);
+}
+
+.generate-page.theme-divine .MuiCardMedia-root::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(255, 255, 255, 0.1) 100%
+  );
+  pointer-events: none;
+}
+
+.generate-page.theme-dark .MuiCardMedia-root::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(138, 43, 226, 0.2) 100%
+  );
+  pointer-events: none;
+}
+
+/* ====== DIVIDERS ====== */
+.generate-page.theme-divine .MuiDivider-root {
+  border-color: rgba(212, 175, 55, 0.3) !important;
+  background-color: rgba(212, 175, 55, 0.3) !important;
+}
+
+.generate-page.theme-dark .MuiDivider-root {
+  border-color: rgba(138, 43, 226, 0.3) !important;
+  background-color: rgba(138, 43, 226, 0.3) !important;
+}
+
+/* ====== STACK SPACING ====== */
+.generate-page.theme-divine .MuiStack-root .MuiBox-root {
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
 }

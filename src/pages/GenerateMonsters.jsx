@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Container,
@@ -29,8 +29,14 @@ import { useTheme } from '../context/ThemeContext';
 import './GenerateMonsters.css';
 
 const GenerateMonsters = () => {
-  const { isDark } = useTheme();
-  const { success, error: showError } = useNotification();
+  const { theme } = useTheme();
+  const isDark = theme === 'dark';
+  const {
+    success,
+    error: showError,
+    addNotification,
+    removeNotification,
+  } = useNotification();
   const navigate = useNavigate();
 
   const [prompt, setPrompt] = useState('');
@@ -41,8 +47,30 @@ const GenerateMonsters = () => {
   const [startTime, setStartTime] = useState(null);
   const [elapsedTime, setElapsedTime] = useState(0);
 
+  const isMountedRef = useRef(true);
+  const pageRef = useRef(null);
+
+  // Déclencher l'animation de transition lors du changement de thème
+  useEffect(() => {
+    if (pageRef.current) {
+      pageRef.current.classList.add('theme-switching');
+      const timer = setTimeout(() => {
+        if (pageRef.current) {
+          pageRef.current.classList.remove('theme-switching');
+        }
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [theme]);
+
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
+
   // Timer for elapsed time
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isLoading) return;
 
     const interval = setInterval(() => {
@@ -60,7 +88,7 @@ const GenerateMonsters = () => {
 
   const parseErrorMessage = (errorMsg) => {
     if (!errorMsg) return 'Une erreur inconnue est survenue';
-    
+
     // If it's a simple string, return it
     if (typeof errorMsg === 'string') {
       return errorMsg;
@@ -70,6 +98,13 @@ const GenerateMonsters = () => {
     const str = String(errorMsg);
     const lines = str.split('\n');
     return lines[0] || str;
+  };
+
+  const startBackgroundNotification = (label) =>
+    addNotification(`⏳ ${label} en cours...`, 'info', 0);
+
+  const finishBackgroundNotification = (notificationId) => {
+    if (notificationId) removeNotification(notificationId);
   };
 
   const handleGenerateSingle = async () => {
@@ -84,16 +119,25 @@ const GenerateMonsters = () => {
     setStartTime(Date.now());
     setElapsedTime(0);
 
+    const notificationId = startBackgroundNotification('Generation du monstre');
+
     try {
       const result = await generateMonster(prompt);
-      setGeneratedMonsters([result]);
+      if (isMountedRef.current) {
+        setGeneratedMonsters([result]);
+      }
       success('✅ Monstre généré avec succès !');
     } catch (err) {
       const errorMessage = parseErrorMessage(err);
-      setError(errorMessage);
+      if (isMountedRef.current) {
+        setError(errorMessage);
+      }
       showError(`❌ Erreur: ${errorMessage}`);
     } finally {
-      setIsLoading(false);
+      finishBackgroundNotification(notificationId);
+      if (isMountedRef.current) {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -114,16 +158,27 @@ const GenerateMonsters = () => {
     setStartTime(Date.now());
     setElapsedTime(0);
 
+    const notificationId = startBackgroundNotification(
+      `Generation de ${batchCount} monstre(s)`
+    );
+
     try {
       const result = await generateMonsterBatch(batchCount, prompt);
-      setGeneratedMonsters(result);
+      if (isMountedRef.current) {
+        setGeneratedMonsters(result);
+      }
       success(`✅ ${result.length} monstre(s) généré(s) avec succès !`);
     } catch (err) {
       const errorMessage = parseErrorMessage(err);
-      setError(errorMessage);
+      if (isMountedRef.current) {
+        setError(errorMessage);
+      }
       showError(`❌ Erreur: ${errorMessage}`);
     } finally {
-      setIsLoading(false);
+      finishBackgroundNotification(notificationId);
+      if (isMountedRef.current) {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -152,7 +207,7 @@ const GenerateMonsters = () => {
   };
 
   return (
-    <div className={`generate-page ${isDark ? 'dark' : 'light'}`}>
+    <div className={`generate-page theme-${theme}`} ref={pageRef}>
       <Header />
       <Container maxWidth="xl" sx={{ py: 4 }}>
         {/* Form Section */}
@@ -169,7 +224,9 @@ const GenerateMonsters = () => {
             ✨ Générateur de Monstres
           </Typography>
           <Typography variant="body2" sx={{ mb: 3, color: 'textSecondary' }}>
-            Utilisez votre créativité pour créer de nouveaux monstres ! Entrez un prompt décrivant le monstre que vous souhaitez générer. La génération peut prendre plusieurs minutes.
+            Utilisez votre créativité pour créer de nouveaux monstres ! Entrez
+            un prompt décrivant le monstre que vous souhaitez générer. La
+            génération peut prendre plusieurs minutes.
           </Typography>
 
           <Stack spacing={3}>
@@ -196,7 +253,11 @@ const GenerateMonsters = () => {
               <TextField
                 type="number"
                 value={batchCount}
-                onChange={(e) => setBatchCount(Math.min(10, Math.max(1, parseInt(e.target.value))))}
+                onChange={(e) =>
+                  setBatchCount(
+                    Math.min(10, Math.max(1, parseInt(e.target.value)))
+                  )
+                }
                 disabled={isLoading}
                 inputProps={{ min: 1, max: 10 }}
                 sx={{
@@ -219,10 +280,12 @@ const GenerateMonsters = () => {
                 <Typography variant="body2" sx={{ fontWeight: 'bold', mb: 1 }}>
                   ❌ Erreur de génération
                 </Typography>
-                {error.includes('429') || error.includes('RESOURCE_EXHAUSTED') ? (
+                {error.includes('429') ||
+                error.includes('RESOURCE_EXHAUSTED') ? (
                   <>
                     <Typography variant="body2" sx={{ mb: 1 }}>
-                      Le service d'IA est actuellement surchargé. Veuillez réessayer dans quelques instants.
+                      Le service d&apos;IA est actuellement surchargé. Veuillez
+                      réessayer dans quelques instants.
                     </Typography>
                     <Accordion
                       size="small"
@@ -232,10 +295,16 @@ const GenerateMonsters = () => {
                       }}
                     >
                       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
-                        <Typography variant="caption">Détails techniques</Typography>
+                        <Typography variant="caption">
+                          Détails techniques
+                        </Typography>
                       </AccordionSummary>
                       <AccordionDetails>
-                        <Typography variant="caption" component="div" sx={{ wordBreak: 'break-word' }}>
+                        <Typography
+                          variant="caption"
+                          component="div"
+                          sx={{ wordBreak: 'break-word' }}
+                        >
                           {error}
                         </Typography>
                       </AccordionDetails>
@@ -261,7 +330,11 @@ const GenerateMonsters = () => {
                   textTransform: 'none',
                 }}
               >
-                {isLoading ? <CircularProgress size={24} sx={{ mr: 1 }} /> : '🎮'}
+                {isLoading ? (
+                  <CircularProgress size={24} sx={{ mr: 1 }} />
+                ) : (
+                  '🎮'
+                )}
                 Générer 1 Monstre
               </Button>
               <Button
@@ -277,7 +350,11 @@ const GenerateMonsters = () => {
                   textTransform: 'none',
                 }}
               >
-                {isLoading ? <CircularProgress size={24} sx={{ mr: 1 }} /> : '🎲'}
+                {isLoading ? (
+                  <CircularProgress size={24} sx={{ mr: 1 }} />
+                ) : (
+                  '🎲'
+                )}
                 Générer {batchCount} Monstres
               </Button>
             </Stack>
@@ -289,8 +366,13 @@ const GenerateMonsters = () => {
                   <Typography variant="body2" sx={{ color: 'textSecondary' }}>
                     ⏳ Génération en cours... {formatTime(elapsedTime)}
                   </Typography>
-                  <Typography variant="caption" sx={{ color: 'textSecondary', display: 'block', mt: 1 }}>
-                    Cela peut prendre plusieurs minutes. Vous pouvez naviguer ailleurs, une notification vous avertira quand ce sera terminé.
+                  <Typography
+                    variant="caption"
+                    sx={{ color: 'textSecondary', display: 'block', mt: 1 }}
+                  >
+                    Cela peut prendre plusieurs minutes. Vous pouvez naviguer
+                    ailleurs, une notification vous avertira quand ce sera
+                    terminé.
                   </Typography>
                 </Box>
               </Box>
@@ -387,15 +469,23 @@ const GenerateMonsters = () => {
                             <Grid item xs={6}>
                               <Box
                                 sx={{
-                                  backgroundColor: isDark ? '#3a3a3a' : '#f5f5f5',
+                                  backgroundColor: isDark
+                                    ? '#3a3a3a'
+                                    : '#f5f5f5',
                                   p: 1,
                                   borderRadius: 1,
                                 }}
                               >
-                                <Typography variant="caption" sx={{ color: 'textSecondary' }}>
+                                <Typography
+                                  variant="caption"
+                                  sx={{ color: 'textSecondary' }}
+                                >
                                   HP
                                 </Typography>
-                                <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                                <Typography
+                                  variant="body2"
+                                  sx={{ fontWeight: 'bold' }}
+                                >
                                   {monster.stats.hp}
                                 </Typography>
                               </Box>
@@ -403,15 +493,23 @@ const GenerateMonsters = () => {
                             <Grid item xs={6}>
                               <Box
                                 sx={{
-                                  backgroundColor: isDark ? '#3a3a3a' : '#f5f5f5',
+                                  backgroundColor: isDark
+                                    ? '#3a3a3a'
+                                    : '#f5f5f5',
                                   p: 1,
                                   borderRadius: 1,
                                 }}
                               >
-                                <Typography variant="caption" sx={{ color: 'textSecondary' }}>
+                                <Typography
+                                  variant="caption"
+                                  sx={{ color: 'textSecondary' }}
+                                >
                                   ATK
                                 </Typography>
-                                <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                                <Typography
+                                  variant="body2"
+                                  sx={{ fontWeight: 'bold' }}
+                                >
                                   {monster.stats.atk}
                                 </Typography>
                               </Box>
@@ -419,15 +517,23 @@ const GenerateMonsters = () => {
                             <Grid item xs={6}>
                               <Box
                                 sx={{
-                                  backgroundColor: isDark ? '#3a3a3a' : '#f5f5f5',
+                                  backgroundColor: isDark
+                                    ? '#3a3a3a'
+                                    : '#f5f5f5',
                                   p: 1,
                                   borderRadius: 1,
                                 }}
                               >
-                                <Typography variant="caption" sx={{ color: 'textSecondary' }}>
+                                <Typography
+                                  variant="caption"
+                                  sx={{ color: 'textSecondary' }}
+                                >
                                   DEF
                                 </Typography>
-                                <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                                <Typography
+                                  variant="body2"
+                                  sx={{ fontWeight: 'bold' }}
+                                >
                                   {monster.stats.def}
                                 </Typography>
                               </Box>
@@ -435,15 +541,23 @@ const GenerateMonsters = () => {
                             <Grid item xs={6}>
                               <Box
                                 sx={{
-                                  backgroundColor: isDark ? '#3a3a3a' : '#f5f5f5',
+                                  backgroundColor: isDark
+                                    ? '#3a3a3a'
+                                    : '#f5f5f5',
                                   p: 1,
                                   borderRadius: 1,
                                 }}
                               >
-                                <Typography variant="caption" sx={{ color: 'textSecondary' }}>
+                                <Typography
+                                  variant="caption"
+                                  sx={{ color: 'textSecondary' }}
+                                >
                                   VIT
                                 </Typography>
-                                <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                                <Typography
+                                  variant="body2"
+                                  sx={{ fontWeight: 'bold' }}
+                                >
                                   {monster.stats.vit}
                                 </Typography>
                               </Box>
@@ -455,29 +569,51 @@ const GenerateMonsters = () => {
                       {/* Skills */}
                       {monster.skills && monster.skills.length > 0 && (
                         <Box>
-                          <Typography variant="body2" sx={{ fontWeight: 'bold', mb: 1 }}>
+                          <Typography
+                            variant="body2"
+                            sx={{ fontWeight: 'bold', mb: 1 }}
+                          >
                             Compétences ({monster.skills.length})
                           </Typography>
                           <Stack spacing={1}>
-                            {monster.skills.slice(0, 3).map((skill, skillIdx) => (
-                              <Box
-                                key={skillIdx}
+                            {monster.skills
+                              .slice(0, 3)
+                              .map((skill, skillIdx) => (
+                                <Box
+                                  key={skillIdx}
+                                  sx={{
+                                    backgroundColor: isDark
+                                      ? '#3a3a3a'
+                                      : '#f5f5f5',
+                                    p: 1,
+                                    borderRadius: 1,
+                                  }}
+                                >
+                                  <Typography
+                                    variant="caption"
+                                    sx={{ fontWeight: 'bold' }}
+                                  >
+                                    {skill.name}
+                                  </Typography>
+                                  <Typography
+                                    variant="caption"
+                                    sx={{
+                                      display: 'block',
+                                      color: 'textSecondary',
+                                    }}
+                                  >
+                                    {skill.description}
+                                  </Typography>
+                                </Box>
+                              ))}
+                            {monster.skills.length > 3 && (
+                              <Typography
+                                variant="caption"
                                 sx={{
-                                  backgroundColor: isDark ? '#3a3a3a' : '#f5f5f5',
-                                  p: 1,
-                                  borderRadius: 1,
+                                  color: 'primary.main',
+                                  fontWeight: 'bold',
                                 }}
                               >
-                                <Typography variant="caption" sx={{ fontWeight: 'bold' }}>
-                                  {skill.name}
-                                </Typography>
-                                <Typography variant="caption" sx={{ display: 'block', color: 'textSecondary' }}>
-                                  {skill.description}
-                                </Typography>
-                              </Box>
-                            ))}
-                            {monster.skills.length > 3 && (
-                              <Typography variant="caption" sx={{ color: 'primary.main', fontWeight: 'bold' }}>
                                 +{monster.skills.length - 3} compétences
                               </Typography>
                             )}
