@@ -1,7 +1,9 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { adminApi } from '../../services/api';
+import { adminApiService } from '../../services/adminService';
 import ThemeToggle from '../../components/ThemeToggle';
+import ConfirmDialog from '../../components/ConfirmDialog';
 import '../admin/AdminMonstersList.css';
 
 const AdminMonstersList = () => {
@@ -9,6 +11,9 @@ const AdminMonstersList = () => {
   const [allMonsters, setAllMonsters] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [processing, setProcessing] = useState(false);
+  const [processMessage, setProcessMessage] = useState(null);
+  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   // Pagination and filters
   const [limit] = useState(20);
@@ -220,6 +225,41 @@ const AdminMonstersList = () => {
     navigate(`/admin/monsters/${monsterId}`);
   };
 
+  const handleProcessClick = () => {
+    setIsConfirmOpen(true);
+  };
+
+  const handleConfirmProcess = async () => {
+    setIsConfirmOpen(false);
+
+    try {
+      setProcessing(true);
+      setProcessMessage(null);
+      const result = await adminApiService.processGeneratedMonsters();
+      setProcessMessage({
+        type: 'success',
+        text: `Traitement réussi: ${result.total_processed} monstres traités (${result.moved_to_pending_review} en revue, ${result.moved_to_defective} défectueux)`,
+      });
+      // Refresh monsters list
+      const response = await adminApi.get('/monsters');
+      setAllMonsters(response.data || []);
+    } catch (err) {
+      setProcessMessage({
+        type: 'error',
+        text:
+          err.response?.data?.detail ||
+          'Erreur lors du traitement des monstres générés',
+      });
+      console.error('Error processing generated monsters:', err);
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  const handleCancelProcess = () => {
+    setIsConfirmOpen(false);
+  };
+
   const handleStateFilterChange = (e) => {
     setSelectedState(e.target.value);
     setOffset(0); // Reset pagination when filter changes
@@ -295,9 +335,40 @@ const AdminMonstersList = () => {
     <div className="admin-monsters-list">
       <div className="list-header">
         <h1>Gestion des Monstres</h1>
-        <ThemeToggle />
+        <div className="list-header-actions">
+          <button
+            className="btn-back-dashboard"
+            onClick={() => navigate('/admin')}
+            title="Retour au Tableau de Bord"
+          >
+            ← Tableau de Bord
+          </button>
+          <ThemeToggle />
+        </div>
       </div>
-
+      {selectedState === 'GENERATED' && (
+        <div className="action-bar">
+          <button
+            className="btn-process-generated"
+            onClick={handleProcessClick}
+            disabled={processing}
+          >
+            {processing ? 'Traitement en cours...' : '⚡ Traiter les Générés'}
+          </button>
+        </div>
+      )}
+      {processMessage && (
+        <div className={`message message-${processMessage.type}`}>
+          <span>{processMessage.text}</span>
+          <button
+            className="message-close"
+            onClick={() => setProcessMessage(null)}
+            aria-label="Fermer"
+          >
+            ✕
+          </button>
+        </div>
+      )}{' '}
       <div className="filters-container">
         <button onClick={handleResetFilters} className="btn-reset-filters">
           Réinitialiser les filtres
@@ -384,9 +455,7 @@ const AdminMonstersList = () => {
           </div>
         </div>
       </div>
-
       {error && <div className="error-message">{error}</div>}
-
       {loading ? (
         <div className="loading">Chargement des monstres...</div>
       ) : filteredMonsters.length > 0 ? (
@@ -503,6 +572,16 @@ const AdminMonstersList = () => {
       ) : (
         <div className="empty-state">Aucun monstre trouvé</div>
       )}
+      <ConfirmDialog
+        isOpen={isConfirmOpen}
+        title="Traiter les Monstres Générés"
+        message="Êtes-vous sûr de vouloir traiter tous les monstres générés ? Ils seront validés ou marqués comme défectueux."
+        confirmText="Traiter"
+        cancelText="Annuler"
+        onConfirm={handleConfirmProcess}
+        onCancel={handleCancelProcess}
+        isDangerous={false}
+      />
     </div>
   );
 };

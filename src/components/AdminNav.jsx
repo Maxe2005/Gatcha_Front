@@ -22,6 +22,13 @@ const AdminNav = () => {
       </button>
       <button
         className="admin-nav-btn"
+        onClick={() => navigate('/generate')}
+        title="Générer des monstres"
+      >
+        ✨ Générer
+      </button>
+      <button
+        className="admin-nav-btn"
         onClick={() => navigate('/admin/monsters')}
         title="Gérer les monstres"
       >

@@ -5,8 +5,42 @@
   margin: 0 auto;
   padding: 2rem;
   color: var(--text-primary, #000);
-  background: var(--bg-primary, #fff);
   min-height: 100vh;
+  position: relative;
+  transition: color 0.6s ease;
+}
+
+.admin-monster-detail::before,
+.admin-monster-detail::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: -1;
+  transition: opacity 0.6s ease;
+}
+
+.admin-monster-detail::before {
+  background-image: url('/assets/backgrounds/admin/monster-one/admin_monster-one_dark.png');
+  opacity: 1;
+}
+
+.admin-monster-detail::after {
+  background-image: url('/assets/backgrounds/admin/monster-one/admin_monster-one_divine.png');
+  opacity: 0;
+}
+
+[data-theme='divine'] .admin-monster-detail::before {
+  opacity: 0;
+}
+
+[data-theme='divine'] .admin-monster-detail::after {
+  opacity: 1;
 }
 
 .detail-header {
@@ -17,6 +51,7 @@
   margin-bottom: 2rem;
   border-bottom: 2px solid var(--border-color, #ddd);
   padding-bottom: 1.5rem;
+  transition: border-color 0.6s ease;
 }
 
 .header-title {
@@ -28,6 +63,7 @@
   font-size: 1.8rem;
   font-weight: 600;
   margin: 0;
+  transition: color 0.6s ease;
 }
 
 .monster-name-subtitle {
@@ -125,6 +161,7 @@
   border-bottom: 2px solid var(--border-color, #ddd);
   margin-bottom: 2rem;
   overflow-x: auto;
+  transition: border-color 0.6s ease;
 }
 
 .tab-button {
@@ -136,7 +173,10 @@
   cursor: pointer;
   font-size: 1rem;
   font-weight: 500;
-  transition: all 0.3s ease;
+  transition:
+    all 0.3s ease,
+    color 0.6s ease,
+    border-color 0.6s ease;
   white-space: nowrap;
 }
 
@@ -150,10 +190,14 @@
 }
 
 .tab-content {
-  background: var(--card-bg, #f9f9f9);
+  background: rgba(249, 249, 249, 0.85);
   border: 1px solid var(--border-color, #ddd);
   border-radius: 12px;
   padding: 2rem;
+  backdrop-filter: blur(10px);
+  transition:
+    background 0.5s ease,
+    border-color 0.5s ease;
 }
 
 .tab-content h2 {
@@ -383,10 +427,14 @@
 
 .history-item {
   padding: 1rem;
-  background: var(--bg-primary, #fff);
+  background: rgba(255, 255, 255, 0.7);
   border: 1px solid var(--border-color, #ddd);
   border-radius: 8px;
   border-left: 4px solid #667eea;
+  backdrop-filter: blur(5px);
+  transition:
+    background 0.5s ease,
+    border-color 0.5s ease;
 }
 
 .history-transition {
@@ -440,7 +488,7 @@
 }
 
 .modal {
-  background: var(--bg-primary, #fff);
+  background: rgba(255, 255, 255, 0.95);
   border-radius: 12px;
   padding: 2rem;
   max-width: 500px;
@@ -449,6 +497,10 @@
   overflow-y: auto;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   color: var(--text-primary, #000);
+  backdrop-filter: blur(10px);
+  transition:
+    background 0.5s ease,
+    color 0.5s ease;
 }
 
 .modal.large {
@@ -526,7 +578,6 @@
 /* Dark theme support */
 @media (prefers-color-scheme: dark) {
   .admin-monster-detail {
-    background: var(--bg-primary, #1a1a1a);
     color: var(--text-primary, #fff);
   }
 
@@ -548,8 +599,9 @@
   }
 
   .tab-content {
-    background: var(--card-bg, #2a2a2a);
+    background: rgba(42, 42, 42, 0.85);
     border-color: var(--border-color, #444);
+    backdrop-filter: blur(10px);
   }
 
   .data-tab pre,
@@ -563,8 +615,9 @@
   }
 
   .history-item {
-    background: var(--bg-primary, #1a1a1a);
+    background: rgba(26, 26, 26, 0.7);
     border-color: var(--border-color, #444);
+    backdrop-filter: blur(5px);
   }
 
   .from-state,
@@ -574,7 +627,8 @@
   }
 
   .modal {
-    background: var(--bg-primary, #1a1a1a);
+    background: rgba(26, 26, 26, 0.95);
+    backdrop-filter: blur(10px);
   }
 
   .form-group select,

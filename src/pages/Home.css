@@ -132,12 +132,12 @@
 }
 
 .home-container .background-layer::before {
-  background-image: url('/assets/backgrounds/Home_background_light.png');
+  background-image: url('/assets/backgrounds/home/Home_background_light.png');
   opacity: 0;
 }
 
 .home-container .background-layer::after {
-  background-image: url('/assets/backgrounds/Home_background_dark.png');
+  background-image: url('/assets/backgrounds/home/Home_background_dark.png');
   opacity: 0;
 }
 

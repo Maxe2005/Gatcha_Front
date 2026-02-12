@@ -105,6 +105,12 @@ export const adminApiService = {
     );
     return response.data;
   },
+
+  // Process generated monsters
+  processGeneratedMonsters: async () => {
+    const response = await adminApi.post('/monsters/process-generated');
+    return response.data;
+  },
 };
 
 // Helper functions for validation and UI

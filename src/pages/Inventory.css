@@ -410,12 +410,12 @@
 }
 
 .inventory-container .background-layer::before {
-  background-image: url('/assets/backgrounds/Inventaire_background_divine.png');
+  background-image: url('/assets/backgrounds/inventaire/Inventaire_background_divine.png');
   opacity: 0;
 }
 
 .inventory-container .background-layer::after {
-  background-image: url('/assets/backgrounds/Inventaire_background_dark.png');
+  background-image: url('/assets/backgrounds/inventaire/Inventaire_background_dark.png');
   opacity: 0;
 }
 
