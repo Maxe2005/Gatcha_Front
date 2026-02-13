@@ -1,4 +1,4 @@
-import { adminApi } from './api';
+import { adminApi, generationApi } from './api';
 
 /**
  * Admin API Service - handles all admin-related API calls
@@ -109,6 +109,26 @@ export const adminApiService = {
   // Process generated monsters
   processGeneratedMonsters: async () => {
     const response = await adminApi.post('/monsters/process-generated');
+    return response.data;
+  },
+
+  // Monster images endpoints
+  getMonsterImages: async (monsterId) => {
+    const response = await generationApi.get(`/monsters/images/${monsterId}`);
+    return response.data;
+  },
+
+  setMonsterDefaultImage: async (monsterId, imageId) => {
+    const payload = { image_id: imageId };
+    const response = await generationApi.put(
+      `/monsters/images/${monsterId}/default`,
+      payload
+    );
+    return response.data;
+  },
+
+  generateMonsterImage: async (payload) => {
+    const response = await generationApi.post(`/monsters/images/generate`, payload);
     return response.data;
   },
 };

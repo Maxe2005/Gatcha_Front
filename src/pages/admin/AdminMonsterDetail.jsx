@@ -1,19 +1,78 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { adminApi } from '../../services/api';
+import { adminApiService } from '../../services/adminService';
 import ThemeToggle from '../../components/ThemeToggle';
 import '../admin/AdminMonsterDetail.css';
+import MonsterSummaryTab from './MonsterSummaryTab';
+import MonsterDataTab from './MonsterDataTab';
+import MonsterValidationTab from './MonsterValidationTab';
+import MonsterHistoryTab from './MonsterHistoryTab';
+import MonsterPreviewTab from './MonsterPreviewTab';
+import MonsterImagesTab from './MonsterImagesTab';
 
 const AdminMonsterDetail = () => {
   const { monsterId } = useParams();
   const navigate = useNavigate();
   const [monster, setMonster] = useState(null);
+  const [monsterImages, setMonsterImages] = useState([]);
+  const [defaultImage, setDefaultImage] = useState(null);
   const [history, setHistory] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('summary');
   const [isActionLoading, setIsActionLoading] = useState(false);
   const [actionError, setActionError] = useState(null);
+  const [isSettingDefault, setIsSettingDefault] = useState(false);
+  const [setDefaultError, setSetDefaultError] = useState(null);
+
+  // Définir une image comme image par défaut
+  const handleSetDefaultImage = async (imageId) => {
+    setIsSettingDefault(true);
+    setSetDefaultError(null);
+    try {
+      await adminApiService.setMonsterDefaultImage(monsterId, imageId);
+      // Refresh images
+      const imagesRes = await adminApiService.getMonsterImages(monsterId);
+      setMonsterImages(imagesRes.images || []);
+      setDefaultImage(imagesRes.default_image || null);
+    } catch (err) {
+      setSetDefaultError(
+        err.response?.data?.detail ||
+          "Erreur lors du changement d'image par défaut"
+      );
+    } finally {
+      setIsSettingDefault(false);
+    }
+  };
+  const [newImagePrompt, setNewImagePrompt] = useState('');
+  const [isGeneratingImage, setIsGeneratingImage] = useState(false);
+  const [generateError, setGenerateError] = useState(null);
+
+  // Génération d'une nouvelle image
+  const handleGenerateImage = async (e) => {
+    e.preventDefault();
+    setIsGeneratingImage(true);
+    setGenerateError(null);
+    try {
+      await adminApiService.generateMonsterImage({
+        monster_id: monster?.metadata?.monster_id,
+        image_name:
+          monster?.monster_data?.name || monster?.monster_data?.nom || 'image',
+        custom_prompt: newImagePrompt,
+      });
+      // Refresh images
+      const imagesRes = await adminApiService.getMonsterImages(monsterId);
+      setMonsterImages(imagesRes.images || []);
+      setDefaultImage(imagesRes.default_image || null);
+      setNewImagePrompt('');
+    } catch (err) {
+      setGenerateError(
+        err.response?.data?.detail || "Erreur lors de la génération de l'image"
+      );
+    } finally {
+      setIsGeneratingImage(false);
+    }
+  };
 
   // Form states for actions
   const [reviewNotes, setReviewNotes] = useState('');
@@ -21,20 +80,19 @@ const AdminMonsterDetail = () => {
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [showCorrectForm, setShowCorrectForm] = useState(false);
   const [reviewAction, setReviewAction] = useState('approve');
+  const [imagesError, setImagesError] = useState(null);
 
   useEffect(() => {
     const fetchMonsterDetail = async () => {
       try {
         setLoading(true);
-        const [detailRes, historyRes] = await Promise.all([
-          adminApi.get(`/monsters/${monsterId}`),
-          adminApi.get(`/monsters/${monsterId}/history`),
+        const [detail, history] = await Promise.all([
+          adminApiService.getMonsterDetail(monsterId),
+          adminApiService.getMonsterHistory(monsterId),
         ]);
-        setMonster(detailRes.data);
-        setHistory(historyRes.data?.history || []);
-        setCorrectedData(
-          JSON.stringify(detailRes.data?.monster_data || {}, null, 2)
-        );
+        setMonster(detail);
+        setHistory(history.history || []);
+        setCorrectedData(JSON.stringify(detail?.monster_data || {}, null, 2));
         setError(null);
       } catch (err) {
         setError(
@@ -43,6 +101,20 @@ const AdminMonsterDetail = () => {
         console.error('Error fetching monster:', err);
       } finally {
         setLoading(false);
+      }
+      // Charger les images séparément
+      try {
+        setImagesError(null);
+        const imagesRes = await adminApiService.getMonsterImages(monsterId);
+        setMonsterImages(imagesRes.images || []);
+        setDefaultImage(imagesRes.default_image || null);
+      } catch (err) {
+        setMonsterImages([]);
+        setDefaultImage(null);
+        setImagesError(
+          err.response?.data?.detail ||
+            'Erreur lors du chargement des images du monstre'
+        );
       }
     };
 
@@ -53,20 +125,16 @@ const AdminMonsterDetail = () => {
     try {
       setIsActionLoading(true);
       setActionError(null);
-
-      const payload = {
-        action: reviewAction,
-        notes: reviewNotes || null,
-      };
-
-      await adminApi.post(`/monsters/${monsterId}/review`, payload);
-
+      await adminApiService.reviewMonster(
+        monsterId,
+        reviewAction,
+        reviewNotes || null
+      );
       // Refresh monster data
-      const detailRes = await adminApi.get(`/monsters/${monsterId}`);
-      const historyRes = await adminApi.get(`/monsters/${monsterId}/history`);
-      setMonster(detailRes.data);
-      setHistory(historyRes.data?.history || []);
-
+      const detail = await adminApiService.getMonsterDetail(monsterId);
+      const history = await adminApiService.getMonsterHistory(monsterId);
+      setMonster(detail);
+      setHistory(history.history || []);
       setShowReviewForm(false);
       setReviewNotes('');
       alert(`Monstre ${reviewAction} avec succès`);
@@ -84,7 +152,6 @@ const AdminMonsterDetail = () => {
     try {
       setIsActionLoading(true);
       setActionError(null);
-
       let parsedData;
       try {
         parsedData = JSON.parse(correctedData);
@@ -93,20 +160,16 @@ const AdminMonsterDetail = () => {
         setIsActionLoading(false);
         return;
       }
-
-      const payload = {
-        corrected_data: parsedData,
-        notes: reviewNotes || null,
-      };
-
-      await adminApi.post(`/monsters/${monsterId}/correct`, payload);
-
+      await adminApiService.correctMonster(
+        monsterId,
+        parsedData,
+        reviewNotes || null
+      );
       // Refresh monster data
-      const detailRes = await adminApi.get(`/monsters/${monsterId}`);
-      const historyRes = await adminApi.get(`/monsters/${monsterId}/history`);
-      setMonster(detailRes.data);
-      setHistory(historyRes.data?.history || []);
-
+      const detail = await adminApiService.getMonsterDetail(monsterId);
+      const history = await adminApiService.getMonsterHistory(monsterId);
+      setMonster(detail);
+      setHistory(history.history || []);
       setShowCorrectForm(false);
       setReviewNotes('');
       alert('Monstre corrigé avec succès');
@@ -144,6 +207,9 @@ const AdminMonsterDetail = () => {
 
   const canApproveReject = monster?.metadata?.state === 'PENDING_REVIEW';
   const canCorrect = monster?.metadata?.state === 'DEFECTIVE';
+  const canPreviewCard = ['PENDING_REVIEW', 'APPROVED', 'TRANSMITTED'].includes(
+    monster?.metadata?.state
+  );
 
   return (
     <div className="admin-monster-detail">
@@ -190,6 +256,12 @@ const AdminMonsterDetail = () => {
           Données
         </button>
         <button
+          className={`tab-button ${activeTab === 'images' ? 'active' : ''}`}
+          onClick={() => setActiveTab('images')}
+        >
+          Images
+        </button>
+        <button
           className={`tab-button ${activeTab === 'validation' ? 'active' : ''}`}
           onClick={() => setActiveTab('validation')}
         >
@@ -201,168 +273,47 @@ const AdminMonsterDetail = () => {
         >
           Historique
         </button>
+        {canPreviewCard && (
+          <button
+            className={`tab-button ${activeTab === 'preview' ? 'active' : ''}`}
+            onClick={() => setActiveTab('preview')}
+          >
+            Preview Carte
+          </button>
+        )}
       </div>
 
       <div className="tab-content">
         {activeTab === 'summary' && (
-          <div className="summary-tab">
-            <h2>Informations du Monstre</h2>
-            <div className="summary-container">
-              <div className="info-section">
-                <div className="info-grid">
-                  <div className="info-item">
-                    <label>ID</label>
-                    <span>{monster?.metadata?.monster_id}</span>
-                  </div>
-                  <div className="info-item">
-                    <label>État</label>
-                    <span
-                      className={`state-badge state-${monster?.metadata?.state.toLowerCase()}`}
-                    >
-                      {monster?.metadata?.state}
-                    </span>
-                  </div>
-                  <div className="info-item">
-                    <label>Créé le</label>
-                    <span>
-                      {new Date(monster?.metadata?.created_at).toLocaleString(
-                        'fr-FR'
-                      )}
-                    </span>
-                  </div>
-                  <div className="info-item">
-                    <label>Mis à jour le</label>
-                    <span>
-                      {new Date(monster?.metadata?.updated_at).toLocaleString(
-                        'fr-FR'
-                      )}
-                    </span>
-                  </div>
-                  <div className="info-item">
-                    <label>Valide</label>
-                    <span
-                      className={
-                        monster?.metadata?.is_valid ? 'valid' : 'invalid'
-                      }
-                    >
-                      {monster?.metadata?.is_valid ? 'Oui' : 'Non'}
-                    </span>
-                  </div>
-                  {monster?.metadata?.reviewed_by && (
-                    <>
-                      <div className="info-item">
-                        <label>Révisé par</label>
-                        <span>{monster.metadata.reviewed_by}</span>
-                      </div>
-                      <div className="info-item">
-                        <label>Date de révision</label>
-                        <span>
-                          {new Date(
-                            monster.metadata.review_date
-                          ).toLocaleString('fr-FR')}
-                        </span>
-                      </div>
-                    </>
-                  )}
-                  {monster?.metadata?.review_notes && (
-                    <div className="info-item full-width">
-                      <label>Notes de révision</label>
-                      <p>{monster.metadata.review_notes}</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {monster?.image_url && (
-                <div className="image-section">
-                  <img
-                    src={monster.image_url}
-                    alt="Monster"
-                    className="monster-image"
-                  />
-                </div>
-              )}
-            </div>
-
-            <div className="actions-section">
-              {canApproveReject && (
-                <button
-                  className="btn-primary"
-                  onClick={() => setShowReviewForm(true)}
-                >
-                  Approuver / Rejeter
-                </button>
-              )}
-              {canCorrect && (
-                <button
-                  className="btn-warning"
-                  onClick={() => setShowCorrectForm(true)}
-                >
-                  Corriger
-                </button>
-              )}
-            </div>
-          </div>
+          <MonsterSummaryTab
+            monster={monster}
+            canApproveReject={canApproveReject}
+            canCorrect={canCorrect}
+            setShowReviewForm={setShowReviewForm}
+            setShowCorrectForm={setShowCorrectForm}
+          />
         )}
-
-        {activeTab === 'data' && (
-          <div className="data-tab">
-            <h2>Données du Monstre</h2>
-            <pre>{JSON.stringify(monster?.monster_data, null, 2)}</pre>
-          </div>
+        {activeTab === 'data' && <MonsterDataTab monster={monster} />}
+        {activeTab === 'images' && (
+          <MonsterImagesTab
+            defaultImage={defaultImage}
+            monsterImages={monsterImages}
+            isSettingDefault={isSettingDefault}
+            setDefaultError={setSetDefaultError}
+            handleSetDefaultImage={handleSetDefaultImage}
+            newImagePrompt={newImagePrompt}
+            setNewImagePrompt={setNewImagePrompt}
+            handleGenerateImage={handleGenerateImage}
+            isGeneratingImage={isGeneratingImage}
+            generateError={generateError}
+          />
         )}
-
         {activeTab === 'validation' && (
-          <div className="validation-tab">
-            <h2>Rapport de Validation</h2>
-            {monster?.metadata?.validation_errors &&
-            monster.metadata.validation_errors.length > 0 ? (
-              <div className="errors-list">
-                {monster.metadata.validation_errors.map((error, idx) => (
-                  <div key={idx} className="error-item">
-                    <strong>{error.field}</strong>: {error.message}
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p>Aucune erreur de validation détectée.</p>
-            )}
-
-            {monster?.validation_report && (
-              <>
-                <h3>Rapport complet</h3>
-                <pre>{JSON.stringify(monster.validation_report, null, 2)}</pre>
-              </>
-            )}
-          </div>
+          <MonsterValidationTab monster={monster} />
         )}
-
-        {activeTab === 'history' && (
-          <div className="history-tab">
-            <h2>Historique des Transitions</h2>
-            {history && history.length > 0 ? (
-              <div className="history-list">
-                {history.map((entry, idx) => (
-                  <div key={idx} className="history-item">
-                    <div className="history-transition">
-                      <span className="from-state">{entry.from_state}</span>
-                      <span className="arrow">→</span>
-                      <span className="to-state">{entry.to_state}</span>
-                    </div>
-                    <div className="history-details">
-                      <span>{entry.actor || 'System'}</span>
-                      <span>
-                        {new Date(entry.timestamp).toLocaleString('fr-FR')}
-                      </span>
-                      {entry.note && <span className="note">{entry.note}</span>}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <p>Aucun historique disponible</p>
-            )}
-          </div>
+        {activeTab === 'history' && <MonsterHistoryTab history={history} />}
+        {activeTab === 'preview' && canPreviewCard && (
+          <MonsterPreviewTab monster={monster} />
         )}
       </div>
 
