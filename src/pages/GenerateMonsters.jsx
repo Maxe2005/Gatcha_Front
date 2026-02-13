@@ -210,6 +210,17 @@ const GenerateMonsters = () => {
     <div className={`generate-page theme-${theme}`} ref={pageRef}>
       <Header />
       <Container maxWidth="xl" sx={{ py: 4 }}>
+        {/* Bouton retour dashboard */}
+        <Box sx={{ mb: 2 }}>
+          <Button
+            variant="outlined"
+            color="secondary"
+            onClick={() => navigate('/admin')}
+            sx={{ textTransform: 'none' }}
+          >
+            ← Retour au Dashboard
+          </Button>
+        </Box>
         {/* Form Section */}
         <Paper
           elevation={isDark ? 2 : 1}

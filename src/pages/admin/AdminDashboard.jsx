@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { adminApi } from '../../services/api';
-import { adminApiService } from '../../services/adminService';
 import ThemeToggle from '../../components/ThemeToggle';
-import ConfirmDialog from '../../components/ConfirmDialog';
 import '../admin/AdminDashboard.css';
 
 const AdminDashboard = () => {
@@ -11,9 +9,6 @@ const AdminDashboard = () => {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [processing, setProcessing] = useState(false);
-  const [processMessage, setProcessMessage] = useState(null);
-  const [isConfirmOpen, setIsConfirmOpen] = useState(false);
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -56,41 +51,6 @@ const AdminDashboard = () => {
     navigate('/admin/monsters');
   };
 
-  const handleProcessClick = () => {
-    setIsConfirmOpen(true);
-  };
-
-  const handleConfirmProcess = async () => {
-    setIsConfirmOpen(false);
-
-    try {
-      setProcessing(true);
-      setProcessMessage(null);
-      const result = await adminApiService.processGeneratedMonsters();
-      setProcessMessage({
-        type: 'success',
-        text: `Traitement réussi: ${result.total_processed} monstres traités (${result.moved_to_pending_review} en revue, ${result.moved_to_defective} défectueux)`,
-      });
-      // Refresh stats
-      const response = await adminApi.get('/dashboard/stats');
-      setStats(response.data);
-    } catch (err) {
-      setProcessMessage({
-        type: 'error',
-        text:
-          err.response?.data?.detail ||
-          'Erreur lors du traitement des monstres générés',
-      });
-      console.error('Error processing generated monsters:', err);
-    } finally {
-      setProcessing(false);
-    }
-  };
-
-  const handleCancelProcess = () => {
-    setIsConfirmOpen(false);
-  };
-
   return (
     <div className="admin-dashboard">
       <div className="admin-header">
@@ -100,28 +60,14 @@ const AdminDashboard = () => {
             Voir les Monstres
           </button>
           <button
-            className="btn-process-generated"
-            onClick={handleProcessClick}
-            disabled={processing}
+            className="btn-secondary"
+            onClick={() => navigate('/generate')}
           >
-            {processing ? 'Traitement en cours...' : '⚡ Traiter les Générés'}
+            Générer des Monstres
           </button>
           <ThemeToggle />
         </div>
       </div>
-
-      {processMessage && (
-        <div className={`message message-${processMessage.type}`}>
-          <span>{processMessage.text}</span>
-          <button
-            className="message-close"
-            onClick={() => setProcessMessage(null)}
-            aria-label="Fermer"
-          >
-            ✕
-          </button>
-        </div>
-      )}
 
       {stats && (
         <>
@@ -199,17 +145,6 @@ const AdminDashboard = () => {
           </div>
         </>
       )}
-
-      <ConfirmDialog
-        isOpen={isConfirmOpen}
-        title="Traiter les Monstres Générés"
-        message="Êtes-vous sûr de vouloir traiter tous les monstres générés ? Ils seront validés ou marqués comme défectueux."
-        confirmText="Traiter"
-        cancelText="Annuler"
-        onConfirm={handleConfirmProcess}
-        onCancel={handleCancelProcess}
-        isDangerous={false}
-      />
     </div>
   );
 };
