@@ -37,7 +37,7 @@
 }
 
 .admin-monsters-list::after {
-  background-image: url('/assets/backgrounds/admin/monsters-list/admin_monsters-list_dark.png');
+  background-image: url('/assets/backgrounds/admin/monsters-list/admin_monsters-list_divine.png');
   opacity: 0;
 }
 
