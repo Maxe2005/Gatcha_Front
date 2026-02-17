@@ -11,7 +11,7 @@ const MonsterSummaryTab = ({
   onMonsterUpdate,
   onActionError,
 }) => {
-  // États pour les formulaires et modaux
+  const [isProcessLoading, setIsProcessLoading] = useState(false);
   const [isActionLoading, setIsActionLoading] = useState(false);
   const [reviewNotes, setReviewNotes] = useState('');
   const [reviewAction, setReviewAction] = useState('approve');
@@ -23,6 +23,27 @@ const MonsterSummaryTab = ({
     // Met à jour les données corrigées lorsque le monstre change
     setCorrectedData(JSON.stringify(monster?.monster_data || {}, null, 2));
   }, [monster]);
+
+  const handleProcessGenerated = async () => {
+    try {
+      setIsProcessLoading(true);
+      onActionError?.(null);
+      await adminApiService.processGeneratedMonster(monsterId);
+      // Refresh monster data
+      const detail = await adminApiService.getMonsterDetail(monsterId);
+      const history = await adminApiService.getMonsterHistory(monsterId);
+      onMonsterUpdate?.(detail, history.history || []);
+      alert('Vérification du monstre généré effectuée avec succès');
+    } catch (err) {
+      onActionError?.(
+        err.response?.data?.detail ||
+          'Erreur lors de la vérification du monstre généré'
+      );
+      console.error('Error processing generated monster:', err);
+    } finally {
+      setIsProcessLoading(false);
+    }
+  };
 
   // Appelé par le modal ReviewModal
   const handleReview = async () => {
@@ -164,6 +185,18 @@ const MonsterSummaryTab = ({
           )}
         </div>
         <div className="actions-section">
+          {/* Bouton pour vérifier un monstre généré */}
+          {monster?.metadata?.state === 'GENERATED' && (
+            <button
+              className="btn-secondary"
+              onClick={handleProcessGenerated}
+              disabled={isProcessLoading}
+            >
+              {isProcessLoading
+                ? 'Vérification en cours...'
+                : 'Vérifier le monstre'}
+            </button>
+          )}
           {canApproveReject && (
             <button
               className="btn-primary"

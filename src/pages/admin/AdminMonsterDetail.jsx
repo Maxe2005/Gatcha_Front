@@ -25,9 +25,11 @@ const AdminMonsterDetail = () => {
 
   const canApproveReject = monster?.metadata?.state === 'PENDING_REVIEW';
   const canCorrect = monster?.metadata?.state === 'DEFECTIVE';
-  const canPreviewCard = ['PENDING_REVIEW', 'APPROVED', 'TRANSMITTED'].includes(
-    monster?.metadata?.state
-  );
+  const isInAdvancedState = [
+    'PENDING_REVIEW',
+    'APPROVED',
+    'TRANSMITTED',
+  ].includes(monster?.metadata?.state);
 
   useEffect(() => {
     const fetchMonsterDetail = async () => {
@@ -48,22 +50,30 @@ const AdminMonsterDetail = () => {
       } finally {
         setLoading(false);
       }
-      // Charger les images séparément
-      if (canPreviewCard) {
-        try {
-          const imagesRes = await adminApiService.getMonsterImages(monsterId);
-          setMonsterImages(imagesRes.images || []);
-          setDefaultImage(imagesRes.default_image || null);
-        } catch (err) {
-          setMonsterImages([]);
-          setDefaultImage(null);
-        }
-      }
     };
 
     fetchMonsterDetail();
   }, [monsterId]);
 
+  // Charger les images uniquement si l'onglet images est visible (isInAdvancedState)
+  useEffect(() => {
+    const fetchImages = async () => {
+      if (!isInAdvancedState) {
+        setMonsterImages([]);
+        setDefaultImage(null);
+        return;
+      }
+      try {
+        const imagesRes = await adminApiService.getMonsterImages(monsterId);
+        setMonsterImages(imagesRes.images || []);
+        setDefaultImage(imagesRes.default_image || null);
+      } catch (err) {
+        setMonsterImages([]);
+        setDefaultImage(null);
+      }
+    };
+    fetchImages();
+  }, [monsterId, isInAdvancedState]);
 
   if (loading) {
     return (
@@ -131,7 +141,7 @@ const AdminMonsterDetail = () => {
         >
           Données
         </button>
-        {canPreviewCard && (
+        {isInAdvancedState && (
           <button
             className={`tab-button ${activeTab === 'images' ? 'active' : ''}`}
             onClick={() => setActiveTab('images')}
@@ -151,7 +161,7 @@ const AdminMonsterDetail = () => {
         >
           Historique
         </button>
-        {canPreviewCard && (
+        {isInAdvancedState && (
           <button
             className={`tab-button ${activeTab === 'preview' ? 'active' : ''}`}
             onClick={() => setActiveTab('preview')}
@@ -192,7 +202,7 @@ const AdminMonsterDetail = () => {
           <MonsterValidationTab monster={monster} />
         )}
         {activeTab === 'history' && <MonsterHistoryTab history={history} />}
-        {activeTab === 'preview' && canPreviewCard && (
+        {activeTab === 'preview' && isInAdvancedState && (
           <MonsterPreviewTab monster={monster} />
         )}
       </div>

@@ -391,7 +391,7 @@ const MonsterImagesTab = ({
         <button
           type="submit"
           className="btn-primary"
-          disabled={isGeneratingImage || !newImagePrompt}
+          disabled={isGeneratingImage || !newImagePrompt || monsterImages.length === 0}
         >
           {isGeneratingImage ? 'Génération...' : 'Générer'}
         </button>

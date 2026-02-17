@@ -106,7 +106,14 @@ export const adminApiService = {
     return response.data;
   },
 
-  // Process generated monsters
+  // Process a single generated monster
+  processGeneratedMonster: async (monsterId) => {
+    const response = await adminApi.post(
+      `/monsters/${monsterId}/process-generated`
+    );
+    return response.data;
+  },
+  // Process generated monsters (batch)
   processGeneratedMonsters: async () => {
     const response = await adminApi.post('/monsters/process-generated');
     return response.data;
@@ -128,7 +135,10 @@ export const adminApiService = {
   },
 
   generateMonsterImage: async (payload) => {
-    const response = await generationApi.post(`/monsters/images/generate`, payload);
+    const response = await generationApi.post(
+      `/monsters/images/generate`,
+      payload
+    );
     return response.data;
   },
 };
