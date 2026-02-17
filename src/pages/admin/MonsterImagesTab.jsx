@@ -1,17 +1,63 @@
 import React, { useState, useMemo } from 'react';
 
+import { adminApiService } from '../../services/adminService';
+
 const MonsterImagesTab = ({
+  monsterId,
+  monster,
   defaultImage,
   monsterImages = [],
-  isSettingDefault,
-  setDefaultError,
-  handleSetDefaultImage,
-  newImagePrompt,
-  setNewImagePrompt,
-  handleGenerateImage,
-  isGeneratingImage,
-  generateError,
+  onImagesUpdate,
 }) => {
+  // États internes pour la gestion des actions
+  const [isSettingDefault, setIsSettingDefault] = useState(false);
+  const [setDefaultError, setSetDefaultError] = useState(null);
+  const [newImagePrompt, setNewImagePrompt] = useState('');
+  const [isGeneratingImage, setIsGeneratingImage] = useState(false);
+  const [generateError, setGenerateError] = useState(null);
+  // Définir une image comme image par défaut
+  const handleSetDefaultImage = async (imageId) => {
+    setIsSettingDefault(true);
+    setSetDefaultError(null);
+    try {
+      await adminApiService.setMonsterDefaultImage(monsterId, imageId);
+      // Refresh images
+      const imagesRes = await adminApiService.getMonsterImages(monsterId);
+      onImagesUpdate(imagesRes);
+    } catch (err) {
+      setSetDefaultError(
+        err.response?.data?.detail ||
+          "Erreur lors du changement d'image par défaut"
+      );
+    } finally {
+      setIsSettingDefault(false);
+    }
+  };
+
+  // Génération d'une nouvelle image
+  const handleGenerateImage = async (e) => {
+    e.preventDefault();
+    setIsGeneratingImage(true);
+    setGenerateError(null);
+    try {
+      await adminApiService.generateMonsterImage({
+        monster_id: monster?.metadata?.monster_id,
+        image_name:
+          monster?.monster_data?.name || monster?.monster_data?.nom || 'image',
+        custom_prompt: newImagePrompt,
+      });
+      // Refresh images
+      const imagesRes = await adminApiService.getMonsterImages(monsterId);
+      onImagesUpdate(imagesRes);
+      setNewImagePrompt('');
+    } catch (err) {
+      setGenerateError(
+        err.response?.data?.detail || "Erreur lors de la génération de l'image"
+      );
+    } finally {
+      setIsGeneratingImage(false);
+    }
+  };
   // Ajout du champ image_name
   const [newImageName, setNewImageName] = useState(() => {
     // Génère un nom unique par défaut
@@ -88,27 +134,8 @@ const MonsterImagesTab = ({
                   cursor: 'zoom-in',
                   borderRadius: 4,
                 }}
-                onClick={(e) => {
-                  const img = e.target;
-                  if (img.style.transform) {
-                    img.style.transform = '';
-                    img.style.cursor = 'zoom-in';
-                  } else {
-                    img.style.transform = 'scale(2)';
-                    img.style.cursor = 'zoom-out';
-                  }
-                }}
+                draggable={false}
               />
-              <div
-                style={{
-                  color: '#fff',
-                  marginTop: 8,
-                  textAlign: 'center',
-                  fontSize: 14,
-                }}
-              >
-                Cliquez sur l&apos;image pour zoomer
-              </div>
             </div>
           ) : (
             <div style={{ color: '#888', fontSize: 16 }}>
@@ -256,26 +283,7 @@ const MonsterImagesTab = ({
       </div>
       {/* Génération d'une nouvelle image */}
       <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          let name = newImageName.trim();
-          if (!name) {
-            // Génère un nom unique par défaut
-            let base = 'image_' + (monsterImages.length + 1);
-            let existingNames = monsterImages.map((img) => img.image_name);
-            let i = 1;
-            name = base;
-            while (existingNames.includes(name)) {
-              name = base + '_' + i;
-              i++;
-            }
-            setNewImageName(name);
-          }
-          handleGenerateImage({
-            prompt: newImagePrompt,
-            image_name: name,
-          });
-        }}
+        onSubmit={handleGenerateImage}
         style={{
           marginTop: 24,
           width: '100%',
