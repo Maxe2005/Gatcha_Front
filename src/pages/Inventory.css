@@ -7,6 +7,7 @@
   position: relative;
   display: flex;
   flex-direction: column;
+  container-type: inline-size;
 }
 
 /* Base Styles inherit from Index/App usually, but defined here for safety */
@@ -554,10 +555,10 @@
 }
 
 /* ====== RANGE INPUT SLIDER ====== */
-.inventory-container.divine .filter-group input[type="range"] {
+.inventory-container.divine .filter-group input[type='range'] {
   accent-color: #ffd700;
 }
 
-.inventory-container.dark .filter-group input[type="range"] {
+.inventory-container.dark .filter-group input[type='range'] {
   accent-color: #c0392b;
 }

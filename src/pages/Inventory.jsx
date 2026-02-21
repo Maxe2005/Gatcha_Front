@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useTheme } from '../context/ThemeContext';
 import { usePlayer } from '../context/PlayerContext';
 import { useNavigate } from 'react-router-dom';
-import Header from '../components/Header'; // Assuming we reuse Header or build a custom one
 import GatchaCard from '../components/GatchaCard';
 import SkillCard from '../components/SkillCard';
 import './Inventory.css';
@@ -51,7 +50,7 @@ const Inventory = () => {
   console.log('Inventory - loading:', loading);
 
   // Utiliser les monstres du joueur si disponibles
-  const inventoryData = monsters;// MOCK_INVENTORY;
+  const inventoryData =  MOCK_INVENTORY;
 //   const inventoryData = monsters.length > 0 ? monsters : MOCK_INVENTORY;
 
   const [filterRarity, setFilterRarity] = useState('ALL');
