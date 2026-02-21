@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { adminApiService } from '../../services/adminService';
 import ReviewModal from './ReviewModal';
 import CorrectModal from './CorrectModal';
+import './MonsterSummaryTab.css';
 
 const MonsterSummaryTab = ({
   monster,
@@ -107,75 +108,103 @@ const MonsterSummaryTab = ({
     }
   };
 
+  // Fonction pour copier l'UUID
+  const handleCopyUUID = () => {
+    if (monster?.metadata?.monster_id) {
+      navigator.clipboard.writeText(monster.metadata.monster_id);
+      alert('UUID copié dans le presse-papier !');
+    }
+  };
+
   return (
     <>
-      <div className="summary-tab">
-        <h2>Informations du Monstre</h2>
-        <div className="summary-container">
-          <div className="info-section">
-            <div className="info-grid">
-              <div className="info-item">
-                <label>ID</label>
-                <span>{monster?.metadata?.monster_id}</span>
+      <div className="summary-tab redesigned">
+        <h2 className="summary-title">Résumé du Monstre</h2>
+        <div className="summary-content">
+          <div className="summary-info">
+            <div className="summary-row">
+              <div className="summary-label">UUID :</div>
+              <div className="summary-value">
+                <span className="uuid-value">
+                  {monster?.metadata?.monster_id}
+                </span>
+                <button
+                  className="copy-btn"
+                  onClick={handleCopyUUID}
+                  title="Copier l'UUID"
+                >
+                  📋
+                </button>
               </div>
-              <div className="info-item">
-                <label>État</label>
+            </div>
+            <div className="summary-row">
+              <div className="summary-label">État :</div>
+              <div className="summary-value">
                 <span
-                  className={`state-badge state-${monster?.metadata?.state.toLowerCase()}`}
+                  className={`state-badge state-${monster?.metadata?.state?.toLowerCase()}`}
                 >
                   {monster?.metadata?.state}
                 </span>
               </div>
-              <div className="info-item">
-                <label>Créé le</label>
-                <span>
-                  {new Date(monster?.metadata?.created_at).toLocaleString(
+            </div>
+            <div className="summary-row">
+              <div className="summary-label">Créé le :</div>
+              <div className="summary-value">
+                {monster?.metadata?.created_at &&
+                  new Date(monster?.metadata?.created_at).toLocaleString(
                     'fr-FR'
                   )}
-                </span>
               </div>
-              <div className="info-item">
-                <label>Mis à jour le</label>
-                <span>
-                  {new Date(monster?.metadata?.updated_at).toLocaleString(
+            </div>
+            <div className="summary-row">
+              <div className="summary-label">Mis à jour le :</div>
+              <div className="summary-value">
+                {monster?.metadata?.updated_at &&
+                  new Date(monster?.metadata?.updated_at).toLocaleString(
                     'fr-FR'
                   )}
-                </span>
               </div>
-              <div className="info-item">
-                <label>Valide</label>
+            </div>
+            <div className="summary-row">
+              <div className="summary-label">Valide :</div>
+              <div className="summary-value">
                 <span
                   className={monster?.metadata?.is_valid ? 'valid' : 'invalid'}
                 >
                   {monster?.metadata?.is_valid ? 'Oui' : 'Non'}
                 </span>
               </div>
-              {monster?.metadata?.reviewed_by && (
-                <>
-                  <div className="info-item">
-                    <label>Révisé par</label>
-                    <span>{monster.metadata.reviewed_by}</span>
+            </div>
+            {monster?.metadata?.reviewed_by && (
+              <>
+                <div className="summary-row">
+                  <div className="summary-label">Révisé par :</div>
+                  <div className="summary-value">
+                    {monster.metadata.reviewed_by}
                   </div>
-                  <div className="info-item">
-                    <label>Date de révision</label>
-                    <span>
-                      {new Date(monster.metadata.review_date).toLocaleString(
+                </div>
+                <div className="summary-row">
+                  <div className="summary-label">Date de révision :</div>
+                  <div className="summary-value">
+                    {monster.metadata.review_date &&
+                      new Date(monster.metadata.review_date).toLocaleString(
                         'fr-FR'
                       )}
-                    </span>
                   </div>
-                </>
-              )}
-              {monster?.metadata?.review_notes && (
-                <div className="info-item full-width">
-                  <label>Notes de révision</label>
-                  <p>{monster.metadata.review_notes}</p>
                 </div>
-              )}
-            </div>
+              </>
+            )}
+            {monster?.metadata?.review_notes && (
+              <div className="summary-row full-width">
+                <div className="summary-label">Notes de révision :</div>
+                <div className="summary-value notes-value">
+                  {monster.metadata.review_notes}
+                </div>
+              </div>
+            )}
           </div>
           {monster?.image_url && (
-            <div className="image-section">
+            <div className="summary-image">
               <img
                 src={monster.image_url}
                 alt="Monster"
@@ -184,8 +213,7 @@ const MonsterSummaryTab = ({
             </div>
           )}
         </div>
-        <div className="actions-section">
-          {/* Bouton pour vérifier un monstre généré */}
+        <div className="summary-actions">
           {monster?.metadata?.state === 'GENERATED' && (
             <button
               className="btn-secondary"

@@ -112,7 +112,16 @@ const MonsterDataTab = ({ monster }) => {
 
   return (
     <div className="data-tab">
-      <h2>Données du Monstre</h2>
+      <div className="data-tab-header">
+        <h2>Données du Monstre</h2>
+        {isPendingReview && (
+          <div className="edit-toggle">
+            <button onClick={() => setEditMode(!editMode)}>
+              {editMode ? 'Mode visionnage' : 'Mode modification'}
+            </button>
+          </div>
+        )}
+      </div>
       <div className="sub-tabs">
         <button
           className={subTab === 'json' ? 'active' : ''}
@@ -127,13 +136,6 @@ const MonsterDataTab = ({ monster }) => {
           Interpréter
         </button>
       </div>
-      {isPendingReview && (
-        <div className="edit-toggle">
-          <button onClick={() => setEditMode(!editMode)}>
-            {editMode ? 'Mode visionnage' : 'Mode modification'}
-          </button>
-        </div>
-      )}
       <div className="sub-tab-content">
         {subTab === 'json' ? (
           editMode && isPendingReview ? (

@@ -1,4 +1,17 @@
-.data-tab {
+/* Ajout pour aligner le header et le bouton à droite */
+.data-tab-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.edit-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+/* .data-tab {
   padding: 1.5rem;
   background: #181c24;
   border-radius: 12px;
@@ -6,7 +19,7 @@
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
   max-width: 900px;
   margin: 2rem auto;
-}
+} */
 .data-tab h2 {
   margin-bottom: 1rem;
   font-size: 1.5rem;
