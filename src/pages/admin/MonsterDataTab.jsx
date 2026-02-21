@@ -1,7 +1,8 @@
 import React from 'react';
+import './MonsterDataTab.css';
 
 const MonsterDataTab = ({ monster }) => {
-  const state = monster?.state;
+  const state = monster?.metadata?.state;
   const showJsonStates = ['GENERATED', 'DEFECTIVE', 'CORRECTED'];
 
   if (showJsonStates.includes(state)) {
@@ -21,8 +22,21 @@ const MonsterDataTab = ({ monster }) => {
   const [editMode, setEditMode] = React.useState(false);
   const [editData, setEditData] = React.useState(monster?.monster_data || {});
 
-  const handleChange = (e) => {
-    setEditData({ ...editData, [e.target.name]: e.target.value });
+  // Fonction récursive pour mettre à jour une valeur dans un objet imbriqué
+  const setValueAtPath = (obj, path, value) => {
+    if (path.length === 1) {
+      return { ...obj, [path[0]]: value };
+    }
+    const [head, ...rest] = path;
+    return {
+      ...obj,
+      [head]: setValueAtPath(obj[head] || {}, rest, value),
+    };
+  };
+
+  // Fonction pour gérer le changement d'une valeur imbriquée
+  const handleRecursiveChange = (path, newValue) => {
+    setEditData((prev) => setValueAtPath(prev, path, newValue));
   };
 
   // Pour le JSON, on modifie le texte brut
@@ -34,25 +48,59 @@ const MonsterDataTab = ({ monster }) => {
     }
   };
 
-  // Fonction récursive pour afficher joliment les objets et tableaux imbriqués
-  const renderRecursive = (data, level = 0) => {
+  // Fonction récursive pour afficher ou éditer les objets et tableaux imbriqués
+  const renderRecursive = (data, level = 0, path = []) => {
     if (Array.isArray(data)) {
       return (
-        <ul style={{ marginLeft: level * 20 }}>
+        <ul style={{ marginLeft: level * 16 }}>
           {data.map((item, idx) => (
-            <li key={idx}>{renderRecursive(item, level + 1)}</li>
+            <li key={idx}>
+              <strong>[{idx}] :</strong>{' '}
+              {editMode && isPendingReview ? (
+                typeof item === 'object' && item !== null ? (
+                  renderRecursive(item, level + 1, [...path, idx])
+                ) : (
+                  <input
+                    value={item}
+                    onChange={(e) =>
+                      handleRecursiveChange([...path, idx], e.target.value)
+                    }
+                    style={{ width: `${String(item).length + 2}ch` }}
+                  />
+                )
+              ) : typeof item === 'object' && item !== null ? (
+                renderRecursive(item, level + 1, [...path, idx])
+              ) : (
+                item?.toString()
+              )}
+            </li>
           ))}
         </ul>
       );
     } else if (typeof data === 'object' && data !== null) {
       return (
-        <ul style={{ marginLeft: level * 20 }}>
+        <ul style={{ marginLeft: level * 16 }}>
           {Object.entries(data).map(([key, value]) => (
             <li key={key}>
               <strong>{key} :</strong>{' '}
-              {typeof value === 'object' && value !== null
-                ? renderRecursive(value, level + 1)
-                : value?.toString()}
+              {editMode && isPendingReview ? (
+                typeof value === 'object' && value !== null ? (
+                  renderRecursive(value, level + 1, [...path, key])
+                ) : (
+                  <input
+                    name={key}
+                    value={value}
+                    onChange={(e) =>
+                      handleRecursiveChange([...path, key], e.target.value)
+                    }
+                    style={{ width: `${String(value).length + 2}ch` }}
+                  />
+                )
+              ) : typeof value === 'object' && value !== null ? (
+                renderRecursive(value, level + 1, [...path, key])
+              ) : (
+                value?.toString()
+              )}
             </li>
           ))}
         </ul>
@@ -104,30 +152,11 @@ const MonsterDataTab = ({ monster }) => {
               )}
             </pre>
           )
-        ) : editMode && isPendingReview ? (
-          <div>
-            <ul>
-              {editData &&
-                Object.entries(editData).map(([key, value]) => (
-                  <li key={key}>
-                    <strong>{key} :</strong>
-                    <input
-                      name={key}
-                      value={
-                        typeof value === 'object'
-                          ? JSON.stringify(value)
-                          : value
-                      }
-                      onChange={handleChange}
-                    />
-                  </li>
-                ))}
-            </ul>
-          </div>
         ) : (
           <div>
             {renderRecursive(
-              isPendingReview ? editData : monster?.monster_data
+              isPendingReview ? editData : monster?.monster_data,
+              0
             )}
           </div>
         )}

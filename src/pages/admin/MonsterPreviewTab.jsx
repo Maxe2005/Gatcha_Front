@@ -4,7 +4,7 @@ import GatchaCard from '../../components/GatchaCard';
 const MonsterPreviewTab = ({ monster }) => (
   <div className="preview-tab">
     <h2>Preview de la Carte</h2>
-    <GatchaCard monstre={monster} />
+    <GatchaCard monstre={monster.monster_data} />
   </div>
 );
 

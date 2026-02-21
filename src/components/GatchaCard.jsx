@@ -7,19 +7,24 @@ const GatchaCard = ({
   disableClickFlip = false,
   onClick,
 }) => {
+  const defaultImage = '/assets/monsters/Default_Monster.png';
+  const defaultElementImage = '/assets/elements/Default_Element.png';
+  const defaultRankImage = '/assets/ranks/Default_Rank.png';
   const [isFlipped, setIsFlipped] = useState(false);
 
   const initialSrc = monstre?.nom
     ? `/assets/monsters/${monstre.nom}.png`
-    : `/assets/monsters/Default_Monster.png`;
+    : defaultImage;
   const [currentImage, setCurrentImage] = useState(initialSrc);
 
   // Reset image when monster prop changes
   useEffect(() => {
     setCurrentImage(
-      monstre?.nom
-        ? `/assets/monsters/${monstre.nom}.png`
-        : `/assets/monsters/Default_Monster.png`
+      monstre?.ImageUrl
+        ? monstre?.ImageUrl
+        : monstre?.nom
+          ? `/assets/monsters/${monstre.nom}.png`
+          : defaultImage
     );
   }, [monstre]);
 
@@ -79,8 +84,8 @@ const GatchaCard = ({
         alt=""
         style={{ display: 'none' }}
         onError={() => {
-          if (currentImage !== '/assets/monsters/Default_Monster.png') {
-            setCurrentImage('/assets/monsters/Default_Monster.png');
+          if (currentImage !== defaultImage) {
+            setCurrentImage(defaultImage);
           }
         }}
       />
@@ -91,15 +96,12 @@ const GatchaCard = ({
           style={{ backgroundImage: `url(${currentImage})` }}
         >
           <img
-            src={rankToImage[monstre.rang] || '/assets/ranks/Default_Rank.png'}
+            src={rankToImage[monstre.rang] || defaultRankImage}
             alt={monstre.rang}
             className="rank-icon-front"
           />
           <img
-            src={
-              elementToImage[elementClass] ||
-              '/assets/elements/Default_Element.png'
-            }
+            src={elementToImage[elementClass] || defaultElementImage}
             alt={monstre.element}
             className="element-icon-front"
           />

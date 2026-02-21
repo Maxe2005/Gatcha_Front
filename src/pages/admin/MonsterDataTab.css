@@ -1,0 +1,100 @@
+.data-tab {
+  padding: 1.5rem;
+  background: #181c24;
+  border-radius: 12px;
+  color: #f3f3f3;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+  max-width: 900px;
+  margin: 2rem auto;
+}
+.data-tab h2 {
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  color: #ffd700;
+}
+.sub-tabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.sub-tabs button {
+  background: #23283a;
+  color: #ffd700;
+  border: none;
+  padding: 0.5rem 1.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+.sub-tabs button.active {
+  background: #ffd700;
+  color: #23283a;
+}
+.edit-toggle {
+  margin-bottom: 1rem;
+}
+.edit-toggle button {
+  background: #ffd700;
+  color: #23283a;
+  border: none;
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+.sub-tab-content {
+  background: #23283a;
+  border-radius: 8px;
+  padding: 1rem;
+  min-height: 120px;
+  font-size: 1.05rem;
+  overflow-x: auto;
+}
+.data-tab ul {
+  list-style: none;
+  padding-left: 0.5rem;
+}
+.data-tab li {
+  margin-bottom: 0.4rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+}
+.data-tab strong {
+  color: #ffd700;
+  min-width: 90px;
+}
+.data-tab input {
+  background: #23283a;
+  color: #f3f3f3;
+  border: 1px solid #ffd700;
+  border-radius: 4px;
+  padding: 0.2rem 0.5rem;
+  font-size: 1rem;
+  min-width: 60px;
+  max-width: 100%;
+  resize: none;
+  transition: border 0.2s;
+}
+.data-tab input:focus {
+  border: 1.5px solid #ffea70;
+  outline: none;
+}
+.data-tab textarea {
+  background: #23283a;
+  color: #f3f3f3;
+  border: 1px solid #ffd700;
+  border-radius: 4px;
+  padding: 0.4rem 0.7rem;
+  font-size: 1rem;
+  width: 100%;
+  resize: vertical;
+  min-height: 80px;
+  transition: border 0.2s;
+}
+.data-tab textarea:focus {
+  border: 1.5px solid #ffea70;
+  outline: none;
+}
