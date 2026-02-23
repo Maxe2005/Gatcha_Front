@@ -46,6 +46,8 @@ const GenerateMonsters = () => {
   const [error, setError] = useState(null);
   const [startTime, setStartTime] = useState(null);
   const [elapsedTime, setElapsedTime] = useState(0);
+  const [pendingBatch, setPendingBatch] = useState(null); // { prompt, batchCount, startedAt, batchId }
+  const wsRef = useRef(null);
 
   const isMountedRef = useRef(true);
   const pageRef = useRef(null);
@@ -63,22 +65,90 @@ const GenerateMonsters = () => {
     }
   }, [theme]);
 
+  // Gestion du flag "génération en cours" dans le localStorage
   useEffect(() => {
+    // Nettoyage du ref
     return () => {
       isMountedRef.current = false;
     };
   }, []);
 
-  // Timer for elapsed time
+  // Au chargement, vérifier s'il y a une génération en cours (persistée)
   useEffect(() => {
-    if (!isLoading) return;
+    const pending = localStorage.getItem('monsterBatchPending');
+    if (pending) {
+      try {
+        const parsed = JSON.parse(pending);
+        setPendingBatch(parsed);
+        setPrompt(parsed.prompt);
+        setBatchCount(parsed.batchCount);
+        setIsLoading(true);
+        setStartTime(parsed.startedAt);
+      } catch (e) {
+        localStorage.removeItem('monsterBatchPending');
+      }
+    }
+  }, []);
 
+  // Timer pour le temps écoulé
+  useEffect(() => {
+    if (!isLoading || !startTime) return;
     const interval = setInterval(() => {
       setElapsedTime(Math.floor((Date.now() - startTime) / 1000));
     }, 1000);
-
     return () => clearInterval(interval);
   }, [isLoading, startTime]);
+
+  // Suivi WebSocket (sera branché après POST)
+  useEffect(() => {
+    if (!pendingBatch || !pendingBatch.batchId) return;
+    let ws;
+    let isClosed = false;
+    let monsters = [];
+    ws = new window.WebSocket(
+      `${window.location.protocol === 'https:' ? 'wss' : 'ws'}://localhost:8000/api/v1/monsters/ws/${pendingBatch.batchId}`
+    );
+    wsRef.current = ws;
+    ws.onmessage = (event) => {
+      if (event.data === 'Génération terminée') {
+        setIsLoading(false);
+        setPendingBatch(null);
+        localStorage.removeItem('monsterBatchPending');
+        success(`✅ ${monsters.length} monstre(s) généré(s) avec succès !`);
+        ws.close();
+        isClosed = true;
+      } else {
+        try {
+          const data = JSON.parse(event.data);
+          if (data.info) {
+            addNotification(`ℹ️ ${data.info}`, 'info', 3000);
+          } else if (data.monster) {
+            const monster = data.monster;
+            monsters.push(monster);
+            setGeneratedMonsters((prev) => [...prev, monster]);
+
+            addNotification(
+              `✅ Monstre généré : ${monster.nom || 'Inconnu'}`,
+              'success',
+              4000
+            );
+          }
+        } catch (e) {
+          // ignore parse error
+        }
+      }
+    };
+    ws.onerror = () => {
+      setError('Erreur WebSocket lors du suivi de la génération.');
+      setIsLoading(false);
+      setPendingBatch(null);
+      localStorage.removeItem('monsterBatchPending');
+      if (!isClosed) ws.close();
+    };
+    return () => {
+      if (ws && ws.readyState === 1) ws.close();
+    };
+  }, [pendingBatch]);
 
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
@@ -112,32 +182,39 @@ const GenerateMonsters = () => {
       showError('Veuillez entrer un prompt');
       return;
     }
-
+    if (localStorage.getItem('monsterBatchPending')) {
+      showError('Une génération de monstres est déjà en cours.');
+      return;
+    }
     setIsLoading(true);
     setError(null);
     setGeneratedMonsters([]);
     setStartTime(Date.now());
     setElapsedTime(0);
-
     const notificationId = startBackgroundNotification('Generation du monstre');
-
     try {
       const result = await generateMonster(prompt);
-      if (isMountedRef.current) {
-        setGeneratedMonsters([result]);
+      if (result && result.batch_id) {
+        const pending = {
+          prompt,
+          batchCount: 1,
+          startedAt: Date.now(),
+          batchId: result.batch_id,
+        };
+        localStorage.setItem('monsterBatchPending', JSON.stringify(pending));
+        setPendingBatch(pending);
+      } else {
+        throw new Error('Réponse inattendue du serveur (pas de batch_id)');
       }
-      success('✅ Monstre généré avec succès !');
     } catch (err) {
       const errorMessage = parseErrorMessage(err);
-      if (isMountedRef.current) {
-        setError(errorMessage);
-      }
+      setError(errorMessage);
       showError(`❌ Erreur: ${errorMessage}`);
+      setIsLoading(false);
+      setPendingBatch(null);
+      localStorage.removeItem('monsterBatchPending');
     } finally {
       finishBackgroundNotification(notificationId);
-      if (isMountedRef.current) {
-        setIsLoading(false);
-      }
     }
   };
 
@@ -146,39 +223,45 @@ const GenerateMonsters = () => {
       showError('Veuillez entrer un prompt');
       return;
     }
-
     if (batchCount < 1 || batchCount > 10) {
       showError('Le nombre de monstres doit être entre 1 et 10');
       return;
     }
-
+    if (localStorage.getItem('monsterBatchPending')) {
+      showError('Une génération de monstres est déjà en cours.');
+      return;
+    }
     setIsLoading(true);
     setError(null);
     setGeneratedMonsters([]);
     setStartTime(Date.now());
     setElapsedTime(0);
-
     const notificationId = startBackgroundNotification(
       `Generation de ${batchCount} monstre(s)`
     );
-
     try {
       const result = await generateMonsterBatch(batchCount, prompt);
-      if (isMountedRef.current) {
-        setGeneratedMonsters(result);
+      if (result && result.batch_id) {
+        const pending = {
+          prompt,
+          batchCount,
+          startedAt: Date.now(),
+          batchId: result.batch_id,
+        };
+        localStorage.setItem('monsterBatchPending', JSON.stringify(pending));
+        setPendingBatch(pending);
+      } else {
+        throw new Error('Réponse inattendue du serveur (pas de batch_id)');
       }
-      success(`✅ ${result.length} monstre(s) généré(s) avec succès !`);
     } catch (err) {
       const errorMessage = parseErrorMessage(err);
-      if (isMountedRef.current) {
-        setError(errorMessage);
-      }
+      setError(errorMessage);
       showError(`❌ Erreur: ${errorMessage}`);
+      setIsLoading(false);
+      setPendingBatch(null);
+      localStorage.removeItem('monsterBatchPending');
     } finally {
       finishBackgroundNotification(notificationId);
-      if (isMountedRef.current) {
-        setIsLoading(false);
-      }
     }
   };
 
@@ -332,7 +415,7 @@ const GenerateMonsters = () => {
                 variant="contained"
                 color="primary"
                 onClick={handleGenerateSingle}
-                disabled={isLoading || !prompt.trim()}
+                disabled={isLoading || !prompt.trim() || !!pendingBatch}
                 sx={{
                   flex: 1,
                   py: 1.5,
@@ -352,7 +435,7 @@ const GenerateMonsters = () => {
                 variant="contained"
                 color="secondary"
                 onClick={handleGenerateBatch}
-                disabled={isLoading || !prompt.trim()}
+                disabled={isLoading || !prompt.trim() || !!pendingBatch}
                 sx={{
                   flex: 1,
                   py: 1.5,
