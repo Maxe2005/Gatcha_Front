@@ -1,0 +1,5 @@
+/* Correction d'alignement pour le nom du monstre dans la preview admin */
+.preview-tab .card-container .monster-name-front {
+  margin: 0;
+  align-self: center;
+}
