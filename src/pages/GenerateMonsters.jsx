@@ -121,7 +121,7 @@ const GenerateMonsters = () => {
         try {
           const data = JSON.parse(event.data);
           if (data.info) {
-            addNotification(`ℹ️ ${data.info}`, 'info', 3000);
+            addNotification(`ℹ️ ${data.info}`, 'info', 20000);
           } else if (data.monster) {
             const monster = data.monster;
             monsters.push(monster);
@@ -130,7 +130,7 @@ const GenerateMonsters = () => {
             addNotification(
               `✅ Monstre généré : ${monster.nom || 'Inconnu'}`,
               'success',
-              4000
+              20000
             );
           }
         } catch (e) {

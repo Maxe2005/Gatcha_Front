@@ -7,14 +7,20 @@ export const NotificationProvider = ({ children }) => {
 
   const addNotification = useCallback(
     (message, type = 'info', duration = 5000) => {
-      const id = Date.now();
-      const notification = { id, message, type };
+      const id = Date.now() + Math.floor(Math.random() * 10000); // éviter collisions
+      const notification = { id, message, type, _closedManually: false };
 
       setNotifications((prev) => [...prev, notification]);
 
       if (duration > 0) {
         setTimeout(() => {
-          removeNotification(id);
+          setNotifications((prev) => {
+            const notif = prev.find((n) => n.id === id);
+            if (notif && !notif._closedManually) {
+              return prev.filter((n) => n.id !== id);
+            }
+            return prev;
+          });
         }, duration);
       }
 
@@ -24,7 +30,13 @@ export const NotificationProvider = ({ children }) => {
   );
 
   const removeNotification = useCallback((id) => {
-    setNotifications((prev) => prev.filter((notif) => notif.id !== id));
+    setNotifications((prev) =>
+      prev
+        .map((notif) =>
+          notif.id === id ? { ...notif, _closedManually: true } : notif
+        )
+        .filter((notif) => notif.id !== id)
+    );
   }, []);
 
   const success = useCallback(

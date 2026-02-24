@@ -54,7 +54,26 @@ const AdminDashboard = () => {
   return (
     <div className="admin-dashboard">
       <div className="admin-header">
-        <h1>Tableau de Bord Admin</h1>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
+          <h1 style={{ margin: 0 }}>Tableau de Bord Admin</h1>
+          <button
+            className="btn-home"
+            onClick={() => navigate('/')}
+            style={{
+              padding: '8px 16px',
+              fontWeight: 'bold',
+              borderRadius: 8,
+              background: '#eee',
+              color: '#222',
+              border: 'none',
+              cursor: 'pointer',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+            }}
+            title="Retour à l'accueil"
+          >
+            Accueil
+          </button>
+        </div>
         <div className="admin-header-actions">
           <button className="btn-primary" onClick={handleViewMonsters}>
             Voir les Monstres
