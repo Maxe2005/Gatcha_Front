@@ -120,7 +120,16 @@ const GenerateMonsters = () => {
       } else {
         try {
           const data = JSON.parse(event.data);
-          if (data.info) {
+          if (data.error) {
+            const errorMessage = parseErrorMessage(data.error);
+            setError(errorMessage);
+            showError(`❌ Erreur: ${errorMessage}`);
+            setIsLoading(false);
+            setPendingBatch(null);
+            localStorage.removeItem('monsterBatchPending');
+            if (!isClosed) ws.close();
+          }
+          else if (data.info) {
             addNotification(`ℹ️ ${data.info}`, 'info', 20000);
           } else if (data.monster) {
             const monster = data.monster;
