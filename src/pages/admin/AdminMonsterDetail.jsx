@@ -185,7 +185,17 @@ const AdminMonsterDetail = () => {
             onActionError={setActionError}
           />
         )}
-        {activeTab === 'data' && <MonsterDataTab monster={monster} />}
+        {activeTab === 'data' && (
+          <MonsterDataTab
+            monster={monster}
+            monsterId={monsterId}
+            onMonsterUpdate={(detail, historyArr) => {
+              setMonster(detail);
+              setHistory(historyArr);
+            }}
+            onActionError={setActionError}
+          />
+        )}
         {activeTab === 'images' && (
           <MonsterImagesTab
             monsterId={monsterId}

@@ -3,8 +3,6 @@ import React from 'react';
 const ReviewModal = ({
   open,
   onClose,
-  reviewAction,
-  setReviewAction,
   reviewNotes,
   setReviewNotes,
   isActionLoading,
@@ -14,17 +12,7 @@ const ReviewModal = ({
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
-        <h2>Review du Monstre</h2>
-        <div className="form-group">
-          <label>Action</label>
-          <select
-            value={reviewAction}
-            onChange={(e) => setReviewAction(e.target.value)}
-          >
-            <option value="approve">Approuver</option>
-            <option value="reject">Rejeter</option>
-          </select>
-        </div>
+        <h2>Approuver le Monstre</h2>
         <div className="form-group">
           <label>Notes (optionnel)</label>
           <textarea
@@ -43,7 +31,7 @@ const ReviewModal = ({
             onClick={onConfirm}
             disabled={isActionLoading}
           >
-            {isActionLoading ? 'En cours...' : 'Confirmer'}
+            {isActionLoading ? 'En cours...' : 'Approuver'}
           </button>
         </div>
       </div>

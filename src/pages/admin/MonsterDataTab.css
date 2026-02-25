@@ -65,6 +65,32 @@
   font-size: 1.05rem;
   overflow-x: auto;
 }
+.data-tab-actions {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+.data-tab-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+  min-width: 260px;
+}
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  color: #ffd700;
+}
+.json-error {
+  color: #ff6b6b;
+  font-weight: 600;
+}
 .data-tab ul {
   list-style: none;
   padding-left: 0.5rem;

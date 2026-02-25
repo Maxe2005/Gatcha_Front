@@ -1,26 +1,41 @@
 import React from 'react';
+import { adminApiService } from '../../services/adminService';
 import './MonsterDataTab.css';
 
-const MonsterDataTab = ({ monster }) => {
+const MonsterDataTab = ({
+  monster,
+  monsterId,
+  onMonsterUpdate,
+  onActionError,
+}) => {
   const state = monster?.metadata?.state;
-  const showJsonStates = ['GENERATED', 'DEFECTIVE'];
-
-  if (showJsonStates.includes(state)) {
-    return (
-      <div className="data-tab">
-        <h2>Données du Monstre</h2>
-        <pre>{JSON.stringify(monster?.monster_data, null, 2)}</pre>
-      </div>
-    );
-  }
-
-  // Les autres états seront traités dans les étapes suivantes
+  const canEditStates = ['GENERATED', 'PENDING_REVIEW', 'DEFECTIVE'];
+  const canEdit = canEditStates.includes(state);
   const [subTab, setSubTab] = React.useState('interpreted');
-
-  // Pour les états autres que GENERATED, DEFECTIVE
-  const isPendingReview = state === 'PENDING_REVIEW';
   const [editMode, setEditMode] = React.useState(false);
   const [editData, setEditData] = React.useState(monster?.monster_data || {});
+  const [jsonText, setJsonText] = React.useState(
+    JSON.stringify(monster?.monster_data || {}, null, 2)
+  );
+  const [jsonError, setJsonError] = React.useState(null);
+  const [skipValidation, setSkipValidation] = React.useState(false);
+  const [updateNotes, setUpdateNotes] = React.useState('');
+  const [isSaving, setIsSaving] = React.useState(false);
+
+  React.useEffect(() => {
+    setEditData(monster?.monster_data || {});
+    setJsonText(JSON.stringify(monster?.monster_data || {}, null, 2));
+    setJsonError(null);
+    setUpdateNotes('');
+    setSkipValidation(false);
+    setEditMode(false);
+  }, [monster]);
+
+  React.useEffect(() => {
+    if (!editMode || subTab !== 'json') {
+      setJsonText(JSON.stringify(editData || {}, null, 2));
+    }
+  }, [editData, editMode, subTab]);
 
   // Fonction récursive pour mettre à jour une valeur dans un objet imbriqué
   const setValueAtPath = (obj, path, value) => {
@@ -41,10 +56,42 @@ const MonsterDataTab = ({ monster }) => {
 
   // Pour le JSON, on modifie le texte brut
   const handleJsonChange = (e) => {
+    const nextValue = e.target.value;
+    setJsonText(nextValue);
     try {
-      setEditData(JSON.parse(e.target.value));
-    } catch {
-      // ignore parse error
+      const parsed = JSON.parse(nextValue);
+      setEditData(parsed);
+      setJsonError(null);
+    } catch (error) {
+      setJsonError(error.message || 'JSON invalide');
+    }
+  };
+
+  const handleSave = async () => {
+    if (!canEdit || !editMode) return;
+    if (subTab === 'json' && jsonError) {
+      onActionError?.('JSON invalide. Corrigez avant de sauvegarder.');
+      return;
+    }
+    try {
+      setIsSaving(true);
+      onActionError?.(null);
+      await adminApiService.updateMonster(monsterId, editData, {
+        skipValidation,
+        notes: updateNotes || null,
+      });
+      const detail = await adminApiService.getMonsterDetail(monsterId);
+      const history = await adminApiService.getMonsterHistory(monsterId);
+      onMonsterUpdate?.(detail, history.history || []);
+      setEditMode(false);
+      setJsonText(JSON.stringify(detail?.monster_data || {}, null, 2));
+      alert('Modifications enregistrees avec succes');
+    } catch (err) {
+      onActionError?.(
+        err.response?.data?.detail || 'Erreur lors de la mise a jour du monstre'
+      );
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -56,7 +103,7 @@ const MonsterDataTab = ({ monster }) => {
           {data.map((item, idx) => (
             <li key={idx}>
               <strong>[{idx}] :</strong>{' '}
-              {editMode && isPendingReview ? (
+              {editMode && canEdit ? (
                 typeof item === 'object' && item !== null ? (
                   renderRecursive(item, level + 1, [...path, idx])
                 ) : (
@@ -83,7 +130,7 @@ const MonsterDataTab = ({ monster }) => {
           {Object.entries(data).map(([key, value]) => (
             <li key={key}>
               <strong>{key} :</strong>{' '}
-              {editMode && isPendingReview ? (
+              {editMode && canEdit ? (
                 typeof value === 'object' && value !== null ? (
                   renderRecursive(value, level + 1, [...path, key])
                 ) : (
@@ -114,7 +161,7 @@ const MonsterDataTab = ({ monster }) => {
     <div className="data-tab">
       <div className="data-tab-header">
         <h2>Données du Monstre</h2>
-        {isPendingReview && (
+        {canEdit && (
           <div className="edit-toggle">
             <button onClick={() => setEditMode(!editMode)}>
               {editMode ? 'Mode visionnage' : 'Mode modification'}
@@ -138,9 +185,9 @@ const MonsterDataTab = ({ monster }) => {
       </div>
       <div className="sub-tab-content">
         {subTab === 'json' ? (
-          editMode && isPendingReview ? (
+          editMode && canEdit ? (
             <textarea
-              value={JSON.stringify(editData, null, 2)}
+              value={jsonText}
               onChange={handleJsonChange}
               rows={10}
               style={{ width: '100%' }}
@@ -148,7 +195,7 @@ const MonsterDataTab = ({ monster }) => {
           ) : (
             <pre>
               {JSON.stringify(
-                isPendingReview ? editData : monster?.monster_data,
+                editMode && canEdit ? editData : monster?.monster_data,
                 null,
                 2
               )}
@@ -157,12 +204,40 @@ const MonsterDataTab = ({ monster }) => {
         ) : (
           <div>
             {renderRecursive(
-              isPendingReview ? editData : monster?.monster_data,
+              editMode && canEdit ? editData : monster?.monster_data,
               0
             )}
           </div>
         )}
       </div>
+      {editMode && canEdit && (
+        <div className="data-tab-actions">
+          <div className="data-tab-controls">
+            <label className="checkbox-row">
+              <input
+                type="checkbox"
+                checked={skipValidation}
+                onChange={(e) => setSkipValidation(e.target.checked)}
+              />
+              Forcer la mise a jour (skip validation)
+            </label>
+            <textarea
+              value={updateNotes}
+              onChange={(e) => setUpdateNotes(e.target.value)}
+              placeholder="Notes de modification (optionnel)"
+              rows={2}
+            />
+            {jsonError && <div className="json-error">{jsonError}</div>}
+          </div>
+          <button
+            className="btn-primary"
+            onClick={handleSave}
+            disabled={isSaving}
+          >
+            {isSaving ? 'Sauvegarde...' : 'Enregistrer les modifications'}
+          </button>
+        </div>
+      )}
     </div>
   );
 };

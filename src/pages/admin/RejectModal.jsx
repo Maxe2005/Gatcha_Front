@@ -1,6 +1,6 @@
 import React from 'react';
 
-const CorrectModal = ({
+const RejectModal = ({
   open,
   onClose,
   reviewNotes,
@@ -11,15 +11,15 @@ const CorrectModal = ({
   if (!open) return null;
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal large" onClick={(e) => e.stopPropagation()}>
-        <h2>Corriger le Monstre</h2>
+      <div className="modal" onClick={(e) => e.stopPropagation()}>
+        <h2>Rejeter le Monstre</h2>
         <div className="form-group">
           <label>Notes (optionnel)</label>
           <textarea
             value={reviewNotes}
             onChange={(e) => setReviewNotes(e.target.value)}
-            placeholder="Entrez vos notes de correction..."
-            rows={3}
+            placeholder="Entrez vos notes..."
+            rows={5}
           />
         </div>
         <div className="modal-actions">
@@ -31,7 +31,7 @@ const CorrectModal = ({
             onClick={onConfirm}
             disabled={isActionLoading}
           >
-            {isActionLoading ? 'En cours...' : 'Corriger'}
+            {isActionLoading ? 'En cours...' : 'Rejeter'}
           </button>
         </div>
       </div>
@@ -39,4 +39,4 @@ const CorrectModal = ({
   );
 };
 
-export default CorrectModal;
+export default RejectModal;

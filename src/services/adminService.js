@@ -27,9 +27,9 @@ export const adminApiService = {
     return response.data;
   },
 
-  reviewMonster: async (monsterId, action, notes = null) => {
+  reviewMonster: async (monsterId, action = 'APPROVE', notes = null) => {
     const payload = {
-      action,
+      action: String(action || 'APPROVE').toUpperCase(),
       notes,
     };
     const response = await adminApi.post(
@@ -39,13 +39,36 @@ export const adminApiService = {
     return response.data;
   },
 
-  correctMonster: async (monsterId, correctedData, notes = null) => {
+  correctMonster: async (monsterId, notes = null) => {
     const payload = {
-      corrected_data: correctedData,
       notes,
     };
     const response = await adminApi.post(
       `/monsters/${monsterId}/correct`,
+      payload
+    );
+    return response.data;
+  },
+
+  updateMonster: async (monsterId, monsterData, options = {}) => {
+    const payload = {
+      monster_data: monsterData,
+      skip_validation: Boolean(options.skipValidation),
+      notes: options.notes || null,
+    };
+    const response = await adminApi.post(
+      `/monsters/${monsterId}/update`,
+      payload
+    );
+    return response.data;
+  },
+
+  rejectMonster: async (monsterId, notes = null) => {
+    const payload = {
+      notes,
+    };
+    const response = await adminApi.post(
+      `/monsters/${monsterId}/reject`,
       payload
     );
     return response.data;
@@ -169,7 +192,7 @@ export const monsterStates = [
   'REJECTED',
 ];
 
-export const reviewActions = ['approve', 'reject'];
+export const reviewActions = ['approve'];
 
 /**
  * Parse JSON safely

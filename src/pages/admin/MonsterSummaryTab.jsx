@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { adminApiService } from '../../services/adminService';
 import ReviewModal from './ReviewModal';
 import CorrectModal from './CorrectModal';
+import RejectModal from './RejectModal';
 import './MonsterSummaryTab.css';
 
 const MonsterSummaryTab = ({
@@ -15,14 +16,16 @@ const MonsterSummaryTab = ({
   const [isProcessLoading, setIsProcessLoading] = useState(false);
   const [isActionLoading, setIsActionLoading] = useState(false);
   const [reviewNotes, setReviewNotes] = useState('');
-  const [reviewAction, setReviewAction] = useState('approve');
-  const [correctedData, setCorrectedData] = useState('');
+  const [correctNotes, setCorrectNotes] = useState('');
+  const [rejectNotes, setRejectNotes] = useState('');
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [showCorrectForm, setShowCorrectForm] = useState(false);
+  const [showRejectForm, setShowRejectForm] = useState(false);
 
   useEffect(() => {
-    // Met à jour les données corrigées lorsque le monstre change
-    setCorrectedData(JSON.stringify(monster?.monster_data || {}, null, 2));
+    setReviewNotes('');
+    setCorrectNotes('');
+    setRejectNotes('');
   }, [monster]);
 
   const handleProcessGenerated = async () => {
@@ -53,7 +56,7 @@ const MonsterSummaryTab = ({
       onActionError?.(null);
       await adminApiService.reviewMonster(
         monsterId,
-        reviewAction,
+        'APPROVE',
         reviewNotes || null
       );
       // Refresh monster data
@@ -62,7 +65,7 @@ const MonsterSummaryTab = ({
       onMonsterUpdate?.(detail, history.history || []);
       setShowReviewForm(false);
       setReviewNotes('');
-      alert(`Monstre ${reviewAction} avec succès`);
+      alert('Monstre approuve avec succes');
     } catch (err) {
       onActionError?.(
         err.response?.data?.detail || 'Erreur lors de la révision du monstre'
@@ -78,31 +81,40 @@ const MonsterSummaryTab = ({
     try {
       setIsActionLoading(true);
       onActionError?.(null);
-      let parsedData;
-      try {
-        parsedData = JSON.parse(correctedData);
-      } catch (e) {
-        onActionError?.('Données JSON invalides');
-        setIsActionLoading(false);
-        return;
-      }
-      await adminApiService.correctMonster(
-        monsterId,
-        parsedData,
-        reviewNotes || null
-      );
+      await adminApiService.correctMonster(monsterId, correctNotes || null);
       // Refresh monster data
       const detail = await adminApiService.getMonsterDetail(monsterId);
       const history = await adminApiService.getMonsterHistory(monsterId);
       onMonsterUpdate?.(detail, history.history || []);
       setShowCorrectForm(false);
-      setReviewNotes('');
+      setCorrectNotes('');
       alert('Monstre corrigé avec succès');
     } catch (err) {
       onActionError?.(
         err.response?.data?.detail || 'Erreur lors de la correction'
       );
       console.error('Error correcting monster:', err);
+    } finally {
+      setIsActionLoading(false);
+    }
+  };
+
+  const handleReject = async () => {
+    try {
+      setIsActionLoading(true);
+      onActionError?.(null);
+      await adminApiService.rejectMonster(monsterId, rejectNotes || null);
+      const detail = await adminApiService.getMonsterDetail(monsterId);
+      const history = await adminApiService.getMonsterHistory(monsterId);
+      onMonsterUpdate?.(detail, history.history || []);
+      setShowRejectForm(false);
+      setRejectNotes('');
+      alert('Monstre rejete avec succes');
+    } catch (err) {
+      onActionError?.(
+        err.response?.data?.detail || 'Erreur lors du rejet du monstre'
+      );
+      console.error('Error rejecting monster:', err);
     } finally {
       setIsActionLoading(false);
     }
@@ -230,7 +242,17 @@ const MonsterSummaryTab = ({
               className="btn-primary"
               onClick={() => setShowReviewForm(true)}
             >
-              Approuver / Rejeter
+              Approuver
+            </button>
+          )}
+          {['GENERATED', 'PENDING_REVIEW', 'DEFECTIVE'].includes(
+            monster?.metadata?.state
+          ) && (
+            <button
+              className="btn-danger"
+              onClick={() => setShowRejectForm(true)}
+            >
+              Rejeter
             </button>
           )}
           {canCorrect && (
@@ -246,8 +268,6 @@ const MonsterSummaryTab = ({
       <ReviewModal
         open={showReviewForm}
         onClose={() => setShowReviewForm(false)}
-        reviewAction={reviewAction}
-        setReviewAction={setReviewAction}
         reviewNotes={reviewNotes}
         setReviewNotes={setReviewNotes}
         isActionLoading={isActionLoading}
@@ -256,12 +276,18 @@ const MonsterSummaryTab = ({
       <CorrectModal
         open={showCorrectForm}
         onClose={() => setShowCorrectForm(false)}
-        correctedData={correctedData}
-        setCorrectedData={setCorrectedData}
-        reviewNotes={reviewNotes}
-        setReviewNotes={setReviewNotes}
+        reviewNotes={correctNotes}
+        setReviewNotes={setCorrectNotes}
         isActionLoading={isActionLoading}
         onConfirm={handleCorrect}
+      />
+      <RejectModal
+        open={showRejectForm}
+        onClose={() => setShowRejectForm(false)}
+        reviewNotes={rejectNotes}
+        setReviewNotes={setRejectNotes}
+        isActionLoading={isActionLoading}
+        onConfirm={handleReject}
       />
     </>
   );
