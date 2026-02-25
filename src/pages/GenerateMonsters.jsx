@@ -110,41 +110,38 @@ const GenerateMonsters = () => {
     );
     wsRef.current = ws;
     ws.onmessage = (event) => {
-      if (event.data === 'Génération terminée') {
-        setIsLoading(false);
-        setPendingBatch(null);
-        localStorage.removeItem('monsterBatchPending');
-        success(`✅ ${monsters.length} monstre(s) généré(s) avec succès !`);
-        ws.close();
-        isClosed = true;
-      } else {
-        try {
-          const data = JSON.parse(event.data);
-          if (data.error) {
-            const errorMessage = parseErrorMessage(data.error);
-            setError(errorMessage);
-            showError(`❌ Erreur: ${errorMessage}`);
-            setIsLoading(false);
-            setPendingBatch(null);
-            localStorage.removeItem('monsterBatchPending');
-            if (!isClosed) ws.close();
-          }
-          else if (data.info) {
-            addNotification(`ℹ️ ${data.info}`, 'info', 20000);
-          } else if (data.monster) {
-            const monster = data.monster;
-            monsters.push(monster);
-            setGeneratedMonsters((prev) => [...prev, monster]);
+      try {
+        const data = JSON.parse(event.data);
+        if (data.success) {
+          setIsLoading(false);
+          setPendingBatch(null);
+          localStorage.removeItem('monsterBatchPending');
+          success(`✅ ${monsters.length} monstre(s) généré(s) avec succès !`);
+          ws.close();
+          isClosed = true;
+        } else if (data.error) {
+          const errorMessage = parseErrorMessage(data.error);
+          setError(errorMessage);
+          showError(`❌ Erreur: ${errorMessage}`);
+          setIsLoading(false);
+          setPendingBatch(null);
+          localStorage.removeItem('monsterBatchPending');
+          if (!isClosed) ws.close();
+        } else if (data.info) {
+          addNotification(`ℹ️ ${data.info}`, 'info', 20000);
+        } else if (data.monster) {
+          const monster = data.monster;
+          monsters.push(monster);
+          setGeneratedMonsters((prev) => [...prev, monster]);
 
-            addNotification(
-              `✅ Monstre généré : ${monster.nom || 'Inconnu'}`,
-              'success',
-              20000
-            );
-          }
-        } catch (e) {
-          // ignore parse error
+          addNotification(
+            `✅ Monstre généré : ${monster.nom || 'Inconnu'}`,
+            'success',
+            20000
+          );
         }
+      } catch (e) {
+        // ignore parse error
       }
     };
     ws.onerror = () => {

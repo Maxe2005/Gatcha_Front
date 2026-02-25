@@ -90,3 +90,73 @@ export const generateMonsterBatch = async (n, prompt) => {
     throw error.response?.data?.detail || error.message;
   }
 };
+
+// Image generation API functions (async with WebSocket)
+export const initiateImageGeneration = async (
+  monsterId,
+  imageName,
+  customPrompt
+) => {
+  try {
+    const response = await generationApi.post('monsters/images/generate', {
+      monster_id: monsterId,
+      image_name: imageName,
+      custom_prompt: customPrompt,
+    });
+    return response.data;
+  } catch (error) {
+    throw error.response?.data?.detail || error.message;
+  }
+};
+
+export const trackImageGeneration = (
+  batchId,
+  onProgress,
+  onComplete,
+  onError
+) => {
+  const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+  const ws = new WebSocket(
+    `${protocol}//${window.location.host}/api/v1/monsters/images/ws/${batchId}`
+  );
+
+  ws.onopen = () => {
+    console.log(
+      `[Image Generation] Connecté au WebSocket pour batch_id: ${batchId}`
+    );
+    onProgress?.({ status: 'Initialisation de la génération...' });
+  };
+
+  ws.onmessage = (event) => {
+    const message = event.data;
+    console.log('[Image Generation] Message reçu:', message);
+    try {
+      const data = JSON.parse(message);
+      if (data.success) {
+        onComplete?.({ success: true });
+        ws.close();
+      } else if (data.error) {
+        onError?.({ error: data.error });
+      } else if (data.info) {
+        onProgress?.({ info: data.info });
+      } else if (data.monster) {
+        // Image générée avec succès
+        onProgress?.({ image: JSON.parse(data.monster) });
+      }
+    } catch (e) {
+      // Message texte brut
+      onProgress?.({ status: message });
+    }
+  };
+
+  ws.onerror = (error) => {
+    console.error('[Image Generation] WebSocket erreur:', error);
+    onError?.({ error: 'Erreur de connexion WebSocket' });
+  };
+
+  ws.onclose = () => {
+    console.log('[Image Generation] WebSocket fermé');
+  };
+
+  return ws;
+};

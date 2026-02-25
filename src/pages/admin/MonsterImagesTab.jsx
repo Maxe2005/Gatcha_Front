@@ -1,6 +1,10 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 
 import { adminApiService } from '../../services/adminService';
+import {
+  initiateImageGeneration,
+  trackImageGeneration,
+} from '../../services/api';
 
 const MonsterImagesTab = ({
   monsterId,
@@ -15,6 +19,20 @@ const MonsterImagesTab = ({
   const [newImagePrompt, setNewImagePrompt] = useState('');
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   const [generateError, setGenerateError] = useState(null);
+
+  // États pour la génération asynchrone avec WebSocket
+  const [imageGenerationProgress, setImageGenerationProgress] = useState(null);
+  const wsRefImage = useRef(null);
+
+  // Cleanup WebSocket on unmount
+  useEffect(() => {
+    return () => {
+      if (wsRefImage.current && wsRefImage.current.readyState === 1) {
+        wsRefImage.current.close();
+      }
+    };
+  }, []);
+
   // Définir une image comme image par défaut
   const handleSetDefaultImage = async (imageId) => {
     setIsSettingDefault(true);
@@ -34,28 +52,77 @@ const MonsterImagesTab = ({
     }
   };
 
-  // Génération d'une nouvelle image
+  // Génération d'une nouvelle image - ASYNC avec WebSocket
   const handleGenerateImage = async (e) => {
     e.preventDefault();
     setIsGeneratingImage(true);
     setGenerateError(null);
+    setImageGenerationProgress(null);
+
     try {
-      await adminApiService.generateMonsterImage({
-        monster_id: monster?.metadata?.monster_id,
-        image_name:
-          monster?.monster_data?.name || monster?.monster_data?.nom || 'image',
-        custom_prompt: newImagePrompt,
-      });
-      // Refresh images
-      const imagesRes = await adminApiService.getMonsterImages(monsterId);
-      onImagesUpdate(imagesRes);
-      setNewImagePrompt('');
-    } catch (err) {
-      setGenerateError(
-        err.response?.data?.detail || "Erreur lors de la génération de l'image"
+      // Étape 1: Initier la génération (retourne batch_id)
+      const result = await initiateImageGeneration(
+        monster?.metadata?.monster_id,
+        newImageName ||
+          monster?.monster_data?.name ||
+          monster?.monster_data?.nom ||
+          'image',
+        newImagePrompt
       );
-    } finally {
+
+      if (!result.batch_id) {
+        throw new Error('Réponse inattendue du serveur (pas de batch_id)');
+      }
+
+      setImageGenerationProgress({ status: 'Génération lancée...' });
+
+      // Étape 2: Tracker la génération en temps réel via WebSocket
+      return new Promise((resolve, reject) => {
+        const ws = trackImageGeneration(
+          result.batch_id,
+          (progress) => {
+            // Mise à jour du UI avec la progression
+            setImageGenerationProgress(progress);
+          },
+          (result) => {
+            // Génération terminée
+            setIsGeneratingImage(false);
+            setImageGenerationProgress(null);
+            setNewImagePrompt('');
+            setNewImageName('');
+
+            // Refresh images
+            adminApiService
+              .getMonsterImages(monsterId)
+              .then((imagesRes) => {
+                onImagesUpdate(imagesRes);
+                resolve(result);
+              })
+              .catch((err) => {
+                setGenerateError(
+                  'Erreur lors de la récupération des images actualisées'
+                );
+                reject(err);
+              });
+          },
+          (error) => {
+            // Erreur durant la génération
+            setIsGeneratingImage(false);
+            setImageGenerationProgress(null);
+            setGenerateError(`Erreur: ${error.error}`);
+            reject(error);
+          }
+        );
+        wsRefImage.current = ws;
+      });
+    } catch (err) {
       setIsGeneratingImage(false);
+      setImageGenerationProgress(null);
+      setGenerateError(
+        err?.response?.data?.detail ||
+          err.message ||
+          "Erreur lors de la génération de l'image"
+      );
     }
   };
   // Ajout du champ image_name
@@ -391,12 +458,53 @@ const MonsterImagesTab = ({
         <button
           type="submit"
           className="btn-primary"
-          disabled={isGeneratingImage || !newImagePrompt || monsterImages.length === 0}
+          disabled={isGeneratingImage || !newImagePrompt}
         >
           {isGeneratingImage ? 'Génération...' : 'Générer'}
         </button>
+
+        {/* Affichage de la progression */}
+        {imageGenerationProgress && (
+          <div
+            style={{
+              marginTop: 12,
+              padding: 12,
+              background: '#222',
+              borderRadius: 4,
+              border: '1px solid #444',
+              color: '#aaa',
+              fontSize: 13,
+            }}
+          >
+            {imageGenerationProgress.status && (
+              <div style={{ marginBottom: 8 }}>
+                <strong>Status:</strong> {imageGenerationProgress.status}
+              </div>
+            )}
+            {imageGenerationProgress.info && (
+              <div style={{ marginBottom: 8 }}>
+                <strong>Info:</strong> {imageGenerationProgress.info}
+              </div>
+            )}
+            {imageGenerationProgress.image && (
+              <div>
+                <strong>Image générée avec succès!</strong>
+              </div>
+            )}
+          </div>
+        )}
+
         {generateError && (
-          <span style={{ color: 'red', fontSize: 13 }}>{generateError}</span>
+          <span
+            style={{
+              color: 'red',
+              fontSize: 13,
+              marginTop: 8,
+              display: 'block',
+            }}
+          >
+            {generateError}
+          </span>
         )}
       </form>
     </div>

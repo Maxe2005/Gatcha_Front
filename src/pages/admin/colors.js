@@ -55,7 +55,6 @@ export const ELEMENT_COLORS = {
 export const STATE_COLORS = {
   GENERATED: '#a0aec0',
   DEFECTIVE: '#e53e3e',
-  CORRECTED: '#f6ad55',
   PENDING_REVIEW: '#ecc94b',
   APPROVED: '#48bb78',
   TRANSMITTED: '#4299e1',

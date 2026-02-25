@@ -357,10 +357,6 @@
   background: #e53e3e;
 }
 
-.state-badge.state-corrected {
-  background: #f6ad55;
-}
-
 .state-badge.state-pending_review {
   background: #ecc94b;
   color: #000;

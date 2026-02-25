@@ -3,7 +3,7 @@ import './MonsterDataTab.css';
 
 const MonsterDataTab = ({ monster }) => {
   const state = monster?.metadata?.state;
-  const showJsonStates = ['GENERATED', 'DEFECTIVE', 'CORRECTED'];
+  const showJsonStates = ['GENERATED', 'DEFECTIVE'];
 
   if (showJsonStates.includes(state)) {
     return (
@@ -17,7 +17,7 @@ const MonsterDataTab = ({ monster }) => {
   // Les autres états seront traités dans les étapes suivantes
   const [subTab, setSubTab] = React.useState('interpreted');
 
-  // Pour les états autres que GENERATED, DEFECTIVE, CORRECTED
+  // Pour les états autres que GENERATED, DEFECTIVE
   const isPendingReview = state === 'PENDING_REVIEW';
   const [editMode, setEditMode] = React.useState(false);
   const [editData, setEditData] = React.useState(monster?.monster_data || {});

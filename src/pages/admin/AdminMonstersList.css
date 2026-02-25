@@ -450,10 +450,6 @@
   background: var(--state-color-defective);
 }
 
-.state-badge.state-corrected {
-  background: var(--state-color-corrected);
-}
-
 .state-badge.state-pending_review {
   background: var(--state-color-pending-review);
   color: var(--state-color-pending-review-text);

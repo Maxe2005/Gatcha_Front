@@ -73,7 +73,6 @@ const AdminMonstersList = () => {
   const MONSTER_STATES = [
     'GENERATED',
     'DEFECTIVE',
-    'CORRECTED',
     'PENDING_REVIEW',
     'APPROVED',
     'TRANSMITTED',

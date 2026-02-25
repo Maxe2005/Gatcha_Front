@@ -134,6 +134,13 @@ export const adminApiService = {
     return response.data;
   },
 
+  // Initiate async image generation (returns batch_id)
+  initiateImageGeneration: async (payload) => {
+    const response = await generationApi.post(`/images/generate`, payload);
+    return response.data;
+  },
+
+  // Legacy synchronous version (kept for backward compatibility)
   generateMonsterImage: async (payload) => {
     const response = await generationApi.post(
       `/monsters/images/generate`,
@@ -147,7 +154,6 @@ export const adminApiService = {
 export const monsterStateColors = {
   GENERATED: '#a0aec0',
   DEFECTIVE: '#e53e3e',
-  CORRECTED: '#f6ad55',
   PENDING_REVIEW: '#ecc94b',
   APPROVED: '#48bb78',
   TRANSMITTED: '#4299e1',
@@ -157,7 +163,6 @@ export const monsterStateColors = {
 export const monsterStates = [
   'GENERATED',
   'DEFECTIVE',
-  'CORRECTED',
   'PENDING_REVIEW',
   'APPROVED',
   'TRANSMITTED',
