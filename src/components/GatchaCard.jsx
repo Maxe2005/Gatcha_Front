@@ -40,6 +40,7 @@ const GatchaCard = ({
   };
 
   const elementClass = (monstre.element || 'neutre').toLowerCase();
+  const rankClass = (monstre.rang || 'COMMON').toLowerCase();
 
   // Mapping rang vers image
   const rankToImage = {
@@ -121,8 +122,10 @@ const GatchaCard = ({
           <div className="card-overlay" />
           <div className="card-grid">
             <div className="card-top">
-              <div className="rank-chip">{monstre.rang || '???'}</div>
-              <div className="element-chip">
+              <div className={`rank-chip rank-${rankClass}`}>
+                {monstre.rang || '???'}
+              </div>
+              <div className={`element-chip element-${elementClass}`}>
                 {(monstre.element || 'Neutre').toUpperCase()}
               </div>
             </div>

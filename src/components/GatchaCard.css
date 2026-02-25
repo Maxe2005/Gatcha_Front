@@ -146,27 +146,105 @@
 }
 
 .rank-chip {
-  background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+  background: linear-gradient(135deg, #a8a8a8 0%, #7d7d7d 100%);
+  color: #ffffff;
+  box-shadow: 0 6px 20px rgba(125, 125, 125, 0.4);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Styles spécifiques par rang */
+.rank-chip.rank-common {
+  background: linear-gradient(135deg, #d4d4d4 0%, #a8a8a8 100%);
+  color: #2d2d2d;
+  box-shadow: 0 6px 20px rgba(168, 168, 168, 0.4);
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
+}
+
+.rank-chip.rank-rare {
+  background: linear-gradient(135deg, #5eb3ff 0%, #3d8bd4 100%);
+  color: #ffffff;
+  box-shadow: 0 6px 20px rgba(94, 179, 255, 0.5);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.rank-chip.rank-epic {
+  background: linear-gradient(135deg, #b967ff 0%, #8e44db 100%);
+  color: #ffffff;
+  box-shadow: 0 6px 20px rgba(185, 103, 255, 0.5);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+.rank-chip.rank-legendary {
+  background: linear-gradient(135deg, #ffb347 0%, #ff8c00 100%);
   color: #1b1b1b;
-  box-shadow: 0 6px 20px rgba(253, 160, 133, 0.35);
+  box-shadow: 0 6px 20px rgba(255, 179, 71, 0.6);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .element-chip {
   display: flex;
   align-items: center;
   gap: 6px;
-  border: 2px solid var(--element-color);
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.08) 0%,
-    rgba(255, 255, 255, 0.02) 100%
-  );
-  color: var(--element-color);
-  box-shadow:
-    0 0 12px var(--element-glow),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
-  text-shadow: 0 0 8px var(--element-glow);
+  border: 2px solid currentColor;
+  background: rgba(0, 0, 0, 0.6);
   backdrop-filter: blur(8px);
+}
+
+/* Styles spécifiques par élément - noms anglais */
+.element-chip.element-fire {
+  color: #ff7a6a;
+  box-shadow:
+    0 0 12px rgba(255, 122, 106, 0.5),
+    inset 0 1px 0 rgba(255, 143, 104, 0.25);
+  text-shadow: 0 0 8px rgba(255, 122, 106, 0.6);
+}
+
+.element-chip.element-water {
+  color: #6ad1ff;
+  box-shadow:
+    0 0 12px rgba(106, 209, 255, 0.5),
+    inset 0 1px 0 rgba(106, 209, 255, 0.25);
+  text-shadow: 0 0 8px rgba(106, 209, 255, 0.6);
+}
+
+.element-chip.element-wind {
+  color: #7ef7c8;
+  box-shadow:
+    0 0 12px rgba(126, 247, 200, 0.5),
+    inset 0 1px 0 rgba(126, 247, 200, 0.25);
+  text-shadow: 0 0 8px rgba(126, 247, 200, 0.6);
+}
+
+.element-chip.element-earth {
+  color: #d1b27e;
+  box-shadow:
+    0 0 12px rgba(209, 178, 126, 0.5),
+    inset 0 1px 0 rgba(209, 178, 126, 0.25);
+  text-shadow: 0 0 8px rgba(209, 178, 126, 0.6);
+}
+
+.element-chip.element-light {
+  color: #f5e68d;
+  box-shadow:
+    0 0 12px rgba(245, 230, 141, 0.6),
+    inset 0 1px 0 rgba(245, 230, 141, 0.3);
+  text-shadow: 0 0 8px rgba(245, 230, 141, 0.7);
+}
+
+.element-chip.element-darkness {
+  color: #9e8bff;
+  box-shadow:
+    0 0 12px rgba(158, 139, 255, 0.5),
+    inset 0 1px 0 rgba(158, 139, 255, 0.25);
+  text-shadow: 0 0 8px rgba(158, 139, 255, 0.6);
+}
+
+.element-chip.element-neutre {
+  color: #9fb4c8;
+  box-shadow:
+    0 0 12px rgba(159, 180, 200, 0.4),
+    inset 0 1px 0 rgba(159, 180, 200, 0.2);
+  text-shadow: 0 0 8px rgba(159, 180, 200, 0.5);
 }
 
 /* Icons pour le recto - positionnées aux coins */
