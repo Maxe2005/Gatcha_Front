@@ -157,6 +157,15 @@ export const adminApiService = {
     return response.data;
   },
 
+  renameMonsterImage: async (monsterId, imageId, newName) => {
+    const payload = { new_name: newName };
+    const response = await generationApi.patch(
+      `/monsters/images/${monsterId}/${imageId}/rename`,
+      payload
+    );
+    return response.data;
+  },
+
   // Initiate async image generation (returns batch_id)
   initiateImageGeneration: async (payload) => {
     const response = await generationApi.post(`/images/generate`, payload);

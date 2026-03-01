@@ -19,6 +19,9 @@ const MonsterImagesTab = ({
   const [newImagePrompt, setNewImagePrompt] = useState('');
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   const [generateError, setGenerateError] = useState(null);
+  const [isRenamingImage, setIsRenamingImage] = useState(false);
+  const [renameError, setRenameError] = useState(null);
+  const [editingImageName, setEditingImageName] = useState(null);
 
   // États pour la génération asynchrone avec WebSocket
   const [imageGenerationProgress, setImageGenerationProgress] = useState(null);
@@ -49,6 +52,31 @@ const MonsterImagesTab = ({
       );
     } finally {
       setIsSettingDefault(false);
+    }
+  };
+
+  // Renommer une image
+  const handleRenameImage = async (imageId, newName) => {
+    if (!newName || newName.trim() === selectedImage.image_name) {
+      setEditingImageName(null);
+      return;
+    }
+
+    setIsRenamingImage(true);
+    setRenameError(null);
+    try {
+      await adminApiService.renameMonsterImage(monsterId, imageId, newName);
+
+      // Refresh images
+      const imagesRes = await adminApiService.getMonsterImages(monsterId);
+      onImagesUpdate(imagesRes);
+      setEditingImageName(null);
+    } catch (err) {
+      setRenameError(
+        err.response?.data?.detail || "Erreur lors du renommage de l'image"
+      );
+    } finally {
+      setIsRenamingImage(false);
     }
   };
 
@@ -302,9 +330,80 @@ const MonsterImagesTab = ({
           >
             {selectedImage ? (
               <>
-                <div style={{ color: '#fff', fontSize: 16, fontWeight: 600 }}>
-                  {selectedImage.image_name}
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 8,
+                    marginBottom: 8,
+                  }}
+                >
+                  {editingImageName !== null ? (
+                    <div style={{ display: 'flex', gap: 8, flex: 1 }}>
+                      <input
+                        type="text"
+                        defaultValue={selectedImage.image_name}
+                        onChange={(e) => setEditingImageName(e.target.value)}
+                        placeholder="Nouveau nom"
+                        autoFocus
+                        style={{
+                          flex: 1,
+                          borderRadius: 4,
+                          padding: 6,
+                          fontSize: 14,
+                          border: '1px solid #555',
+                          background: '#222',
+                          color: '#fff',
+                        }}
+                      />
+                      <button
+                        className="btn-primary"
+                        style={{ fontSize: 12, padding: '6px 12px' }}
+                        disabled={isRenamingImage}
+                        onClick={() =>
+                          handleRenameImage(selectedImage.id, editingImageName)
+                        }
+                      >
+                        {isRenamingImage ? 'Enregistrement...' : 'Valider'}
+                      </button>
+                      <button
+                        className="btn-secondary"
+                        style={{ fontSize: 12, padding: '6px 12px' }}
+                        onClick={() => setEditingImageName(null)}
+                        disabled={isRenamingImage}
+                      >
+                        Annuler
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      <div
+                        style={{
+                          color: '#fff',
+                          fontSize: 16,
+                          fontWeight: 600,
+                          flex: 1,
+                        }}
+                      >
+                        {selectedImage.image_name}
+                      </div>
+                      <button
+                        className="btn-secondary"
+                        style={{ fontSize: 12, padding: '6px 12px' }}
+                        onClick={() =>
+                          setEditingImageName(selectedImage.image_name)
+                        }
+                      >
+                        ✏️ Renommer
+                      </button>
+                    </>
+                  )}
                 </div>
+                {renameError && (
+                  <div style={{ color: 'red', marginBottom: 8, fontSize: 12 }}>
+                    {renameError}
+                  </div>
+                )}
                 <div style={{ color: '#aaa', fontSize: 13, marginTop: 4 }}>
                   {selectedImage.prompt}
                 </div>
