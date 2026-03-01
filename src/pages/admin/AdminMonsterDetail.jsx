@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { adminApiService } from '../../services/adminService';
 import ThemeToggle from '../../components/ThemeToggle';
 import '../admin/AdminMonsterDetail.css';
@@ -55,6 +55,23 @@ const AdminMonsterDetail = () => {
     fetchMonsterDetail();
   }, [monsterId]);
 
+  // Lire l'onglet actif depuis la query `tab` (si présente)
+  const [searchParams, setSearchParams] = useSearchParams();
+  useEffect(() => {
+    const tabFromUrl = searchParams.get('tab');
+    const allowed = [
+      'summary',
+      'data',
+      'images',
+      'validation',
+      'history',
+      'preview',
+    ];
+    if (tabFromUrl && allowed.includes(tabFromUrl)) {
+      setActiveTab(tabFromUrl);
+    }
+  }, [searchParams]);
+
   // Charger les images uniquement si l'onglet images est visible (isInAdvancedState)
   useEffect(() => {
     const fetchImages = async () => {
@@ -74,6 +91,27 @@ const AdminMonsterDetail = () => {
     };
     fetchImages();
   }, [monsterId, isInAdvancedState]);
+
+  // Mettre à jour l'URL quand l'onglet change et gérer le fallback
+  const handleTabChange = (tab) => {
+    // if (tab === 'images' && !isInAdvancedState) {
+    //   tab = 'summary';
+    // }
+    setActiveTab(tab);
+    const newParams = new URLSearchParams(searchParams);
+    newParams.set('tab', tab);
+    setSearchParams(newParams);
+  };
+
+  // // Si on arrive sur `images` via URL mais que l'état n'autorise pas, fallback
+  // useEffect(() => {
+  //   if (activeTab === 'images' && !isInAdvancedState) {
+  //     const newParams = new URLSearchParams(searchParams);
+  //     newParams.set('tab', 'summary');
+  //     setSearchParams(newParams);
+  //     setActiveTab('summary');
+  //   }
+  // }, [isInAdvancedState, activeTab, searchParams, setSearchParams]);
 
   if (loading) {
     return (
@@ -131,40 +169,40 @@ const AdminMonsterDetail = () => {
       <div className="tabs">
         <button
           className={`tab-button ${activeTab === 'summary' ? 'active' : ''}`}
-          onClick={() => setActiveTab('summary')}
+          onClick={() => handleTabChange('summary')}
         >
           Résumé
         </button>
         <button
           className={`tab-button ${activeTab === 'data' ? 'active' : ''}`}
-          onClick={() => setActiveTab('data')}
+          onClick={() => handleTabChange('data')}
         >
           Données
         </button>
         {isInAdvancedState && (
           <button
             className={`tab-button ${activeTab === 'images' ? 'active' : ''}`}
-            onClick={() => setActiveTab('images')}
+            onClick={() => handleTabChange('images')}
           >
             Images
           </button>
         )}
         <button
           className={`tab-button ${activeTab === 'validation' ? 'active' : ''}`}
-          onClick={() => setActiveTab('validation')}
+          onClick={() => handleTabChange('validation')}
         >
           Validation
         </button>
         <button
           className={`tab-button ${activeTab === 'history' ? 'active' : ''}`}
-          onClick={() => setActiveTab('history')}
+          onClick={() => handleTabChange('history')}
         >
           Historique
         </button>
         {isInAdvancedState && (
           <button
             className={`tab-button ${activeTab === 'preview' ? 'active' : ''}`}
-            onClick={() => setActiveTab('preview')}
+            onClick={() => handleTabChange('preview')}
           >
             Preview Carte
           </button>
