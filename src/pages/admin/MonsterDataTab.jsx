@@ -39,13 +39,31 @@ const MonsterDataTab = ({
 
   // Fonction récursive pour mettre à jour une valeur dans un objet imbriqué
   const setValueAtPath = (obj, path, value) => {
-    if (path.length === 1) {
-      return { ...obj, [path[0]]: value };
-    }
     const [head, ...rest] = path;
+
+    // Cas de base : on est arrivé à la fin du chemin
+    if (path.length === 1) {
+      if (Array.isArray(obj)) {
+        const newArray = [...obj];
+        newArray[head] = value;
+        return newArray;
+      }
+      return { ...obj, [head]: value };
+    }
+
+    // Cas récursif : on descend plus profondément
+    const currentValue = obj[head] || (typeof head === 'number' ? [] : {});
+    const updatedValue = setValueAtPath(currentValue, rest, value);
+
+    if (Array.isArray(obj)) {
+      const newArray = [...obj];
+      newArray[head] = updatedValue;
+      return newArray;
+    }
+
     return {
       ...obj,
-      [head]: setValueAtPath(obj[head] || {}, rest, value),
+      [head]: updatedValue,
     };
   };
 
@@ -99,10 +117,11 @@ const MonsterDataTab = ({
   const renderRecursive = (data, level = 0, path = []) => {
     if (Array.isArray(data)) {
       return (
-        <ul style={{ marginLeft: level * 16 }}>
+        <ul style={{ marginLeft: level * 36 }}>
           {data.map((item, idx) => (
             <li key={idx}>
               <strong>[{idx}] :</strong>{' '}
+              <br />
               {editMode && canEdit ? (
                 typeof item === 'object' && item !== null ? (
                   renderRecursive(item, level + 1, [...path, idx])
@@ -126,7 +145,7 @@ const MonsterDataTab = ({
       );
     } else if (typeof data === 'object' && data !== null) {
       return (
-        <ul style={{ marginLeft: level * 16 }}>
+        <ul style={{ marginLeft: level * 36 }}>
           {Object.entries(data).map(([key, value]) => (
             <li key={key}>
               <strong>{key} :</strong>{' '}
