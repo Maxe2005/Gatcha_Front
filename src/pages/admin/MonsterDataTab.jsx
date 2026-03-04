@@ -6,8 +6,10 @@ import { DynamicField } from '../../components/DynamicField';
 const MonsterDataTab = ({
   monster,
   monsterId,
+  targetField,
   onMonsterUpdate,
   onActionError,
+  onTargetFieldCleared,
 }) => {
   const state = monster?.metadata?.state;
   const canEditStates = ['GENERATED', 'PENDING_REVIEW', 'DEFECTIVE'];
@@ -22,6 +24,7 @@ const MonsterDataTab = ({
   const [skipValidation, setSkipValidation] = useState(false);
   const [updateNotes, setUpdateNotes] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+  const [showValidationErrors, setShowValidationErrors] = useState(true);
 
   useEffect(() => {
     setEditData(monster?.monster_data || {});
@@ -32,17 +35,93 @@ const MonsterDataTab = ({
     setEditMode(false);
   }, [monster]);
 
+  // Gérer la navigation vers un champ spécifique
   useEffect(() => {
-    if (!editMode || subTab !== 'json') {
-      setJsonText(JSON.stringify(editData || {}, null, 2));
+    if (targetField && canEdit) {
+      // Activer le mode édition
+      setEditMode(true);
+      // Basculer vers l'onglet interprété pour voir les champs
+      setSubTab('interpreted');
+      setShowValidationErrors(true);
     }
-  }, [editData, editMode, subTab]);
+  }, [targetField, canEdit]);
 
-  // Fonction pour déterminer le type original d'une valeur
+  // Effet séparé pour le scroll après que le DOM soit mis à jour
+  useEffect(() => {
+    if (targetField && subTab === 'interpreted') {
+      // Attendre que le rendu soit complètement terminé
+      const scrollToField = () => {
+        const fieldId = `field-${targetField}`;
+        const element = document.getElementById(fieldId);
+
+        if (element) {
+          // Scroller la page principale vers l'élément
+          element.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center',
+            inline: 'nearest',
+          });
+
+          // Ajouter une classe pour animation temporaire après le scroll
+          setTimeout(() => {
+            element.classList.add('field-highlighted');
+            setTimeout(() => {
+              element.classList.remove('field-highlighted');
+            }, 3000);
+          }, 400);
+
+          // Nettoyer le targetField après navigation
+          if (onTargetFieldCleared) {
+            setTimeout(() => {
+              onTargetFieldCleared();
+            }, 800);
+          }
+        } else {
+          console.warn('Élément non trouvé pour le champ:', targetField);
+          // Lister tous les IDs disponibles pour debug
+          const allFields = document.querySelectorAll('[id^="field-"]');
+          console.log(
+            'Champs disponibles:',
+            Array.from(allFields).map((el) => el.id)
+          );
+        }
+      };
+
+      // Utiliser requestAnimationFrame pour s'assurer que le DOM est bien rendu
+      requestAnimationFrame(() => {
+        setTimeout(scrollToField, 100);
+      });
+    }
+  }, [targetField, subTab, onTargetFieldCleared]);
+
   const getValueType = (value) => {
     if (typeof value === 'number') return 'number';
     if (typeof value === 'boolean') return 'boolean';
     return 'string';
+  };
+
+  const getformatPathString = (path) => {
+    let pathString = '';
+    for (let segment of path) {
+      if (typeof segment === 'number') {
+        pathString += `[${segment}]`;
+      } else {
+        if (pathString) pathString += '.';
+        pathString += segment;
+      }
+    }
+    return pathString;
+  };
+
+  // Fonction pour obtenir l'erreur de validation pour un champ donné
+  const getValidationError = (path) => {
+    if (!showValidationErrors || !monster?.metadata?.validation_errors) {
+      return null;
+    }
+    const pathString = getformatPathString(path);
+    return monster.metadata.validation_errors.find(
+      (error) => error.field === pathString
+    );
   };
 
   // Fonction pour convertir une value au bon type
@@ -139,65 +218,115 @@ const MonsterDataTab = ({
     if (Array.isArray(data)) {
       return (
         <ul style={{ marginLeft: level * 36 }}>
-          {data.map((item, idx) => (
-            <li key={idx}>
-              <strong>[{idx}] :</strong> <br />
-              {editMode && canEdit ? (
-                typeof item === 'object' && item !== null ? (
-                  renderRecursive(item, level + 1, [...path, idx])
+          {data.map((item, idx) => {
+            const currentPath = [...path, idx];
+            const validationError = getValidationError(currentPath);
+            const pathString = getformatPathString(currentPath);
+            return (
+              <li
+                key={idx}
+                id={`field-${pathString}`}
+                className={validationError ? 'field-with-error' : ''}
+              >
+                <strong>[{idx}] :</strong> <br />
+                {editMode && canEdit ? (
+                  typeof item === 'object' && item !== null ? (
+                    renderRecursive(item, level + 1, currentPath)
+                  ) : (
+                    <>
+                      <DynamicField
+                        type={typeof item === 'number' ? 'number' : 'text'}
+                        value={item}
+                        onChange={(e) => {
+                          const valueType = getValueType(item);
+                          handleRecursiveChange(
+                            currentPath,
+                            e.target.value,
+                            valueType
+                          );
+                        }}
+                      />
+                      {validationError && (
+                        <div className="validation-error-message">
+                          ⚠️ {validationError.message}
+                        </div>
+                      )}
+                    </>
+                  )
+                ) : typeof item === 'object' && item !== null ? (
+                  renderRecursive(item, level + 1, currentPath)
                 ) : (
-                  <DynamicField
-                    type={typeof item === 'number' ? 'number' : 'text'}
-                    value={item}
-                    onChange={(e) => {
-                      const valueType = getValueType(item);
-                      handleRecursiveChange(
-                        [...path, idx],
-                        e.target.value,
-                        valueType
-                      );
-                    }}
-                  />
-                )
-              ) : typeof item === 'object' && item !== null ? (
-                renderRecursive(item, level + 1, [...path, idx])
-              ) : (
-                item?.toString()
-              )}
-            </li>
-          ))}
+                  <>
+                    <span className={validationError ? 'error-value' : ''}>
+                      {item?.toString()}
+                    </span>
+                    {validationError && (
+                      <div className="validation-error-message">
+                        ⚠️ {validationError.message}
+                      </div>
+                    )}
+                  </>
+                )}
+              </li>
+            );
+          })}
         </ul>
       );
     } else if (typeof data === 'object' && data !== null) {
       return (
         <ul style={{ marginLeft: level * 36 }}>
-          {Object.entries(data).map(([key, value]) => (
-            <li key={key}>
-              <strong>{key} :</strong>{' '}
-              {editMode && canEdit ? (
-                typeof value === 'object' && value !== null ? (
-                  renderRecursive(value, level + 1, [...path, key])
+          {Object.entries(data).map(([key, value]) => {
+            const currentPath = [...path, key];
+            const validationError = getValidationError(currentPath);
+            const pathString = getformatPathString(currentPath);
+            return (
+              <li
+                key={key}
+                id={`field-${pathString}`}
+                className={validationError ? 'field-with-error' : ''}
+              >
+                <strong>{key} :</strong>{' '}
+                {editMode && canEdit ? (
+                  typeof value === 'object' && value !== null ? (
+                    renderRecursive(value, level + 1, currentPath)
+                  ) : (
+                    <>
+                      <DynamicField
+                        type={typeof value === 'number' ? 'number' : 'text'}
+                        value={value}
+                        onChange={(e) => {
+                          const valueType = getValueType(value);
+                          handleRecursiveChange(
+                            currentPath,
+                            e.target.value,
+                            valueType
+                          );
+                        }}
+                      />
+                      {validationError && (
+                        <div className="validation-error-message">
+                          ⚠️ {validationError.message}
+                        </div>
+                      )}
+                    </>
+                  )
+                ) : typeof value === 'object' && value !== null ? (
+                  renderRecursive(value, level + 1, currentPath)
                 ) : (
-                  <DynamicField
-                    type={typeof value === 'number' ? 'number' : 'text'}
-                    value={value}
-                    onChange={(e) => {
-                      const valueType = getValueType(value);
-                      handleRecursiveChange(
-                        [...path, key],
-                        e.target.value,
-                        valueType
-                      );
-                    }}
-                  />
-                )
-              ) : typeof value === 'object' && value !== null ? (
-                renderRecursive(value, level + 1, [...path, key])
-              ) : (
-                value?.toString()
-              )}
-            </li>
-          ))}
+                  <>
+                    <span className={validationError ? 'error-value' : ''}>
+                      {value?.toString()}
+                    </span>
+                    {validationError && (
+                      <div className="validation-error-message">
+                        ⚠️ {validationError.message}
+                      </div>
+                    )}
+                  </>
+                )}
+              </li>
+            );
+          })}
         </ul>
       );
     } else {
@@ -209,13 +338,30 @@ const MonsterDataTab = ({
     <div className="data-tab">
       <div className="data-tab-header">
         <h2>Données du Monstre</h2>
-        {canEdit && (
-          <div className="edit-toggle">
-            <button onClick={() => setEditMode(!editMode)}>
-              {editMode ? 'Mode visionnage' : 'Mode modification'}
+        <div className="data-tab-header-actions">
+          {monster?.metadata?.validation_errors?.length > 0 && (
+            <button
+              className="btn-toggle-errors"
+              onClick={() => setShowValidationErrors(!showValidationErrors)}
+              title={
+                showValidationErrors
+                  ? 'Masquer les erreurs'
+                  : 'Afficher les erreurs'
+              }
+            >
+              {showValidationErrors
+                ? '🔴'
+                : '⚪'}
             </button>
-          </div>
-        )}
+          )}
+          {canEdit && (
+            <div className="edit-toggle">
+              <button onClick={() => setEditMode(!editMode)}>
+                {editMode ? 'Mode visionnage' : 'Mode modification'}
+              </button>
+            </div>
+          )}
+        </div>
       </div>
       <div className="sub-tabs">
         <button

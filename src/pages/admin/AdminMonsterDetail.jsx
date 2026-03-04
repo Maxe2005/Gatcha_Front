@@ -21,6 +21,7 @@ const AdminMonsterDetail = () => {
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState('summary');
   const [actionError, setActionError] = useState(null);
+  const [targetField, setTargetField] = useState(null);
   // Les états pour la gestion des images sont déplacés dans MonsterImagesTab
 
   const canApproveReject = monster?.metadata?.state === 'PENDING_REVIEW';
@@ -227,11 +228,13 @@ const AdminMonsterDetail = () => {
           <MonsterDataTab
             monster={monster}
             monsterId={monsterId}
+            targetField={targetField}
             onMonsterUpdate={(detail, historyArr) => {
               setMonster(detail);
               setHistory(historyArr);
             }}
             onActionError={setActionError}
+            onTargetFieldCleared={() => setTargetField(null)}
           />
         )}
         {activeTab === 'images' && (
@@ -247,7 +250,13 @@ const AdminMonsterDetail = () => {
           />
         )}
         {activeTab === 'validation' && (
-          <MonsterValidationTab monster={monster} />
+          <MonsterValidationTab
+            monster={monster}
+            onNavigateToField={(fieldPath) => {
+              setTargetField(fieldPath);
+              handleTabChange('data');
+            }}
+          />
         )}
         {activeTab === 'history' && <MonsterHistoryTab history={history} />}
         {activeTab === 'preview' && isInAdvancedState && (

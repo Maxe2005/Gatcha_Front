@@ -1,14 +1,21 @@
 import React from 'react';
+import './MonsterValidationTab.css';
 
-const MonsterValidationTab = ({ monster }) => (
+const MonsterValidationTab = ({ monster, onNavigateToField }) => (
   <div className="validation-tab">
     <h2>Rapport de Validation</h2>
     {monster?.metadata?.validation_errors &&
     monster.metadata.validation_errors.length > 0 ? (
       <div className="errors-list">
         {monster.metadata.validation_errors.map((error, idx) => (
-          <div key={idx} className="error-item">
+          <div
+            key={idx}
+            className="error-item clickable"
+            onClick={() => onNavigateToField && onNavigateToField(error.field)}
+            title="Cliquez pour naviguer vers ce champ"
+          >
             <strong>{error.field}</strong>: {error.message}
+            <span className="navigate-icon">→</span>
           </div>
         ))}
       </div>
