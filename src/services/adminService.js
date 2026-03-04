@@ -27,9 +27,9 @@ export const adminApiService = {
     return response.data;
   },
 
-  reviewMonster: async (monsterId, action = 'APPROVE', notes = null) => {
+  reviewMonster: async (monsterId, username = 'Admin', notes = null) => {
     const payload = {
-      action: String(action || 'APPROVE').toUpperCase(),
+      admin_name: username,
       notes,
     };
     const response = await adminApi.post(
@@ -39,8 +39,9 @@ export const adminApiService = {
     return response.data;
   },
 
-  correctMonster: async (monsterId, notes = null) => {
+  correctMonster: async (monsterId, username = 'Admin', notes = null) => {
     const payload = {
+      admin_name: username,
       notes,
     };
     const response = await adminApi.post(
@@ -50,11 +51,17 @@ export const adminApiService = {
     return response.data;
   },
 
-  updateMonster: async (monsterId, monsterData, options = {}) => {
+  updateMonster: async (
+    monsterId,
+    username = 'Admin',
+    monsterData,
+    options = {}
+  ) => {
     const payload = {
       monster_data: monsterData,
       skip_validation: Boolean(options.skipValidation),
       notes: options.notes || null,
+      admin_name: username,
     };
     const response = await adminApi.post(
       `/monsters/${monsterId}/update`,
@@ -63,8 +70,9 @@ export const adminApiService = {
     return response.data;
   },
 
-  rejectMonster: async (monsterId, notes = null) => {
+  rejectMonster: async (monsterId, username = 'Admin', notes = null) => {
     const payload = {
+      admin_name: username,
       notes,
     };
     const response = await adminApi.post(
@@ -77,55 +85,6 @@ export const adminApiService = {
   // Validation rules endpoint
   getValidationRules: async () => {
     const response = await adminApi.get('/validation-rules');
-    return response.data;
-  },
-
-  // Legacy defective JSON endpoints
-  getDefectiveMonsters: async () => {
-    const response = await adminApi.get('/defective');
-    return response.data;
-  },
-
-  getDefectiveDetail: async (filename) => {
-    const response = await adminApi.get(`/defective/${filename}`);
-    return response.data;
-  },
-
-  validateDefective: async (filename) => {
-    const response = await adminApi.post(`/defective/${filename}/validate`);
-    return response.data;
-  },
-
-  updateDefective: async (filename, correctedData, notes = null) => {
-    const payload = {
-      corrected_data: correctedData,
-      notes,
-    };
-    const response = await adminApi.put(
-      `/defective/${filename}/update`,
-      payload
-    );
-    return response.data;
-  },
-
-  approveDefective: async (filename, correctedData, notes = null) => {
-    const payload = {
-      corrected_data: correctedData,
-      notes,
-    };
-    const response = await adminApi.post(
-      `/defective/${filename}/approve`,
-      payload
-    );
-    return response.data;
-  },
-
-  rejectDefective: async (filename, reason) => {
-    const payload = { reason };
-    const response = await adminApi.post(
-      `/defective/${filename}/reject`,
-      payload
-    );
     return response.data;
   },
 
@@ -169,15 +128,6 @@ export const adminApiService = {
   // Initiate async image generation (returns batch_id)
   initiateImageGeneration: async (payload) => {
     const response = await generationApi.post(`/images/generate`, payload);
-    return response.data;
-  },
-
-  // Legacy synchronous version (kept for backward compatibility)
-  generateMonsterImage: async (payload) => {
-    const response = await generationApi.post(
-      `/monsters/images/generate`,
-      payload
-    );
     return response.data;
   },
 };

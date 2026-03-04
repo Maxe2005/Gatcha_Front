@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { adminApiService } from '../../services/adminService';
+import { useAuth } from '../../context/AuthContext';
 import ReviewModal from './ReviewModal';
 import CorrectModal from './CorrectModal';
 import RejectModal from './RejectModal';
@@ -13,6 +14,7 @@ const MonsterSummaryTab = ({
   onMonsterUpdate,
   onActionError,
 }) => {
+  const { user } = useAuth();
   const [isProcessLoading, setIsProcessLoading] = useState(false);
   const [isActionLoading, setIsActionLoading] = useState(false);
   const [reviewNotes, setReviewNotes] = useState('');
@@ -54,11 +56,7 @@ const MonsterSummaryTab = ({
     try {
       setIsActionLoading(true);
       onActionError?.(null);
-      await adminApiService.reviewMonster(
-        monsterId,
-        'APPROVE',
-        reviewNotes || null
-      );
+      await adminApiService.reviewMonster(monsterId, user?.username || 'Admin', reviewNotes || null);
       // Refresh monster data
       const detail = await adminApiService.getMonsterDetail(monsterId);
       const history = await adminApiService.getMonsterHistory(monsterId);
@@ -81,7 +79,7 @@ const MonsterSummaryTab = ({
     try {
       setIsActionLoading(true);
       onActionError?.(null);
-      await adminApiService.correctMonster(monsterId, correctNotes || null);
+      await adminApiService.correctMonster(monsterId, user?.username || 'Admin', correctNotes || null);
       // Refresh monster data
       const detail = await adminApiService.getMonsterDetail(monsterId);
       const history = await adminApiService.getMonsterHistory(monsterId);
@@ -103,7 +101,7 @@ const MonsterSummaryTab = ({
     try {
       setIsActionLoading(true);
       onActionError?.(null);
-      await adminApiService.rejectMonster(monsterId, rejectNotes || null);
+      await adminApiService.rejectMonster(monsterId, user?.username || 'Admin', rejectNotes || null);
       const detail = await adminApiService.getMonsterDetail(monsterId);
       const history = await adminApiService.getMonsterHistory(monsterId);
       onMonsterUpdate?.(detail, history.history || []);

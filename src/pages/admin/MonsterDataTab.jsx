@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { adminApiService } from '../../services/adminService';
 import './MonsterDataTab.css';
 import { DynamicField } from '../../components/DynamicField';
+import { useAuth } from '../../context/AuthContext';
 
 const MonsterDataTab = ({
   monster,
@@ -11,6 +12,7 @@ const MonsterDataTab = ({
   onActionError,
   onTargetFieldCleared,
 }) => {
+  const { user } = useAuth();
   const state = monster?.metadata?.state;
   const canEditStates = ['GENERATED', 'PENDING_REVIEW', 'DEFECTIVE'];
   const canEdit = canEditStates.includes(state);
@@ -194,7 +196,7 @@ const MonsterDataTab = ({
     try {
       setIsSaving(true);
       onActionError?.(null);
-      await adminApiService.updateMonster(monsterId, editData, {
+      await adminApiService.updateMonster(monsterId, user?.username || 'Admin', editData, {
         skipValidation,
         notes: updateNotes || null,
       });
