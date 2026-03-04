@@ -38,7 +38,6 @@ Le tableau de bord affiche:
 ```
 GENERATED       → Monstre généré
 DEFECTIVE       → Monstre avec erreurs
-CORRECTED       → Monstre corrigé
 PENDING_REVIEW  → En attente de revue
 APPROVED        → Approuvé
 TRANSMITTED     → Transmis

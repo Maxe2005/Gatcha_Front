@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { adminApiService } from '../../services/adminService';
 import './MonsterDataTab.css';
+import { DynamicField } from '../../components/DynamicField';
 
 const MonsterDataTab = ({
   monster,
@@ -11,18 +12,18 @@ const MonsterDataTab = ({
   const state = monster?.metadata?.state;
   const canEditStates = ['GENERATED', 'PENDING_REVIEW', 'DEFECTIVE'];
   const canEdit = canEditStates.includes(state);
-  const [subTab, setSubTab] = React.useState('interpreted');
-  const [editMode, setEditMode] = React.useState(false);
-  const [editData, setEditData] = React.useState(monster?.monster_data || {});
-  const [jsonText, setJsonText] = React.useState(
+  const [subTab, setSubTab] = useState('interpreted');
+  const [editMode, setEditMode] = useState(false);
+  const [editData, setEditData] = useState(monster?.monster_data || {});
+  const [jsonText, setJsonText] = useState(
     JSON.stringify(monster?.monster_data || {}, null, 2)
   );
-  const [jsonError, setJsonError] = React.useState(null);
-  const [skipValidation, setSkipValidation] = React.useState(false);
-  const [updateNotes, setUpdateNotes] = React.useState('');
-  const [isSaving, setIsSaving] = React.useState(false);
+  const [jsonError, setJsonError] = useState(null);
+  const [skipValidation, setSkipValidation] = useState(false);
+  const [updateNotes, setUpdateNotes] = useState('');
+  const [isSaving, setIsSaving] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setEditData(monster?.monster_data || {});
     setJsonText(JSON.stringify(monster?.monster_data || {}, null, 2));
     setJsonError(null);
@@ -31,11 +32,30 @@ const MonsterDataTab = ({
     setEditMode(false);
   }, [monster]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!editMode || subTab !== 'json') {
       setJsonText(JSON.stringify(editData || {}, null, 2));
     }
   }, [editData, editMode, subTab]);
+
+  // Fonction pour déterminer le type original d'une valeur
+  const getValueType = (value) => {
+    if (typeof value === 'number') return 'number';
+    if (typeof value === 'boolean') return 'boolean';
+    return 'string';
+  };
+
+  // Fonction pour convertir une value au bon type
+  const convertValueToType = (value, originalType) => {
+    if (originalType === 'number') {
+      const num = Number(value);
+      return isNaN(num) ? 0 : num;
+    }
+    if (originalType === 'boolean') {
+      return String(value).toLowerCase() === 'true';
+    }
+    return String(value);
+  };
 
   // Fonction récursive pour mettre à jour une valeur dans un objet imbriqué
   const setValueAtPath = (obj, path, value) => {
@@ -68,8 +88,9 @@ const MonsterDataTab = ({
   };
 
   // Fonction pour gérer le changement d'une valeur imbriquée
-  const handleRecursiveChange = (path, newValue) => {
-    setEditData((prev) => setValueAtPath(prev, path, newValue));
+  const handleRecursiveChange = (path, newValue, originalType = 'string') => {
+    const convertedValue = convertValueToType(newValue, originalType);
+    setEditData((prev) => setValueAtPath(prev, path, convertedValue));
   };
 
   // Pour le JSON, on modifie le texte brut
@@ -120,18 +141,22 @@ const MonsterDataTab = ({
         <ul style={{ marginLeft: level * 36 }}>
           {data.map((item, idx) => (
             <li key={idx}>
-              <strong>[{idx}] :</strong>{' '}
-              <br />
+              <strong>[{idx}] :</strong> <br />
               {editMode && canEdit ? (
                 typeof item === 'object' && item !== null ? (
                   renderRecursive(item, level + 1, [...path, idx])
                 ) : (
-                  <input
+                  <DynamicField
+                    type={typeof item === 'number' ? 'number' : 'text'}
                     value={item}
-                    onChange={(e) =>
-                      handleRecursiveChange([...path, idx], e.target.value)
-                    }
-                    style={{ width: `${String(item).length + 2}ch` }}
+                    onChange={(e) => {
+                      const valueType = getValueType(item);
+                      handleRecursiveChange(
+                        [...path, idx],
+                        e.target.value,
+                        valueType
+                      );
+                    }}
                   />
                 )
               ) : typeof item === 'object' && item !== null ? (
@@ -153,13 +178,17 @@ const MonsterDataTab = ({
                 typeof value === 'object' && value !== null ? (
                   renderRecursive(value, level + 1, [...path, key])
                 ) : (
-                  <input
-                    name={key}
+                  <DynamicField
+                    type={typeof value === 'number' ? 'number' : 'text'}
                     value={value}
-                    onChange={(e) =>
-                      handleRecursiveChange([...path, key], e.target.value)
-                    }
-                    style={{ width: `${String(value).length + 2}ch` }}
+                    onChange={(e) => {
+                      const valueType = getValueType(value);
+                      handleRecursiveChange(
+                        [...path, key],
+                        e.target.value,
+                        valueType
+                      );
+                    }}
                   />
                 )
               ) : typeof value === 'object' && value !== null ? (
