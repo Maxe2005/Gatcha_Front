@@ -11,6 +11,8 @@ const LOG_LEVEL = {
 };
 
 class Logger {
+  level: number;
+  isDev: boolean;
   constructor() {
     // In production: only show WARN and ERROR
     // In development: show all levels

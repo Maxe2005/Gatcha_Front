@@ -22,7 +22,7 @@ const Inventory = lazy(() => import('./pages/Inventory'));
 
 const PrivateRoute = ({ children }) => {
   const { token } = useAuth();
-  if (!token) return <Navigate to="/login" />;
+  // if (!token) return <Navigate to="/login" />;
   return children;
 };
 
@@ -102,7 +102,7 @@ function AppContent() {
 
   return (
     <>
-      <CanvasParticleSystem theme={theme} />
+      {/* <CanvasParticleSystem theme={theme} /> */}
       <AppRoutes />
     </>
   );

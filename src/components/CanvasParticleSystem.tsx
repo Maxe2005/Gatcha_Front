@@ -4,7 +4,22 @@ import React, { useEffect, useRef, useCallback } from 'react';
  * Particule optimisée pour Canvas
  */
 class CanvasParticle {
-  constructor(x, y, isDark, isTrail = false) {
+  x: number;
+  y: number;
+  isDark: boolean;
+  isTrail: boolean;
+  time: number;
+  size: number;
+  opacity: number;
+  life: number;
+  speedX: number;
+  speedY: number;
+  color: string;
+  decay: number;
+  gravity: number;
+  oscillation?: number;
+
+  constructor(x: number, y: number, isDark: boolean, isTrail = false) {
     this.x = x;
     this.y = y;
     this.isDark = isDark;
@@ -67,7 +82,7 @@ class CanvasParticle {
     this.opacity = Math.max(0, this.life);
   }
 
-  draw(ctx) {
+  draw(ctx: CanvasRenderingContext2D) {
     if (this.opacity <= 0) return;
 
     ctx.globalAlpha = this.opacity;
@@ -109,11 +124,11 @@ class CanvasParticle {
  * Utilisation:
  * <CanvasParticleSystem theme={theme} />
  */
-const CanvasParticleSystem = ({ theme = 'divine' }) => {
-  const canvasRef = useRef(null);
-  const particlesRef = useRef([]);
-  const animationRef = useRef(null);
-  const mouseTrailRef = useRef(null);
+const CanvasParticleSystem = ({ theme = 'divine' }: { theme?: 'divine' | 'dark' }) => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const particlesRef = useRef<CanvasParticle[]>([]);
+  const animationRef = useRef<number | null>(null);
+  const mouseTrailRef = useRef<{ x: number; y: number } | null>(null);
 
   const isDark = theme === 'dark';
 
@@ -172,7 +187,7 @@ const CanvasParticleSystem = ({ theme = 'divine' }) => {
 
   // Handler pour les clics
   const handleCanvasClick = useCallback(
-    (e) => {
+    (e: React.MouseEvent<HTMLCanvasElement>) => {
       const canvas = canvasRef.current;
       const rect = canvas.getBoundingClientRect();
       const x = e.clientX - rect.left;
@@ -189,7 +204,7 @@ const CanvasParticleSystem = ({ theme = 'divine' }) => {
 
   // Handler pour le trail sur mouvement
   const handleMouseMove = useCallback(
-    (e) => {
+    (e: React.MouseEvent<HTMLCanvasElement>) => {
       const canvas = canvasRef.current;
       const rect = canvas.getBoundingClientRect();
       const x = e.clientX - rect.left;

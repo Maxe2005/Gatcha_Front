@@ -5,7 +5,22 @@
  */
 
 class ClickParticle {
-  constructor(x, y, isDark, isTrail = false) {
+  x: number;
+  y: number;
+  isDark: boolean;
+  isTrail: boolean;
+  time: number;
+  size: number;
+  opacity: number;
+  life: number;
+  speedX: number;
+  speedY: number;
+  color: string;
+  decay: number;
+  gravity: number;
+  oscillation?: number;
+
+  constructor(x: number, y: number, isDark: boolean, isTrail = false) {
     this.x = x;
     this.y = y;
     this.isDark = isDark;
@@ -69,7 +84,7 @@ class ClickParticle {
     this.opacity = Math.max(0, this.life);
   }
 
-  draw(ctx) {
+  draw(ctx: CanvasRenderingContext2D) {
     ctx.globalAlpha = this.opacity;
     ctx.fillStyle = this.color;
 
@@ -98,6 +113,11 @@ class ClickParticle {
 }
 
 class ParticleSystem {
+  canvas: HTMLCanvasElement;
+  ctx: CanvasRenderingContext2D;
+  particles: ClickParticle[];
+  isDrawing: boolean;
+
   constructor() {
     this.canvas = document.createElement('canvas');
     this.ctx = this.canvas.getContext('2d');
@@ -131,7 +151,7 @@ class ParticleSystem {
     this.canvas.height = window.innerHeight;
   }
 
-  onMouseDown(event) {
+  onMouseDown(event: MouseEvent) {
     this.isDrawing = true;
     const isDark = document.body.classList.contains('theme-dark');
 
@@ -147,7 +167,7 @@ class ParticleSystem {
     this.isDrawing = false;
   }
 
-  onMouseMove(event) {
+  onMouseMove(event: MouseEvent) {
     if (!this.isDrawing) return;
 
     const isDark = document.body.classList.contains('theme-dark');
@@ -175,7 +195,7 @@ class ParticleSystem {
   }
 
   // Fonction pour déclencher la transition après authentification
-  triggerTransition(onComplete) {
+  triggerTransition(onComplete: () => void) {
     this.isDrawing = false; // Arrêter les particules de souris
     const isDark = document.body.classList.contains('theme-dark');
 
@@ -233,7 +253,7 @@ class ParticleSystem {
 }
 
 // Instance globale pour pouvoir appeler triggerTransition depuis n'importe où
-let particleSystemInstance = null;
+let particleSystemInstance: ParticleSystem | null = null;
 
 // Initialiser le système au chargement de la page
 if (document.readyState === 'loading') {
@@ -245,7 +265,7 @@ if (document.readyState === 'loading') {
 }
 
 // Export de la fonction pour déclencher la transition
-window.triggerParticleTransition = (onComplete) => {
+window.triggerParticleTransition = (onComplete: () => void) => {
   if (particleSystemInstance) {
     particleSystemInstance.triggerTransition(onComplete);
   }

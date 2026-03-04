@@ -32,7 +32,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const [token, setToken] = useState(getTokenFromCookie());
-  const [user, setUser] = useState();
+  const [user, setUser] = useState<{ username: string } | null>(null);
   const hasVerified = useRef(false);
   const verificationPromise = useRef(null);
 

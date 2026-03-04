@@ -8,7 +8,13 @@
  * avec physique d'aspiration vers le centre
  */
 export class PortalParticleSystem {
-  constructor(container) {
+  container: HTMLElement;
+  particles: any[];
+  gravity: number;
+  attractorStrength: number;
+  maxParticles: number;
+
+  constructor(container: HTMLElement) {
     this.container = container;
     this.particles = [];
     this.gravity = 0.1;
@@ -16,7 +22,13 @@ export class PortalParticleSystem {
     this.maxParticles = 40;
   }
 
-  create(x, y, vx = 0, vy = 0, size = 3) {
+  create(
+    x: number,
+    y: number,
+    vx: number = 0,
+    vy: number = 0,
+    size: number = 3
+  ) {
     if (this.particles.length < this.maxParticles) {
       const particle = {
         x,
@@ -91,7 +103,7 @@ export class PortalParticleSystem {
     }
   }
 
-  burst(x, y, count = 20, intensity = 2) {
+  burst(x: number, y: number, count: number = 20, intensity: number = 2) {
     for (let i = 0; i < count; i++) {
       const angle = (Math.PI * 2 * i) / count;
       const speed = 2 + Math.random() * intensity;
@@ -113,6 +125,13 @@ export class PortalParticleSystem {
  * Gère les événements sonores du portail
  */
 export class PortalSoundManager {
+  sounds: {
+    hover: HTMLAudioElement | null;
+    activate: HTMLAudioElement | null;
+    ambient: HTMLAudioElement | null;
+  };
+  isInitialized: boolean;
+
   constructor() {
     this.sounds = {
       hover: null,
@@ -134,7 +153,7 @@ export class PortalSoundManager {
     this.isInitialized = true;
   }
 
-  play(soundType, loop = false) {
+  play(soundType: keyof PortalSoundManager['sounds'], loop = false) {
     if (this.isInitialized && this.sounds[soundType]) {
       this.sounds[soundType].loop = loop;
       this.sounds[soundType].currentTime = 0;
@@ -144,9 +163,9 @@ export class PortalSoundManager {
     }
   }
 
-  stop(soundType) {
+  stop(soundType: keyof PortalSoundManager['sounds']) {
     if (this.isInitialized && this.sounds[soundType]) {
-      this.sounds[soundType].stop?.();
+      this.sounds[soundType].pause();
     }
   }
 }
@@ -180,8 +199,8 @@ export const PortalEasing = {
  * Helper pour créer une animation de morphing d'éléments
  */
 export function createElementMorphAnimation(
-  fromElement,
-  toElement,
+  fromElement: HTMLElement,
+  toElement: HTMLElement,
   duration = 600
 ) {
   const startTime = Date.now();
@@ -194,11 +213,11 @@ export function createElementMorphAnimation(
     const easeProgress = PortalEasing.easeInOutCubic(progress);
 
     // Fade out + scale from element
-    fromElement.style.opacity = startOpacity * (1 - easeProgress);
+    fromElement.style.opacity = String(startOpacity * (1 - easeProgress));
     fromElement.style.transform = `scale(${startScale - easeProgress * 0.2})`;
 
     // Fade in + scale to element
-    toElement.style.opacity = easeProgress;
+    toElement.style.opacity = String(easeProgress);
     toElement.style.transform = `scale(${0.8 + easeProgress * 0.2})`;
 
     if (progress < 1) {
@@ -226,7 +245,7 @@ export const PortalCapabilities = {
   },
 
   supportsWebGPU: async () => {
-    return !!navigator.gpu;
+    return !!(navigator as any).gpu;
   },
 
   supportsBackdropFilter: () => {
@@ -254,6 +273,10 @@ export const PortalCapabilities = {
  * Gestion des états du portail avec state machine
  */
 export class PortalStateMachine {
+  state: string;
+  transitions: Record<string, string[]>;
+  callbacks: Record<string, (prevState: string) => void>;
+
   constructor() {
     this.state = 'idle';
     this.transitions = {
@@ -265,7 +288,7 @@ export class PortalStateMachine {
     this.callbacks = {};
   }
 
-  transition(nextState) {
+  transition(nextState: string) {
     if (this.transitions[this.state]?.includes(nextState)) {
       const previousState = this.state;
       this.state = nextState;
@@ -279,7 +302,7 @@ export class PortalStateMachine {
     return false;
   }
 
-  on(state, callback) {
+  on(state: string, callback: (prevState: string) => void) {
     this.callbacks[state] = callback;
   }
 

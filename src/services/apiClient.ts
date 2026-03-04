@@ -18,6 +18,11 @@ export const ErrorTypes = {
  * Custom API Error class
  */
 export class ApiError extends Error {
+  name: string;
+  type: string;
+  statusCode: number | null;
+  originalError: any;
+  timestamp: Date;
   constructor(type, message, statusCode = null, originalError = null) {
     super(message);
     this.name = 'ApiError';
