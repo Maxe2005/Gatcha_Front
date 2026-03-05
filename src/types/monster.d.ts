@@ -1,3 +1,7 @@
+import { Element } from "../enums/elements.enum";
+import { Rank } from "../enums/ranks.enum";
+import { MonsterSkill } from "./skill";
+
 export type MonsterStats = {
   hp: number;
   atk: number;
@@ -5,33 +9,14 @@ export type MonsterStats = {
   vit: number;
 };
 
-export type MonsterSkillRatio = {
-  stat: string;
-  percent: number;
-};
-
-export type MonsterSkill = {
-  name: string;
-  description: string;
-  damage?: number;
-  ratio?: MonsterSkillRatio;
-  cooldown?: number;
-  cost?: number;
-  level?: number;
-  lvlMax?: number;
-  rank?: string;
-  icon?: string;
-};
-
 export type MonsterData = {
   id: string | number;
-  nom: string;
-  element: string;
-  rang: string;
+  name: string;
+  element: Element;
+  rank: Rank;
   level: number;
-  experience?: number;
   stats: MonsterStats;
   description: string;
   skills: MonsterSkill[];
-  invokedAt?: string;
+  imageUrl: string;
 };
