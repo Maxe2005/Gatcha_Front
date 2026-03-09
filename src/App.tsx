@@ -13,12 +13,18 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider, useTheme } from './context/ThemeContext';
 import { MonsterProvider } from './context/MonsterContext';
 import { PlayerProvider } from './context/PlayerContext';
+import { LoadingProvider, useLoading } from './context/LoadingContext';
 
-// Lazy load des pages pour Code Splitting
-const Login = lazy(() => import('./pages/Login'));
-const Home = lazy(() => import('./pages/Home'));
-const Gacha = lazy(() => import('./pages/Gacha'));
-const Inventory = lazy(() => import('./pages/Inventory'));
+// Fonction pour simuler un délai de chargement (pour le développement)
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+// Lazy load des pages pour Code Splitting avec délai simulé de 5s
+const Login = lazy(() => delay(5000).then(() => import('./pages/Login')));
+const Home = lazy(() => delay(5000).then(() => import('./pages/Home')));
+const Gacha = lazy(() => delay(5000).then(() => import('./pages/Gacha')));
+const Inventory = lazy(() =>
+  delay(5000).then(() => import('./pages/Inventory'))
+);
 
 const PrivateRoute = ({ children }) => {
   const { token } = useAuth();
@@ -83,15 +89,17 @@ function App() {
     <ErrorBoundary>
       <Toaster position="bottom-right" reverseOrder={false} />
       <ThemeProvider>
-        <AuthProvider>
-          <MonsterProvider>
-            <PlayerProvider>
-              <Router>
-                <AppContent />
-              </Router>
-            </PlayerProvider>
-          </MonsterProvider>
-        </AuthProvider>
+        <LoadingProvider>
+          <AuthProvider>
+            <MonsterProvider>
+              <PlayerProvider>
+                <Router>
+                  <AppContent />
+                </Router>
+              </PlayerProvider>
+            </MonsterProvider>
+          </AuthProvider>
+        </LoadingProvider>
       </ThemeProvider>
     </ErrorBoundary>
   );
@@ -99,10 +107,24 @@ function App() {
 
 function AppContent() {
   const { theme } = useTheme();
+  const { isLoading } = useLoading();
 
   return (
     <>
-      {/* <CanvasParticleSystem theme={theme} /> */}
+      {isLoading && (
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            width: '100%',
+            height: '100%',
+            zIndex: 1,
+          }}
+        >
+          <CanvasParticleSystem theme={theme} />
+        </div>
+      )}
       <AppRoutes />
     </>
   );
