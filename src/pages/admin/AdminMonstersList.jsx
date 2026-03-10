@@ -14,6 +14,7 @@ const AdminMonstersList = () => {
   const [processing, setProcessing] = useState(false);
   const [processMessage, setProcessMessage] = useState(null);
   const [isConfirmOpen, setIsConfirmOpen] = useState(false);
+  const [isTransmitConfirmOpen, setIsTransmitConfirmOpen] = useState(false);
 
   // Pagination and filters
   const [limit] = useState(20);
@@ -259,6 +260,40 @@ const AdminMonstersList = () => {
     setIsConfirmOpen(false);
   };
 
+  const handleTransmitClick = () => {
+    setIsTransmitConfirmOpen(true);
+  };
+
+  const handleConfirmTransmit = async () => {
+    setIsTransmitConfirmOpen(false);
+
+    try {
+      setProcessing(true);
+      setProcessMessage(null);
+      const result = await adminApiService.transmitMonstersBatch(50);
+      setProcessMessage({
+        type: 'success',
+        text: `Transmission réussie: ${result.success}/${result.total} monstres transmis (${result.failed} échec${result.failed > 1 ? 's' : ''})`,
+      });
+      const response = await adminApi.get('/monsters');
+      setAllMonsters(response.data || []);
+    } catch (err) {
+      setProcessMessage({
+        type: 'error',
+        text:
+          err.response?.data?.detail ||
+          'Erreur lors de la transmission batch des monstres',
+      });
+      console.error('Error transmitting monsters batch:', err);
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  const handleCancelTransmit = () => {
+    setIsTransmitConfirmOpen(false);
+  };
+
   const handleStateFilterChange = (e) => {
     setSelectedState(e.target.value);
     setOffset(0); // Reset pagination when filter changes
@@ -345,15 +380,28 @@ const AdminMonstersList = () => {
           <ThemeToggle />
         </div>
       </div>
-      {selectedState === 'GENERATED' && (
+      {(selectedState === 'GENERATED' || selectedState === 'APPROVED') && (
         <div className="action-bar">
-          <button
-            className="btn-process-generated"
-            onClick={handleProcessClick}
-            disabled={processing}
-          >
-            {processing ? 'Traitement en cours...' : '⚡ Traiter les Générés'}
-          </button>
+          {selectedState === 'GENERATED' && (
+            <button
+              className="btn-process-generated"
+              onClick={handleProcessClick}
+              disabled={processing}
+            >
+              {processing ? 'Traitement en cours...' : '⚡ Traiter les Générés'}
+            </button>
+          )}
+          {selectedState === 'APPROVED' && (
+            <button
+              className="btn-process-generated btn-transmit-batch"
+              onClick={handleTransmitClick}
+              disabled={processing}
+            >
+              {processing
+                ? 'Transmission en cours...'
+                : '📡 Transmettre les Approuvés'}
+            </button>
+          )}
         </div>
       )}
       {processMessage && (
@@ -579,6 +627,16 @@ const AdminMonstersList = () => {
         cancelText="Annuler"
         onConfirm={handleConfirmProcess}
         onCancel={handleCancelProcess}
+        isDangerous={false}
+      />
+      <ConfirmDialog
+        isOpen={isTransmitConfirmOpen}
+        title="Transmettre les Monstres Approuvés"
+        message="Êtes-vous sûr de vouloir transmettre les monstres approuvés vers l'API d'invocation ?"
+        confirmText="Transmettre"
+        cancelText="Annuler"
+        onConfirm={handleConfirmTransmit}
+        onCancel={handleCancelTransmit}
         isDangerous={false}
       />
     </div>

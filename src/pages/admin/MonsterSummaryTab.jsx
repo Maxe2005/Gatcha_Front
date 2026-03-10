@@ -16,6 +16,7 @@ const MonsterSummaryTab = ({
 }) => {
   const { user } = useAuth();
   const [isProcessLoading, setIsProcessLoading] = useState(false);
+  const [isTransmitLoading, setIsTransmitLoading] = useState(false);
   const [isActionLoading, setIsActionLoading] = useState(false);
   const [reviewNotes, setReviewNotes] = useState('');
   const [correctNotes, setCorrectNotes] = useState('');
@@ -56,7 +57,11 @@ const MonsterSummaryTab = ({
     try {
       setIsActionLoading(true);
       onActionError?.(null);
-      await adminApiService.reviewMonster(monsterId, user?.username || 'Admin', reviewNotes || null);
+      await adminApiService.reviewMonster(
+        monsterId,
+        user?.username || 'Admin',
+        reviewNotes || null
+      );
       // Refresh monster data
       const detail = await adminApiService.getMonsterDetail(monsterId);
       const history = await adminApiService.getMonsterHistory(monsterId);
@@ -79,7 +84,11 @@ const MonsterSummaryTab = ({
     try {
       setIsActionLoading(true);
       onActionError?.(null);
-      await adminApiService.correctMonster(monsterId, user?.username || 'Admin', correctNotes || null);
+      await adminApiService.correctMonster(
+        monsterId,
+        user?.username || 'Admin',
+        correctNotes || null
+      );
       // Refresh monster data
       const detail = await adminApiService.getMonsterDetail(monsterId);
       const history = await adminApiService.getMonsterHistory(monsterId);
@@ -101,7 +110,11 @@ const MonsterSummaryTab = ({
     try {
       setIsActionLoading(true);
       onActionError?.(null);
-      await adminApiService.rejectMonster(monsterId, user?.username || 'Admin', rejectNotes || null);
+      await adminApiService.rejectMonster(
+        monsterId,
+        user?.username || 'Admin',
+        rejectNotes || null
+      );
       const detail = await adminApiService.getMonsterDetail(monsterId);
       const history = await adminApiService.getMonsterHistory(monsterId);
       onMonsterUpdate?.(detail, history.history || []);
@@ -115,6 +128,26 @@ const MonsterSummaryTab = ({
       console.error('Error rejecting monster:', err);
     } finally {
       setIsActionLoading(false);
+    }
+  };
+
+  const handleTransmitMonster = async () => {
+    try {
+      setIsTransmitLoading(true);
+      onActionError?.(null);
+      const result = await adminApiService.transmitMonster(monsterId, false);
+      const detail = await adminApiService.getMonsterDetail(monsterId);
+      const history = await adminApiService.getMonsterHistory(monsterId);
+      onMonsterUpdate?.(detail, history.history || []);
+      alert(result?.message || 'Monstre transmis avec succès');
+    } catch (err) {
+      onActionError?.(
+        err.response?.data?.detail ||
+          'Erreur lors de la transmission du monstre vers Invocation'
+      );
+      console.error('Error transmitting monster:', err);
+    } finally {
+      setIsTransmitLoading(false);
     }
   };
 
@@ -233,6 +266,17 @@ const MonsterSummaryTab = ({
               {isProcessLoading
                 ? 'Vérification en cours...'
                 : 'Vérifier le monstre'}
+            </button>
+          )}
+          {monster?.metadata?.state === 'APPROVED' && (
+            <button
+              className="btn-secondary"
+              onClick={handleTransmitMonster}
+              disabled={isTransmitLoading}
+            >
+              {isTransmitLoading
+                ? 'Transmission en cours...'
+                : 'Transmettre à Invocation'}
             </button>
           )}
           {canApproveReject && (

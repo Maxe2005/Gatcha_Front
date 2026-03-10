@@ -101,6 +101,30 @@ export const adminApiService = {
     return response.data;
   },
 
+  // Transmit a single approved monster to invocation API
+  transmitMonster: async (monsterId, force = false) => {
+    const response = await generationApi.post(
+      `/transmission/transmit/${monsterId}`,
+      null,
+      {
+        params: { force },
+      }
+    );
+    return response.data;
+  },
+
+  // Transmit approved monsters in batch
+  transmitMonstersBatch: async (maxCount = 50) => {
+    const response = await generationApi.post(
+      '/transmission/transmit-batch',
+      null,
+      {
+        params: { max_count: maxCount },
+      }
+    );
+    return response.data;
+  },
+
   // Monster images endpoints
   getMonsterImages: async (monsterId) => {
     const response = await generationApi.get(`/monsters/images/${monsterId}`);
