@@ -1,5 +1,13 @@
 import React, { useState, useEffect } from 'react';
+import { adminApiService } from '../services/adminService';
 import './GatchaCard.css';
+
+const clampPercent = (value) => Math.max(0, Math.min(100, value));
+
+const toFiniteNumber = (value, fallback = 0) => {
+  const num = Number(value);
+  return Number.isFinite(num) ? num : fallback;
+};
 
 const GatchaCard = ({
   monstre,
@@ -11,6 +19,7 @@ const GatchaCard = ({
   const defaultElementImage = '/assets/elements/Default_Element.png';
   const defaultRankImage = '/assets/ranks/Default_Rank.png';
   const [isFlipped, setIsFlipped] = useState(false);
+  const [stateStats, setStateStats] = useState(null);
 
   const initialSrc = monstre?.nom
     ? `/assets/monsters/${monstre.nom}.png`
@@ -26,6 +35,34 @@ const GatchaCard = ({
           ? `/assets/monsters/${monstre.nom}.png`
           : defaultImage
     );
+  }, [monstre]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    if (!monstre) {
+      setStateStats(null);
+      return () => {
+        isMounted = false;
+      };
+    }
+
+    adminApiService
+      .getMonsterStatsByState('PENDING_REVIEW')
+      .then((data) => {
+        if (isMounted) {
+          setStateStats(data);
+        }
+      })
+      .catch(() => {
+        if (isMounted) {
+          setStateStats(null);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
   }, [monstre]);
 
   if (!monstre) return null;
@@ -61,16 +98,37 @@ const GatchaCard = ({
   };
 
   const stats = [
-    { key: 'hp', label: 'HP', value: Number(monstre.stats?.hp ?? 0) },
-    { key: 'atk', label: 'ATK', value: Number(monstre.stats?.atk ?? 0) },
-    { key: 'def', label: 'DEF', value: Number(monstre.stats?.def ?? 0) },
-    { key: 'vit', label: 'VIT', value: Number(monstre.stats?.vit ?? 0) },
+    {
+      key: 'hp',
+      apiKey: 'hp',
+      label: 'HP',
+      value: toFiniteNumber(monstre.stats?.hp),
+    },
+    {
+      key: 'atk',
+      apiKey: 'atk',
+      label: 'ATK',
+      value: toFiniteNumber(monstre.stats?.atk),
+    },
+    {
+      key: 'def',
+      apiKey: 'def_',
+      label: 'DEF',
+      value: toFiniteNumber(monstre.stats?.def),
+    },
+    {
+      key: 'vit',
+      apiKey: 'vit',
+      label: 'VIT',
+      value: toFiniteNumber(monstre.stats?.vit),
+    },
   ];
 
-  const maxStat = Math.max(
+  const fallbackMaxStat = Math.max(
     ...stats.map((s) => (Number.isFinite(s.value) ? s.value : 0)),
     1
   );
+
   // Image handling moved to state
   const lore = monstre.description || monstre.description_carte || '';
 
@@ -141,10 +199,19 @@ const GatchaCard = ({
               <div className="stats-title">Statistiques</div>
               <div className="stats-list">
                 {stats.map((stat) => {
-                  const width = Math.max(
-                    8,
-                    Math.min(100, Math.round((stat.value / maxStat) * 100))
+                  const reference = stateStats?.[stat.apiKey] || null;
+                  const globalMax = Math.max(
+                    1,
+                    toFiniteNumber(reference?.max, fallbackMaxStat)
                   );
+                  const width = clampPercent((stat.value / globalMax) * 100);
+                  const minMarker = clampPercent(
+                    (toFiniteNumber(reference?.min, 0) / globalMax) * 100
+                  );
+                  const avgMarker = clampPercent(
+                    (toFiniteNumber(reference?.avg, 0) / globalMax) * 100
+                  );
+
                   return (
                     <div key={stat.key} className="stat-row">
                       <span className="stat-label">{stat.label}</span>
@@ -153,6 +220,24 @@ const GatchaCard = ({
                           className="stat-bar-fill"
                           style={{ width: `${width}%` }}
                         />
+                        {reference && (
+                          <>
+                            <span
+                              className="stat-marker stat-marker-min"
+                              style={{ left: `${minMarker}%` }}
+                              aria-hidden="true"
+                            >
+                              <span className="stat-marker-label">min</span>
+                            </span>
+                            <span
+                              className="stat-marker stat-marker-avg"
+                              style={{ left: `${avgMarker}%` }}
+                              aria-hidden="true"
+                            >
+                              <span className="stat-marker-label">avg</span>
+                            </span>
+                          </>
+                        )}
                       </div>
                       <span className="stat-value">
                         {Number.isFinite(stat.value) ? stat.value : 0}

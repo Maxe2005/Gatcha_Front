@@ -1,5 +1,46 @@
 import { adminApi, generationApi } from './api';
 
+const MONSTER_STATS_CACHE_KEY = 'monster-stats-by-state-v1';
+const monsterStatsByStateCache = new Map();
+const monsterStatsByStateInFlight = new Map();
+
+const normalizeState = (state) =>
+  String(state || 'PENDING_REVIEW').toUpperCase();
+
+const loadMonsterStatsSessionCache = () => {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  const raw = window.sessionStorage.getItem(MONSTER_STATS_CACHE_KEY);
+  if (!raw) {
+    return;
+  }
+
+  try {
+    const parsed = JSON.parse(raw);
+    Object.entries(parsed).forEach(([state, value]) => {
+      monsterStatsByStateCache.set(state, value);
+    });
+  } catch {
+    window.sessionStorage.removeItem(MONSTER_STATS_CACHE_KEY);
+  }
+};
+
+const persistMonsterStatsSessionCache = () => {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  const snapshot = Object.fromEntries(monsterStatsByStateCache.entries());
+  window.sessionStorage.setItem(
+    MONSTER_STATS_CACHE_KEY,
+    JSON.stringify(snapshot)
+  );
+};
+
+loadMonsterStatsSessionCache();
+
 /**
  * Admin API Service - handles all admin-related API calls
  */
@@ -86,6 +127,37 @@ export const adminApiService = {
   getValidationRules: async () => {
     const response = await adminApi.get('/validation-rules');
     return response.data;
+  },
+
+  // Global monster stats for cards by workflow state
+  getMonsterStatsByState: async (state = 'PENDING_REVIEW', options = {}) => {
+    const normalizedState = normalizeState(state);
+    const forceRefresh = Boolean(options.forceRefresh);
+
+    if (!forceRefresh && monsterStatsByStateCache.has(normalizedState)) {
+      return monsterStatsByStateCache.get(normalizedState);
+    }
+
+    if (!forceRefresh && monsterStatsByStateInFlight.has(normalizedState)) {
+      return monsterStatsByStateInFlight.get(normalizedState);
+    }
+
+    const requestPromise = adminApi
+      .get('/stats/monsters', {
+        params: { state: normalizedState },
+      })
+      .then((response) => {
+        const payload = response.data;
+        monsterStatsByStateCache.set(normalizedState, payload);
+        persistMonsterStatsSessionCache();
+        return payload;
+      })
+      .finally(() => {
+        monsterStatsByStateInFlight.delete(normalizedState);
+      });
+
+    monsterStatsByStateInFlight.set(normalizedState, requestPromise);
+    return requestPromise;
   },
 
   // Process a single generated monster
