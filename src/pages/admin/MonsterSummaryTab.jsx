@@ -151,6 +151,34 @@ const MonsterSummaryTab = ({
     }
   };
 
+  const handleRetransmitMonster = async () => {
+    const confirmRetransmit = window.confirm(
+      'Ce monstre est déjà transmis. Voulez-vous forcer la re-transmission vers Invocation ?'
+    );
+
+    if (!confirmRetransmit) {
+      return;
+    }
+
+    try {
+      setIsTransmitLoading(true);
+      onActionError?.(null);
+      const result = await adminApiService.transmitMonster(monsterId, true);
+      const detail = await adminApiService.getMonsterDetail(monsterId);
+      const history = await adminApiService.getMonsterHistory(monsterId);
+      onMonsterUpdate?.(detail, history.history || []);
+      alert(result?.message || 'Monstre retransmis avec succès');
+    } catch (err) {
+      onActionError?.(
+        err.response?.data?.detail ||
+          'Erreur lors de la re-transmission du monstre vers Invocation'
+      );
+      console.error('Error retransmitting monster:', err);
+    } finally {
+      setIsTransmitLoading(false);
+    }
+  };
+
   // Fonction pour copier l'UUID
   const handleCopyUUID = () => {
     if (monster?.metadata?.monster_id) {
@@ -277,6 +305,17 @@ const MonsterSummaryTab = ({
               {isTransmitLoading
                 ? 'Transmission en cours...'
                 : 'Transmettre à Invocation'}
+            </button>
+          )}
+          {monster?.metadata?.state === 'TRANSMITTED' && (
+            <button
+              className="btn-secondary"
+              onClick={handleRetransmitMonster}
+              disabled={isTransmitLoading}
+            >
+              {isTransmitLoading
+                ? 'Re-transmission en cours...'
+                : 'Re-transmettre à Invocation'}
             </button>
           )}
           {canApproveReject && (
