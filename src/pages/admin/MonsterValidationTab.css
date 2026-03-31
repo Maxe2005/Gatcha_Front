@@ -1,0 +1,73 @@
+.validation-tab {
+  padding: 1.5rem;
+}
+
+.validation-tab h2 {
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  color: #ffd700;
+}
+
+.validation-tab h3 {
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  font-size: 1.2rem;
+  color: #ffd700;
+}
+
+.errors-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.error-item {
+  background: rgba(231, 76, 60, 0.1);
+  border-left: 4px solid #e74c3c;
+  padding: 1rem;
+  border-radius: 6px;
+  transition: all 0.2s;
+}
+
+.error-item.clickable {
+  cursor: pointer;
+  position: relative;
+  padding-right: 3rem;
+}
+
+.error-item.clickable:hover {
+  background: rgba(231, 76, 60, 0.2);
+  border-left-width: 6px;
+  transform: translateX(4px);
+}
+
+.error-item strong {
+  color: #e74c3c;
+  font-weight: 600;
+  font-family: 'Courier New', monospace;
+}
+
+.navigate-icon {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 1.5rem;
+  color: #e74c3c;
+  opacity: 0.6;
+  transition: all 0.2s;
+}
+
+.error-item.clickable:hover .navigate-icon {
+  opacity: 1;
+  transform: translateY(-50%) translateX(4px);
+}
+
+.validation-tab pre {
+  background: #1e1e1e;
+  padding: 1rem;
+  border-radius: 6px;
+  overflow-x: auto;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}

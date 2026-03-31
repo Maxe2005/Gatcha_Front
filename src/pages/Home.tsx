@@ -7,8 +7,8 @@ import ThemeToggle from '../components/ThemeToggle';
 import Portal from '../components/Portal';
 
 const Home = () => {
-  const { theme, toggleTheme } = useTheme();
-  const { playerData, refreshPlayerData } = usePlayer();
+  const { theme } = useTheme();
+  const { playerData } = usePlayer();
   const navigate = useNavigate();
   const [isLoaded, setIsLoaded] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -144,6 +144,28 @@ const Home = () => {
               </div>
             </div>
           </div>
+
+          {/* Admin Button - visible uniquement pour l'admin */}
+          {/* {playerData?.username === 'admin' && ( */}
+            <button
+              className="admin-dashboard-btn"
+              onClick={() => navigate('/admin')}
+              title="Accéder au Dashboard Admin"
+              style={{
+                marginLeft: 16,
+                padding: '8px 16px',
+                fontWeight: 'bold',
+                borderRadius: 8,
+                background: theme === 'divine' ? '#ffe066' : '#222',
+                color: theme === 'divine' ? '#222' : '#ffe066',
+                border: 'none',
+                cursor: 'pointer',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+              }}
+            >
+              Admin
+            </button>
+           {/* )} */}
 
           {/* Resources Section */}
           <div className="resources-section">

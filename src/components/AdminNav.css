@@ -1,0 +1,55 @@
+/* Admin Navigation Styles */
+
+.admin-nav {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.admin-nav-btn {
+  padding: 0.6rem 1rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.admin-nav-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.admin-nav-btn:active {
+  transform: translateY(0);
+}
+
+/* Dark theme support */
+@media (prefers-color-scheme: dark) {
+  .admin-nav-btn {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .admin-nav {
+    gap: 0.3rem;
+  }
+
+  .admin-nav-btn {
+    padding: 0.5rem 0.8rem;
+    font-size: 0.85rem;
+  }
+
+  .admin-nav-btn span {
+    display: none;
+  }
+}

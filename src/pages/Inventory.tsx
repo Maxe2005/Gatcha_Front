@@ -3,7 +3,6 @@ import { useTheme } from '../context/ThemeContext';
 import { usePlayer } from '../context/PlayerContext';
 import { useNavigate } from 'react-router-dom';
 import { logger } from '../services/logger';
-import Header from '../components/Header'; // Assuming we reuse Header or build a custom one
 import GatchaCard from '../components/GatchaCard';
 import SkillCard from '../components/SkillCard';
 import './Inventory.css';

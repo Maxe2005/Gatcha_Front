@@ -7,6 +7,7 @@
   position: relative;
   display: flex;
   flex-direction: column;
+  container-type: inline-size;
 }
 
 /* Base Styles inherit from Index/App usually, but defined here for safety */
@@ -410,12 +411,12 @@
 }
 
 .inventory-container .background-layer::before {
-  background-image: url('/assets/backgrounds/Inventaire_background_divine.png');
+  background-image: url('/assets/backgrounds/inventaire/Inventaire_background_divine.png');
   opacity: 0;
 }
 
 .inventory-container .background-layer::after {
-  background-image: url('/assets/backgrounds/Inventaire_background_dark.png');
+  background-image: url('/assets/backgrounds/inventaire/Inventaire_background_dark.png');
   opacity: 0;
 }
 
@@ -551,4 +552,13 @@
   top: 50%;
   transform: translateY(-50%);
   z-index: 30;
+}
+
+/* ====== RANGE INPUT SLIDER ====== */
+.inventory-container.divine .filter-group input[type='range'] {
+  accent-color: #ffd700;
+}
+
+.inventory-container.dark .filter-group input[type='range'] {
+  accent-color: #c0392b;
 }

@@ -4,6 +4,7 @@ import ThemeToggle from './ThemeToggle';
 import { useTheme } from '../context/ThemeContext';
 import { useAuth } from '../context/AuthContext';
 import './Header.css';
+import AdminNav from './AdminNav';
 
 const Header = ({ title = 'Gatcha API' }) => {
   const { theme } = useTheme();
@@ -16,6 +17,7 @@ const Header = ({ title = 'Gatcha API' }) => {
           {title}
         </Typography>
         <Box className="header-actions">
+          <AdminNav />
           {user && (
             <Typography variant="subtitle1" className="header-username">
               {user.username}

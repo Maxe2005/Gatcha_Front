@@ -1,0 +1,215 @@
+/* Ajout pour aligner le header et le bouton à droite */
+.data-tab-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.data-tab-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.edit-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+/* Bouton pour toggle les erreurs de validation */
+.btn-toggle-errors {
+  background: transparent;
+  color: #fff;
+  border: 1px solid rgba(231, 76, 60, 0.3);
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 400;
+  font-size: 1.1rem;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.btn-toggle-errors:hover {
+  background: rgba(231, 76, 60, 0.1);
+  border-color: rgba(231, 76, 60, 0.6);
+  transform: scale(1.05);
+}
+
+/* Styles pour les champs avec erreurs de validation */
+.field-with-error {
+  background: rgba(231, 76, 60, 0.1);
+  border-left: 3px solid #e74c3c;
+  padding-left: 0.5rem;
+  margin: 0.25rem 0;
+  border-radius: 4px;
+}
+
+.error-value {
+  background: rgba(231, 76, 60, 0.2);
+  padding: 0.2rem 0.4rem;
+  border-radius: 3px;
+  border: 1px solid #e74c3c;
+}
+
+.validation-error-message {
+  color: #e74c3c;
+  font-size: 0.85rem;
+  margin-top: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  background: rgba(231, 76, 60, 0.15);
+  border-radius: 4px;
+  font-style: italic;
+}
+/* .data-tab {
+  padding: 1.5rem;
+  background: #181c24;
+  border-radius: 12px;
+  color: #f3f3f3;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.12);
+  max-width: 900px;
+  margin: 2rem auto;
+} */
+.data-tab h2 {
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  color: #ffd700;
+}
+.sub-tabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.sub-tabs button {
+  background: #23283a;
+  color: #ffd700;
+  border: none;
+  padding: 0.5rem 1.2rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+.sub-tabs button.active {
+  background: #ffd700;
+  color: #23283a;
+}
+.edit-toggle button {
+  background: #ffd700;
+  color: #23283a;
+  border: none;
+  padding: 0.4rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+.sub-tab-content {
+  background: #23283a;
+  border-radius: 8px;
+  padding: 1rem;
+  min-height: 120px;
+  font-size: 1.05rem;
+  overflow-x: auto;
+}
+.data-tab-actions {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+.data-tab-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+  min-width: 260px;
+}
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  color: #ffd700;
+}
+.json-error {
+  color: #ff6b6b;
+  font-weight: 600;
+}
+.data-tab ul {
+  list-style: none;
+  padding-left: 0.5rem;
+}
+.data-tab li {
+  margin-bottom: 0.4rem;
+  align-items: flex-start;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  word-break: break-word;
+}
+.data-tab strong {
+  color: #ffd700;
+  min-width: 90px;
+  max-width: 220px;
+  word-break: break-all;
+  display: inline-block;
+  white-space: pre-line;
+}
+.data-tab input {
+  background: #23283a;
+  color: #f3f3f3;
+  border: 1px solid #ffd700;
+  border-radius: 4px;
+  padding: 0.2rem 0.5rem;
+  font-size: 1rem;
+  min-width: 60px;
+  max-width: 100%;
+  resize: none;
+  transition: border 0.2s;
+}
+.data-tab input:focus {
+  border: 1.5px solid #ffea70;
+  outline: none;
+}
+.data-tab textarea {
+  background: #23283a;
+  color: #f3f3f3;
+  border: 1px solid #ffd700;
+  border-radius: 4px;
+  padding: 0.4rem 0.7rem;
+  font-size: 1rem;
+  width: 100%;
+  resize: vertical;
+  min-height: 80px;
+  transition: border 0.2s;
+}
+.data-tab textarea:focus {
+  border: 1.5px solid #ffea70;
+  outline: none;
+}
+
+/* Animation pour le champ ciblé après navigation depuis l'onglet validation */
+@keyframes highlight-pulse {
+  0%,
+  100% {
+    background: rgba(255, 215, 0, 0.3);
+    box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.7);
+  }
+  50% {
+    background: rgba(255, 215, 0, 0.5);
+    box-shadow: 0 0 0 10px rgba(255, 215, 0, 0);
+  }
+}
+
+.field-highlighted {
+  animation: highlight-pulse 1s ease-in-out 3;
+  border-radius: 6px;
+  transition: all 0.3s;
+}
