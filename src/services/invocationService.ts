@@ -50,9 +50,9 @@ const normalizeInvokedMonster = (data: any): MonsterData => {
 
   return {
     id: data.id || data.nom || data.name,
-    nom: data.nom || data.name || 'Unknown',
+    name: data.nom || data.name || 'Unknown',
     element: (data.element || data.type || 'neutre').toLowerCase(),
-    rang: data.rang || data.rank || 'COMMON',
+    rank: data.rang || data.rank || 'COMMON',
     level: data.level || 1,
     stats: {
       hp: Number(data.stats?.hp || data.hp || 0),
@@ -62,7 +62,7 @@ const normalizeInvokedMonster = (data: any): MonsterData => {
     },
     description: data.description || data.lore || '',
     skills: Array.isArray(data.skills) ? data.skills : [],
-    invokedAt: data.invokedAt || new Date().toISOString(),
+    imageUrl: data.imageUrl || data.image || '',
   };
 };
 
@@ -101,7 +101,7 @@ export const invocationService = {
       const normalizedData = normalizeInvokedMonster(response.data);
       logger.info('InvocationService', 'Monster invoked successfully', {
         username,
-        rang: normalizedData.rang,
+        rank: normalizedData.rank,
       });
 
       return normalizedData;

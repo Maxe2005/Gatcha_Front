@@ -15,16 +15,20 @@ import { MonsterProvider } from './context/MonsterContext';
 import { PlayerProvider } from './context/PlayerContext';
 import { LoadingProvider, useLoading } from './context/LoadingContext';
 
-// Fonction pour simuler un délai de chargement (pour le développement)
-const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+// // Fonction pour simuler un délai de chargement (pour le développement)
+// const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-// Lazy load des pages pour Code Splitting avec délai simulé de 5s
-const Login = lazy(() => delay(5000).then(() => import('./pages/Login')));
-const Home = lazy(() => delay(5000).then(() => import('./pages/Home')));
-const Gacha = lazy(() => delay(5000).then(() => import('./pages/Gacha')));
-const Inventory = lazy(() =>
-  delay(5000).then(() => import('./pages/Inventory'))
-);
+// // Lazy load des pages pour Code Splitting avec délai simulé de 5s
+// const Login = lazy(() => delay(5000).then(() => import('./pages/Login')));
+// const Home = lazy(() => delay(5000).then(() => import('./pages/Home')));
+// const Gacha = lazy(() => delay(5000).then(() => import('./pages/Gacha')));
+// const Inventory = lazy(() =>
+//   delay(5000).then(() => import('./pages/Inventory'));
+
+const Login = lazy(() => import('./pages/Login'));
+const Home = lazy(() => import('./pages/Home'));
+const Gacha = lazy(() => import('./pages/Gacha'));
+const Inventory = lazy(() => import('./pages/Inventory'));
 
 const PrivateRoute = ({ children }) => {
   const { token } = useAuth();
