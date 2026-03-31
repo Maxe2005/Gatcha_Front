@@ -13,7 +13,10 @@ import {
   cacheMonster,
   cacheMonsters,
 } from './indexedDBService';
-import type { MonsterData, MonsterSkill, MonsterStats } from '../types/monster';
+import type { MonsterData, MonsterStats } from '../types/monster';
+import type { MonsterSkill } from '../types/skill';
+import { Element } from '../enums/elements.enum';
+import { Rank } from '../enums/ranks.enum';
 
 type MonsterSearchCriteria = {
   element?: string;
@@ -26,12 +29,10 @@ type MonsterSearchCriteria = {
  * Routes disponibles sur le service Monstres
  */
 export const MonstersRoutes = {
-  GET_MONSTER: '/api/monsters/:id',
-  GET_MONSTERS: '/api/monsters',
-  GET_MONSTERS_BY_IDS: '/api/monsters?ids=:ids',
-  GET_MONSTER_STATS: '/api/monsters/:id/stats',
-  GET_MONSTER_SKILLS: '/api/monsters/:id/skills',
-  SEARCH_MONSTERS: '/api/monsters/search',
+  GET_MONSTER: '/api/monsters/get/:id?withSkills=:withSkills',
+  GET_MONSTERS_BY_IDS: '/api/monsters/getByIds?ids=:ids',
+  GET_BY_PLAYER: '/api/monsters/getByPlayerId/:username',
+  DELETE_MONSTER: '/api/monsters/delete/:id',
 };
 
 /**
@@ -67,15 +68,36 @@ const normalizeMonsterData = (data: any): MonsterData => {
   if (!data.id && !data.nom && !data.name) {
     errors.push('Monster must have an ID or name');
   }
-  if (data.element && typeof data.element !== 'string') {
-    errors.push('Element must be a string');
-  }
+  const validRanks = Object.values(Rank);
   if (
     data.rang &&
     typeof data.rang !== 'string' &&
-    !['COMMON', 'RARE', 'EPIC', 'LEGENDARY'].includes(data.rang)
+    !validRanks.includes(data.rang.toUpperCase())
   ) {
-    errors.push('Invalid rank. Must be COMMON, RARE, EPIC, or LEGENDARY');
+    errors.push('Invalid rank. Must be one of: ' + validRanks.join(', '));
+  }
+  const validElements = Object.values(Element);
+  if (
+    data.element &&
+    typeof data.element === 'string' &&
+    !validElements.includes(data.element.toUpperCase())
+  ) {
+    errors.push('Invalid element. Must be one of: ' + validElements.join(', '));
+  }
+  if (data.level && typeof data.level !== 'number') {
+    errors.push('Level must be a number');
+  }
+  if (data.experience && typeof data.experience !== 'number') {
+    errors.push('Experience must be a number');
+  }
+  if (data.description && typeof data.description !== 'string') {
+    errors.push('Description must be a string');
+  }
+  if (data.skills && !Array.isArray(data.skills)) {
+    errors.push('Skills must be an array');
+  }
+  if (data.imageUrl && typeof data.imageUrl !== 'string') {
+    errors.push('Image URL must be a string');
   }
 
   if (errors.length > 0) {
@@ -98,11 +120,10 @@ const normalizeMonsterData = (data: any): MonsterData => {
 
   return {
     id: data.id || data.nom || data.name,
-    nom: data.nom || data.name || 'Unknown',
+    name: data.nom || data.name || 'Unknown',
     element: (data.element || data.type || 'neutre').toLowerCase(),
-    rang: data.rang || data.rank || 'COMMON',
+    rank: data.rang || data.rank || 'COMMON',
     level: data.level || 1,
-    experience: data.experience || 0,
     stats: {
       hp: Number(stats.hp || 0),
       atk: Number(stats.atk || 0),
@@ -111,6 +132,7 @@ const normalizeMonsterData = (data: any): MonsterData => {
     },
     description: data.description || data.lore || data.cardDescription || '',
     skills: Array.isArray(data.skills) ? data.skills : [],
+    imageUrl: data.imageUrl || data.image || '',
   };
 };
 
@@ -155,7 +177,7 @@ export const monstersService = {
 
       logger.debug('MonstersService', 'Monster fetched', {
         monsterId,
-        nom: normalizedData.nom,
+        nom: normalizedData.name,
       });
 
       return normalizedData;
@@ -256,158 +278,26 @@ export const monstersService = {
   },
 
   /**
-   * Récupère les stats d'un monstre
-   * @param {string|number} monsterId - ID du monstre
-   * @returns {Promise<{hp, atk, def, vit}>}
-   */
-  async getMonsterStats(monsterId: string | number): Promise<MonsterStats> {
-    try {
-      if (!monsterId) {
-        throw new ApiError(
-          ErrorTypes.VALIDATION,
-          'Monster ID is required',
-          400
-        );
-      }
-
-      logger.debug('MonstersService', 'Fetching monster stats', { monsterId });
-
-      const url = MonstersRoutes.GET_MONSTER_STATS.replace(':id', monsterId);
-      const response = await monstersApi.get(url);
-
-      const statsErrors = validateMonsterStats(response.data);
-      if (statsErrors.length > 0) {
-        throw new ApiError(
-          ErrorTypes.VALIDATION,
-          `Invalid stats format: ${statsErrors.join(', ')}`,
-          200
-        );
-      }
-
-      const stats = {
-        hp: Number(response.data.hp || 0),
-        atk: Number(response.data.atk || 0),
-        def: Number(response.data.def || 0),
-        vit: Number(response.data.vit || 0),
-      };
-
-      logger.debug('MonstersService', 'Monster stats fetched', {
-        monsterId,
-        stats,
-      });
-      return stats;
-    } catch (error) {
-      logger.error('MonstersService', 'Failed to fetch monster stats', {
-        monsterId,
-        error: error.message,
-      });
-      if (error instanceof ApiError) {
-        throw error;
-      }
-      throw parseApiError(error);
-    }
-  },
-
-  /**
-   * Récupère les compétences d'un monstre
-   * @param {string|number} monsterId - ID du monstre
-   * @returns {Promise<Array<SkillData>>}
-   */
-  async getMonsterSkills(monsterId: string | number): Promise<MonsterSkill[]> {
-    try {
-      if (!monsterId) {
-        throw new ApiError(
-          ErrorTypes.VALIDATION,
-          'Monster ID is required',
-          400
-        );
-      }
-
-      logger.debug('MonstersService', 'Fetching monster skills', { monsterId });
-
-      const url = MonstersRoutes.GET_MONSTER_SKILLS.replace(':id', monsterId);
-      const response = await monstersApi.get(url);
-
-      if (!Array.isArray(response.data)) {
-        throw new ApiError(
-          ErrorTypes.VALIDATION,
-          'Invalid response format: expected array of skills',
-          200
-        );
-      }
-
-      const skills = response.data.map((skill: any) => ({
-        name: skill.name || 'Unknown Skill',
-        description: skill.description || '',
-        damage: Number(skill.damage || 0),
-        cooldown: Number(skill.cooldown || 0),
-        level: Number(skill.level || 1),
-        lvlMax: Number(skill.lvlMax || 1),
-        rank: skill.rank || 'COMMON',
-      }));
-
-      logger.debug('MonstersService', 'Monster skills fetched', {
-        monsterId,
-        skillCount: skills.length,
-      });
-      return skills;
-    } catch (error) {
-      logger.error('MonstersService', 'Failed to fetch monster skills', {
-        monsterId,
-        error: error.message,
-      });
-      if (error instanceof ApiError) {
-        throw error;
-      }
-      throw parseApiError(error);
-    }
-  },
-
-  /**
-   * Recherche des monstres par critères
-   * @param {object} criteria - Critères de recherche {element, rang, minLevel, maxLevel}
+   * Récupère les monstres d'un joueur
+   * @param {string} username - Nom d'utilisateur du joueur
    * @returns {Promise<Array<MonsterData>>}
    */
-  async searchMonsters(
-    criteria: MonsterSearchCriteria = {}
-  ): Promise<MonsterData[]> {
+  async getMonstersByPlayer(username: string): Promise<Array<MonsterData>> {
     try {
-      const validElements = [
-        'fire',
-        'water',
-        'wind',
-        'earth',
-        'light',
-        'darkness',
-        'neutral',
-      ];
-      const validRanks = ['COMMON', 'RARE', 'EPIC', 'LEGENDARY'];
-
-      if (
-        criteria.element &&
-        !validElements.includes(criteria.element.toLowerCase())
-      ) {
+      if (!username || typeof username !== 'string') {
         throw new ApiError(
           ErrorTypes.VALIDATION,
-          `Invalid element: ${criteria.element}`,
+          'Username must be a non-empty string',
           400
         );
       }
 
-      if (criteria.rang && !validRanks.includes(criteria.rang.toUpperCase())) {
-        throw new ApiError(
-          ErrorTypes.VALIDATION,
-          `Invalid rank: ${criteria.rang}`,
-          400
-        );
-      }
+      logger.debug('MonstersService', 'Fetching monsters for player', {
+        username,
+      });
 
-      logger.debug('MonstersService', 'Searching monsters', { criteria });
-
-      const response = await monstersApi.post(
-        MonstersRoutes.SEARCH_MONSTERS,
-        criteria
-      );
+      const url = MonstersRoutes.GET_BY_PLAYER.replace(':username', username);
+      const response = await monstersApi.get(url);
 
       if (!Array.isArray(response.data)) {
         throw new ApiError(
@@ -420,15 +310,65 @@ export const monstersService = {
       const normalizedData = response.data.map((monsterData) =>
         normalizeMonsterData(monsterData)
       );
-      logger.debug('MonstersService', 'Search completed', {
+
+      logger.debug('MonstersService', 'Monsters for player fetched', {
+        username,
         count: normalizedData.length,
-        criteria,
       });
 
       return normalizedData;
     } catch (error) {
-      logger.error('MonstersService', 'Failed to search monsters', {
-        criteria,
+      logger.error('MonstersService', 'Failed to fetch monsters for player', {
+        username,
+        error: error.message,
+      });
+      if (error instanceof ApiError) {
+        throw error;
+      }
+      throw parseApiError(error);
+    }
+  },
+
+  /**
+   * Supprime un monstre par ID
+   * @param {string|number} monsterId - ID du monstre à supprimer
+   * @returns {Promise<void>}
+   */
+  async deleteMonster(monsterId: string | number): Promise<void> {
+    try {
+      if (!monsterId) {
+        throw new ApiError(
+          ErrorTypes.VALIDATION,
+          'Monster ID is required',
+          400
+        );
+      }
+
+      logger.debug('MonstersService', 'Deleting monster', { monsterId });
+
+      const url = MonstersRoutes.DELETE_MONSTER.replace(
+        ':id',
+        String(monsterId)
+      );
+      await monstersApi.delete(url);
+
+      // Supprimer du cache
+      await cacheMonster({
+        id: String(monsterId),
+        name: '',
+        element: '',
+        rank: 'COMMON',
+        level: 1,
+        stats: { hp: 0, atk: 0, def: 0, vit: 0 },
+        description: '',
+        skills: [],
+        imageUrl: '',
+      });
+
+      logger.debug('MonstersService', 'Monster deleted', { monsterId });
+    } catch (error) {
+      logger.error('MonstersService', 'Failed to delete monster', {
+        monsterId,
         error: error.message,
       });
       if (error instanceof ApiError) {

@@ -16,7 +16,7 @@ export const AuthRoutes = {
   REGISTER: '/user',
   VERIFY_TOKEN: '/user/verify-token',
   LOGOUT: '/user/logout',
-  REFRESH_TOKEN: '/user/refresh-token',
+  DELETE: '/user/delete',
 };
 
 /**
@@ -276,6 +276,38 @@ export const authService = {
       logger.error('AuthService', 'Logout error', { error: error.message });
       // Logout échoue mais on considère comme succès localement
       return { success: true };
+    }
+  },
+
+  /**
+   * Suppression du compte utilisateur
+   * @param {string} token - Token JWT de l'utilisateur à supprimer
+   * @returns {Promise<{success}>}
+   */
+  async deleteAccount(token) {
+    try {
+      if (!token || typeof token !== 'string') {
+        throw new ApiError(
+          ErrorTypes.VALIDATION,
+          'Token must be a non-empty string',
+          400
+        );
+      }
+
+      logger.debug('AuthService', 'Deleting account');
+
+      await authApi.post(AuthRoutes.DELETE, { token });
+      logger.info('AuthService', 'Account deletion successful');
+
+      return { success: true };
+    } catch (error) {
+      logger.error('AuthService', 'Account deletion error', {
+        error: error.message,
+      });
+      if (error instanceof ApiError) {
+        throw error;
+      }
+      throw parseApiError(error);
     }
   },
 };
