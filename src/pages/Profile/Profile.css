@@ -1,0 +1,223 @@
+.profile-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 28px 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Background images selon le thème */
+.profile-container::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-size: cover;
+  background-position: center center;
+  filter: blur(2px) brightness(0.55);
+  transform: scale(1.02);
+  transition: opacity 300ms ease;
+  opacity: 1;
+}
+.profile-container.divine::before {
+  background-image: url('/assets/backgrounds/home/Home_background_light.png');
+}
+.profile-container.dark::before {
+  background-image: url('/assets/backgrounds/home/Home_background_dark.png');
+}
+
+/* subtle overlay to improve text contrast */
+.profile-container::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(0, 0, 0, 0.25),
+    rgba(0, 0, 0, 0.55)
+  );
+  pointer-events: none;
+}
+
+.profile-container .background-layer.global-bg {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 280px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.profile-container .profile-header {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+}
+
+.profile-container .profile-main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.profile-container .nav-back-btn {
+  margin-right: 8px;
+  flex: 0 0 auto;
+}
+
+.profile-container .avatar-block {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.profile-container .avatar-frame {
+  width: 80px;
+  height: 80px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.profile-container .avatar-placeholder {
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.profile-container .player-meta .player-name {
+  margin: 0;
+  font-size: 20px;
+}
+
+.profile-container .level-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.xp-bar-container {
+  width: 220px;
+  max-width: 36vw;
+  height: 10px;
+  background: rgba(0, 0, 0, 0.14);
+  border-radius: 999px;
+  overflow: hidden;
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.02);
+}
+
+.xp-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #ffd166, #ff6b6b);
+}
+
+.resources-block {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.header-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.action-btn {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.delete-btn {
+  background: linear-gradient(90deg, #ff6b6b, #ff3b3b);
+  color: #fff;
+}
+
+.resource-item {
+  padding: 8px 12px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+  min-width: 72px;
+}
+
+.resource-item .label {
+  font-size: 12px;
+  color: var(--muted, #aaa);
+}
+
+.resource-item .value {
+  font-weight: 700;
+  font-size: 16px;
+}
+
+.profile-content {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  z-index: 1;
+}
+
+.section {
+  padding: 18px;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+}
+
+.overview-grid {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.overview-item {
+  padding: 12px 14px;
+  background: rgba(0, 0, 0, 0.18);
+  border-radius: 10px;
+  min-width: 160px;
+  color: #fff;
+}
+
+.monsters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 12px;
+}
+
+.monster-card {
+  width: 100%;
+}
+
+.empty-state {
+  padding: 24px;
+  text-align: center;
+  color: var(--muted, #ddd);
+}
+
+.profile-container .nav-back-btn {
+  background: rgba(0, 0, 0, 0.25);
+  color: #fff;
+  padding: 8px 10px;
+  border-radius: 8px;
+}
+
+.profile-container .glass-panel {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+}

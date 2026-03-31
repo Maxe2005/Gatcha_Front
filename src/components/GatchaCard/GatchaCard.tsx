@@ -15,7 +15,7 @@ const GatchaCard = ({
   monstre,
   flipOnHover = false,
   disableClickFlip = false,
-  onClick,
+  onClick = (e) => {},
 }) => {
   const defaultImage = '/assets/monsters/Default_Monster.png';
   const defaultElementImage = '/assets/elements/Default_Element.png';
@@ -23,8 +23,8 @@ const GatchaCard = ({
   const [isFlipped, setIsFlipped] = useState(false);
   const [stateStats, setStateStats] = useState(null);
 
-  const initialSrc = monstre?.nom
-    ? `/assets/monsters/${monstre.nom}.png`
+  const initialSrc = monstre?.name
+    ? `/assets/monsters/${monstre.name}.png`
     : defaultImage;
   const [currentImage, setCurrentImage] = useState(initialSrc);
 
@@ -33,8 +33,8 @@ const GatchaCard = ({
     setCurrentImage(
       monstre?.ImageUrl
         ? monstre?.ImageUrl
-        : monstre?.nom
-          ? `/assets/monsters/${monstre.nom}.png`
+        : monstre?.name
+          ? `/assets/monsters/${monstre.name}.png`
           : defaultImage
     );
   }, [monstre]);
@@ -79,7 +79,7 @@ const GatchaCard = ({
   };
 
   const elementClass = (monstre.element || 'neutre').toUpperCase();
-  const rankClass = (monstre.rang || 'COMMON').toUpperCase();
+  const rankClass = (monstre.rank || 'COMMON').toUpperCase();
 
   // Mapping rang vers image
   const rankToImage = {
@@ -157,8 +157,8 @@ const GatchaCard = ({
           style={{ backgroundImage: `url(${currentImage})` }}
         >
           <img
-            src={rankToImage[monstre.rang] || defaultRankImage}
-            alt={monstre.rang}
+            src={rankToImage[monstre.rank] || defaultRankImage}
+            alt={monstre.rank}
             className="rank-icon-front"
           />
           <img
@@ -169,7 +169,7 @@ const GatchaCard = ({
           <div className="card-overlay" />
           <div className="front-content">
             <h2 className="monster-name-front">
-              {monstre.nom || 'Monstre Mystère'}
+              {monstre.name || 'Monstre Mystère'}
             </h2>
           </div>
         </div>
@@ -183,7 +183,7 @@ const GatchaCard = ({
           <div className="card-grid">
             <div className="card-top">
               <div className={`rank-chip rank-${rankClass}`}>
-                {monstre.rang || '???'}
+                {monstre.rank || '???'}
               </div>
               <div className={`element-chip element-${elementClass}`}>
                 {(monstre.element || 'Neutre').toUpperCase()}
@@ -192,7 +192,7 @@ const GatchaCard = ({
 
             <div className="back-content-center">
               <h2 className="monster-name">
-                {monstre.nom || 'Monstre Mystère'}
+                {monstre.name || 'Monstre Mystère'}
               </h2>
               {lore && <p className="monster-lore">{lore}</p>}
             </div>

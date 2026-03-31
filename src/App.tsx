@@ -36,6 +36,7 @@ const Login = lazy(() => import('./pages/Login/Login'));
 const Home = lazy(() => import('./pages/Home/Home'));
 const Gacha = lazy(() => import('./pages/Gatcha/Gacha'));
 const Inventory = lazy(() => import('./pages/Inventory/Inventory'));
+const Profile = lazy(() => import('./pages/Profile/Profile'));
 
 const PrivateRoute = ({ children }) => {
   const { token } = useAuth();
@@ -94,6 +95,18 @@ function AppRoutes() {
               fallback={<LoadingFallback message="Inventaire en cours..." />}
             >
               <Inventory />
+            </Suspense>
+          </PrivateRoute>
+        }
+      />
+      <Route
+        path="/profile"
+        element={
+          <PrivateRoute>
+            <Suspense
+              fallback={<LoadingFallback message="Profil en cours..." />}
+            >
+              <Profile />
             </Suspense>
           </PrivateRoute>
         }
