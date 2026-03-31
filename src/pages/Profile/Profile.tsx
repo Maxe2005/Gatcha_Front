@@ -100,6 +100,9 @@ const Profile = () => {
             <button className="action-btn" onClick={handleLogout}>
               Se déconnecter
             </button>
+            <button className="action-btn" onClick={() => navigate('/infos')}>
+              Infos
+            </button>
             <button
               className="action-btn delete-btn"
               onClick={handleDeleteAccount}

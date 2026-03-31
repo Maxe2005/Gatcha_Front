@@ -1,0 +1,164 @@
+.infos-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.infos-root {
+  display: flex;
+  /* children will fill remaining height under header */
+  flex: 1 1 auto;
+  gap: 16px;
+}
+
+/* prevent the document from scrolling — only internal areas should scroll */
+.infos-page,
+.infos-root {
+  overflow: hidden;
+}
+.infos-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 20px;
+  margin-bottom: 8px;
+  gap: 12px;
+}
+
+/* Backgrounds per theme */
+.infos-page.divine {
+  background-image: url('/assets/backgrounds/home/Home_background_light.png');
+  background-size: cover;
+  background-position: center;
+}
+.infos-page.dark {
+  background-image: url('/assets/backgrounds/login/background_login_dark.png');
+  background-size: cover;
+  background-position: center;
+}
+
+/* subtle overlay to keep text readable */
+.infos-page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.6));
+  z-index: 0;
+}
+
+/* ensure page content sits above the overlay */
+.infos-page > * {
+  position: relative;
+  z-index: 1;
+}
+.infos-title {
+  font-size: 1.2rem;
+  margin: 0;
+  flex: 1;
+  text-align: center;
+}
+.infos-header-left {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.infos-header-right {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.infos-header .nav-back-btn {
+  background: rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  color: var(--mui-palette-text-primary, #fff);
+}
+.infos-sidebar {
+  width: 20%;
+  min-width: 200px;
+  max-width: 320px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+  padding: 12px;
+  /* allow the sidebar to scroll independently when content overflows */
+  height: calc(100% - 0px);
+  overflow: auto;
+  flex: 0 0 auto;
+}
+.infos-sidebar-title {
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+.infos-link {
+  display: block;
+  color: var(--mui-palette-text-primary, #ddd);
+  text-decoration: none;
+  padding: 6px 8px;
+  border-radius: 4px;
+}
+.infos-link:hover {
+  background: rgba(255, 255, 255, 0.03);
+}
+.infos-link.lvl-1 {
+  font-weight: 700;
+}
+.infos-link.lvl-2 {
+  padding-left: 8px;
+}
+.infos-link.lvl-3 {
+  padding-left: 16px;
+}
+.infos-content {
+  width: 80%;
+  max-width: 1200px;
+  /* main content has its own scrolling area */
+  height: 100%;
+  overflow: auto;
+}
+.infos-article {
+  padding: 12px 24px;
+  background: transparent;
+}
+.infos-article h1,
+.infos-article h2,
+.infos-article h3,
+.infos-article p,
+.infos-article li {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+/* glass-panel tweaks for contrast */
+.infos-header.glass-panel,
+.infos-sidebar.glass-panel,
+.infos-article {
+  background: rgba(20, 20, 20, 0.32);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(6px);
+}
+.infos-article h1,
+.infos-article h2,
+.infos-article h3 {
+  margin-top: 1.2em;
+}
+.infos-article pre {
+  background: rgba(0, 0, 0, 0.4);
+  padding: 12px;
+  border-radius: 6px;
+  overflow: auto;
+}
+.infos-article code {
+  background: rgba(0, 0, 0, 0.25);
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+.infos-article ul,
+.infos-article ol {
+  margin-left: 1.2em;
+}
