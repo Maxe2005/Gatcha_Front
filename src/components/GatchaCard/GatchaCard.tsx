@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { adminApiService } from '../../services/adminService';
 import './GatchaCard.css';
+import { Rank } from '../../enums/ranks.enum';
+import { Element } from '../../enums/elements.enum';
 
 const clampPercent = (value) => Math.max(0, Math.min(100, value));
 
@@ -76,25 +78,25 @@ const GatchaCard = ({
     }
   };
 
-  const elementClass = (monstre.element || 'neutre').toLowerCase();
-  const rankClass = (monstre.rang || 'COMMON').toLowerCase();
+  const elementClass = (monstre.element || 'neutre').toUpperCase();
+  const rankClass = (monstre.rang || 'COMMON').toUpperCase();
 
   // Mapping rang vers image
   const rankToImage = {
-    COMMON: '/assets/ranks/Rank_Common.png',
-    RARE: '/assets/ranks/Rank_Rare.png',
-    EPIC: '/assets/ranks/Rank_Epic.png',
-    LEGENDARY: '/assets/ranks/Rank_Legendary.png',
+    [Rank.COMMON]: '/assets/ranks/Rank_Common.png',
+    [Rank.RARE]: '/assets/ranks/Rank_Rare.png',
+    [Rank.EPIC]: '/assets/ranks/Rank_Epic.png',
+    [Rank.LEGENDARY]: '/assets/ranks/Rank_Legendary.png',
   };
 
   // Mapping élément vers image
   const elementToImage = {
-    fire: '/assets/elements/Element_fire.png',
-    water: '/assets/elements/Element_water.png',
-    wind: '/assets/elements/Element_wind.png',
-    earth: '/assets/elements/Element_earth.png',
-    light: '/assets/elements/Element_light.png',
-    darkness: '/assets/elements/Element_darkness.png',
+    [Element.FIRE]: '/assets/elements/Element_fire.png',
+    [Element.WATER]: '/assets/elements/Element_water.png',
+    [Element.WIND]: '/assets/elements/Element_wind.png',
+    [Element.EARTH]: '/assets/elements/Element_earth.png',
+    [Element.LIGHT]: '/assets/elements/Element_light.png',
+    [Element.DARKNESS]: '/assets/elements/Element_darkness.png',
   };
 
   const stats = [

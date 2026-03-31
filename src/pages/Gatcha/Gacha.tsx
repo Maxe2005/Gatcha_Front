@@ -13,6 +13,9 @@ import {
 import GatchaCard from '../../components/GatchaCard/GatchaCard';
 import { useNavigate } from 'react-router-dom';
 import './Gacha.css';
+import { MonsterData } from '../../types/monster';
+import { Element } from '../../enums/elements.enum';
+import { Rank } from '../../enums/ranks.enum';
 
 const normalizeMonster = (data) => {
   if (!data) return null;
@@ -25,10 +28,10 @@ const normalizeMonster = (data) => {
   const stats = data.stats || {};
 
   return {
-    nom: data.nom || data.name || 'Monstre Mystère',
-    rang: data.rang || data.rank || '?',
+    name: data.name || data.nom || 'Monstre Mystère',
+    rank: data.rank || data.rang || '?',
     element: (data.element || data.type || 'neutre').toLowerCase(),
-    lore:
+    description:
       data.description ||
       data.lore ||
       data.cardDescription ||
@@ -44,9 +47,9 @@ const normalizeMonster = (data) => {
 };
 
 const secondary_monster = {
-  nom: 'Abyssal-Hydra',
-  element: 'WATER',
-  rang: 'EPIC',
+  name: 'Abyssal-Hydra',
+  element: Element.WATER,
+  rank: Rank.EPIC,
   stats: {
     hp: 1500.0,
     atk: 130.0,
@@ -68,7 +71,7 @@ const secondary_monster = {
       cooldown: 0.0,
       level: 1.0,
       lvlMax: 5.0,
-      rank: 'COMMON',
+      rank: Rank.COMMON,
     },
     {
       name: 'Lumière Hypnotique',
@@ -81,7 +84,7 @@ const secondary_monster = {
       cooldown: 3.0,
       level: 1.0,
       lvlMax: 5.0,
-      rank: 'RARE',
+      rank: Rank.RARE,
     },
     {
       name: 'Régénération Abyssale',
@@ -94,7 +97,7 @@ const secondary_monster = {
       cooldown: 5.0,
       level: 1.0,
       lvlMax: 5.0,
-      rank: 'EPIC',
+      rank: Rank.EPIC,
     },
     {
       name: 'Jugement de la Fosse',
@@ -107,7 +110,7 @@ const secondary_monster = {
       cooldown: 6.0,
       level: 1.0,
       lvlMax: 3.0,
-      rank: 'LEGENDARY',
+      rank: Rank.LEGENDARY,
     },
   ],
 };
@@ -117,7 +120,7 @@ const monster_mock = secondary_monster;
 const Gacha = () => {
   const { user } = useAuth();
   const { theme } = useTheme();
-  const [monster, setMonster] = useState(monster_mock);
+  const [monster, setMonster] = useState < MonsterData | null>(monster_mock);
   const [loading, setLoading] = useState(false);
   const [isRevealed, setIsRevealed] = useState(false);
   const navigate = useNavigate();

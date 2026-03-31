@@ -10,13 +10,13 @@ export type MonsterStats = {
 };
 
 export type MonsterData = {
-  id: string | number;
+  id?: string | number;
   name: string;
   element: Element;
   rank: Rank;
-  level: number;
+  level?: number;
   stats: MonsterStats;
   description: string;
   skills: MonsterSkill[];
-  imageUrl: string;
+  imageUrl?: string;
 };
