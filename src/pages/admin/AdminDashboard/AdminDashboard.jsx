@@ -42,7 +42,34 @@ const AdminDashboard = () => {
   if (error) {
     return (
       <div className="admin-dashboard">
-        <div className="error">{error}</div>
+        <div
+          className="error"
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 12,
+            alignItems: 'center',
+          }}
+        >
+          <div>{error}</div>
+          <button
+            className="btn-home"
+            onClick={() => navigate('/')}
+            style={{
+              padding: '8px 16px',
+              fontWeight: 'bold',
+              borderRadius: 8,
+              background: '#eee',
+              color: '#222',
+              border: 'none',
+              cursor: 'pointer',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+            }}
+            title="Retour à l'accueil"
+          >
+            Accueil
+          </button>
+        </div>
       </div>
     );
   }
