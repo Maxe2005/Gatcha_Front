@@ -22,7 +22,7 @@ export {
 } from './portalGlyphs';
 
 // Re-export Portal component
-export { default as Portal } from '../components/Portal';
+export { default as Portal } from '../components/Portal/Portal';
 
 // Re-export examples
 export * from '../components/PortalExamples';

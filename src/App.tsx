@@ -6,7 +6,7 @@ import {
 } from 'react-router-dom';
 import { Suspense, lazy } from 'react';
 import { Toaster } from 'react-hot-toast';
-import ErrorBoundary from './components/ErrorBoundary';
+import ErrorBoundary from './components/ErrorBoundary/ErrorBoundary';
 import LoadingFallback from './components/LoadingFallback';
 import CanvasParticleSystem from './components/CanvasParticleSystem';
 import { AuthProvider, useAuth } from './context/AuthContext';
@@ -14,6 +14,13 @@ import { ThemeProvider, useTheme } from './context/ThemeContext';
 import { MonsterProvider } from './context/MonsterContext';
 import { PlayerProvider } from './context/PlayerContext';
 import { LoadingProvider, useLoading } from './context/LoadingContext';
+import GenerateMonsters from './pages/admin/GenerateMonsters/GenerateMonsters';
+import AdminDashboard from './pages/admin/AdminDashboard/AdminDashboard';
+import AdminMonstersList from './pages/admin/AdminMonstersList/AdminMonstersList';
+import AdminMonsterDetail from './pages/admin/AdminMonsterDetail/AdminMonsterDetail';
+import { NotificationProvider } from './context/NotificationContext';
+import NotificationStack from './components/NotificationStack/NotificationStack';
+import { BackgroundViewProvider } from './context/BackgroundViewContext';
 
 // // Fonction pour simuler un délai de chargement (pour le développement)
 // const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -25,14 +32,21 @@ import { LoadingProvider, useLoading } from './context/LoadingContext';
 // const Inventory = lazy(() =>
 //   delay(5000).then(() => import('./pages/Inventory'));
 
-const Login = lazy(() => import('./pages/Login'));
-const Home = lazy(() => import('./pages/Home'));
-const Gacha = lazy(() => import('./pages/Gacha'));
-const Inventory = lazy(() => import('./pages/Inventory'));
+const Login = lazy(() => import('./pages/Login/Login'));
+const Home = lazy(() => import('./pages/Home/Home'));
+const Gacha = lazy(() => import('./pages/Gatcha/Gacha'));
+const Inventory = lazy(() => import('./pages/Inventory/Inventory'));
 
 const PrivateRoute = ({ children }) => {
   const { token } = useAuth();
   // if (!token) return <Navigate to="/login" />;
+  return children;
+};
+
+const AdminRoute = ({ children }) => {
+  // const { token, user } = useAuth();
+  // if (!token) return <Navigate to="/login" />;
+  // if (user?.username !== 'admin') return <Navigate to="/home" />;
   return children;
 };
 
@@ -84,6 +98,38 @@ function AppRoutes() {
           </PrivateRoute>
         }
       />
+      <Route
+        path="/admin"
+        element={
+          <AdminRoute>
+            <AdminDashboard />
+          </AdminRoute>
+        }
+      />
+      <Route
+        path="/admin/monsters"
+        element={
+          <AdminRoute>
+            <AdminMonstersList />
+          </AdminRoute>
+        }
+      />
+      <Route
+        path="/admin/monsters/:monsterId"
+        element={
+          <AdminRoute>
+            <AdminMonsterDetail />
+          </AdminRoute>
+        }
+      />
+      <Route
+        path="/generate"
+        element={
+          <AdminRoute>
+            <GenerateMonsters />
+          </AdminRoute>
+        }
+      />
     </Routes>
   );
 }
@@ -94,15 +140,20 @@ function App() {
       <Toaster position="bottom-right" reverseOrder={false} />
       <ThemeProvider>
         <LoadingProvider>
-          <AuthProvider>
-            <MonsterProvider>
-              <PlayerProvider>
-                <Router>
-                  <AppContent />
-                </Router>
-              </PlayerProvider>
-            </MonsterProvider>
-          </AuthProvider>
+          <BackgroundViewProvider>
+            <NotificationProvider>
+              <AuthProvider>
+                <MonsterProvider>
+                  <PlayerProvider>
+                    <Router>
+                      <AppContent />
+                      <NotificationStack />
+                    </Router>
+                  </PlayerProvider>
+                </MonsterProvider>
+              </AuthProvider>
+            </NotificationProvider>
+          </BackgroundViewProvider>
         </LoadingProvider>
       </ThemeProvider>
     </ErrorBoundary>
