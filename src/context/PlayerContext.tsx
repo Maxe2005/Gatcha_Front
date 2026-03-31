@@ -20,6 +20,7 @@ type PlayerContextValue = {
   error: string | null;
   loadingMonsters: boolean;
   errorMonsters: string | null;
+  setPlayerData: React.Dispatch<React.SetStateAction<PlayerData | null>>;
   refreshPlayerData: () => Promise<PlayerData | null>;
 };
 /**
@@ -137,6 +138,7 @@ export const PlayerProvider = ({ children }: PropsWithChildren) => {
     loadingMonsters,
     errorMonsters,
     refreshPlayerData,
+    setPlayerData,
   };
 
   return (

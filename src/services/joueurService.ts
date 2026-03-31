@@ -13,9 +13,9 @@ import type { PlayerData } from '../types/player';
  * Routes disponibles sur le service Joueur
  */
 export const JoueurRoutes = {
+  ADD_PLAYER: '/api/players',
   GET_PLAYER: '/api/players/:username',
   ADD_EXPERIENCE: '/api/players/:username/xp',
-  ADD_MONSTER: '/api/players/:username/add_monster',
   REMOVE_MONSTER: '/api/players/:username/monsters/:monsterId',
 };
 
@@ -115,15 +115,11 @@ export const joueurService = {
   },
 
   /**
-   * Met à jour les données du joueur
+   * Cree un nouveau joueur
    * @param {string} username - Nom d'utilisateur
-   * @param {object} updateData - Données à mettre à jour
    * @returns {Promise<PlayerData>}
    */
-  async updatePlayer(
-    username: string,
-    updateData: Record<string, unknown>
-  ): Promise<PlayerData> {
+  async createPlayer(username: string): Promise<PlayerData> {
     try {
       if (!username || typeof username !== 'string') {
         throw new ApiError(
@@ -133,29 +129,67 @@ export const joueurService = {
         );
       }
 
-      if (!updateData || typeof updateData !== 'object') {
+      logger.debug('JoueurService', 'Creating player', { username });
+
+      const response = await joueurApi.post(JoueurRoutes.ADD_PLAYER, {
+        username,
+      });
+
+      const normalizedData = normalizePlayerData(response.data);
+      logger.info('JoueurService', 'Player created', { username });
+      return normalizedData;
+    } catch (error) {
+      logger.error('JoueurService', 'Failed to create player', {
+        username,
+        error: error.message,
+      });
+      if (error instanceof ApiError) {
+        throw error;
+      }
+      throw parseApiError(error);
+    }
+  },
+
+  /**
+   * Ajoute de l'expérience au joueur
+   * @param {string} username - Nom d'utilisateur
+   * @param {number} xp - Quantité d'expérience à ajouter
+   * @returns {Promise<PlayerData>}
+   */
+  async addExperience(username: string, xp: number): Promise<PlayerData> {
+    try {
+      if (!username || typeof username !== 'string') {
         throw new ApiError(
           ErrorTypes.VALIDATION,
-          'Update data must be a valid object',
+          'Username must be a non-empty string',
+          400
+        );
+      }
+      if (typeof xp !== 'number' || xp <= 0) {
+        throw new ApiError(
+          ErrorTypes.VALIDATION,
+          'XP must be a positive number',
           400
         );
       }
 
-      logger.debug('JoueurService', 'Updating player', {
-        username,
-        updates: Object.keys(updateData),
-      });
+      logger.debug('JoueurService', 'Adding experience', { username, xp });
 
-      const url = JoueurRoutes.UPDATE_PLAYER.replace(':username', username);
-      const response = await joueurApi.patch(url, updateData);
+      const url = JoueurRoutes.ADD_EXPERIENCE.replace(':username', username);
+      const response = await joueurApi.post(url, { amount: xp });
 
       const normalizedData = normalizePlayerData(response.data);
-      logger.info('JoueurService', 'Player updated successfully', { username });
+      logger.debug('JoueurService', 'Experience added', {
+        username,
+        newLevel: normalizedData.level,
+        newExperience: normalizedData.experience,
+      });
 
       return normalizedData;
     } catch (error) {
-      logger.error('JoueurService', 'Failed to update player', {
+      logger.error('JoueurService', 'Failed to add experience', {
         username,
+        xp,
         error: error.message,
       });
       if (error instanceof ApiError) {
@@ -166,13 +200,12 @@ export const joueurService = {
   },
 
   /**
-   * Récupère les ressources du joueur
+   * Supprime un monstre du joueur
    * @param {string} username - Nom d'utilisateur
-   * @returns {Promise<{gold, gems, tickets}>}
+   * @param {string} monsterId - ID du monstre à supprimer
+   * @returns {Promise<PlayerData>}
    */
-  async getResources(
-    username: string
-  ): Promise<{ gold: number; gems: number; tickets: number }> {
+  async removeMonster(username: string, monsterId: string): Promise<PlayerData> {
     try {
       if (!username || typeof username !== 'string') {
         throw new ApiError(
@@ -181,207 +214,35 @@ export const joueurService = {
           400
         );
       }
+      if (!monsterId || typeof monsterId !== 'string') {
+        throw new ApiError(
+          ErrorTypes.VALIDATION,
+          'Monster ID must be a non-empty string',
+          400
+        );
+      }
 
-      logger.debug('JoueurService', 'Fetching resources', { username });
-
-      const url = JoueurRoutes.GET_RESOURCES.replace(':username', username);
-      const response = await joueurApi.get(url);
-
-      const resources = {
-        gold: Number(response.data.gold) || 0,
-        gems: Number(response.data.gems) || 0,
-        tickets: Number(response.data.tickets) || 0,
-      };
-
-      // Validation
-      Object.values(resources).forEach((val) => {
-        if (!Number.isFinite(val) || val < 0) {
-          throw new ApiError(
-            ErrorTypes.VALIDATION,
-            'Invalid resource values in response',
-            200
-          );
-        }
+      logger.debug('JoueurService', 'Removing monster', {
+        username,
+        monsterId,
       });
 
-      logger.debug('JoueurService', 'Resources fetched', { resources });
-      return resources;
+      const url = JoueurRoutes.REMOVE_MONSTER.replace(':username', username).replace(
+        ':monsterId',
+        monsterId
+      );
+      const response = await joueurApi.delete(url);
+
+      const normalizedData = normalizePlayerData(response.data);
+      logger.debug('JoueurService', 'Monster removed', {
+        username,
+        monsterId,
+        remainingMonsters: normalizedData.monsterIds.length,
+      });
+
+      return normalizedData;
     } catch (error) {
-      logger.error('JoueurService', 'Failed to fetch resources', {
-        username,
-        error: error.message,
-      });
-      if (error instanceof ApiError) {
-        throw error;
-      }
-      throw parseApiError(error);
-    }
-  },
-
-  /**
-   * Ajoute une ressource au joueur
-   * @param {string} username - Nom d'utilisateur
-   * @param {string} resourceType - Type: 'gold', 'gems', 'tickets'
-   * @param {number} amount - Quantité à ajouter
-   * @returns {Promise<{gold, gems, tickets}>}
-   */
-  async addResource(
-    username: string,
-    resourceType: 'gold' | 'gems' | 'tickets',
-    amount: number
-  ): Promise<{ gold: number; gems: number; tickets: number }> {
-    try {
-      if (!username || typeof username !== 'string') {
-        throw new ApiError(
-          ErrorTypes.VALIDATION,
-          'Username must be a non-empty string',
-          400
-        );
-      }
-
-      if (!['gold', 'gems', 'tickets'].includes(resourceType)) {
-        throw new ApiError(
-          ErrorTypes.VALIDATION,
-          `Invalid resource type: ${resourceType}. Must be 'gold', 'gems', or 'tickets'`,
-          400
-        );
-      }
-
-      if (!Number.isFinite(amount) || amount < 0) {
-        throw new ApiError(
-          ErrorTypes.VALIDATION,
-          'Amount must be a positive number',
-          400
-        );
-      }
-
-      logger.debug('JoueurService', 'Adding resource', {
-        username,
-        resourceType,
-        amount,
-      });
-
-      const url = JoueurRoutes.UPDATE_RESOURCES.replace(':username', username);
-      const response = await joueurApi.post(url, {
-        type: resourceType,
-        amount,
-      });
-
-      const resources = {
-        gold: Number(response.data.gold) || 0,
-        gems: Number(response.data.gems) || 0,
-        tickets: Number(response.data.tickets) || 0,
-      };
-
-      logger.info('JoueurService', 'Resource added', {
-        username,
-        resourceType,
-        amount,
-      });
-      return resources;
-    } catch (error) {
-      logger.error('JoueurService', 'Failed to add resource', {
-        username,
-        resourceType,
-        amount,
-        error: error.message,
-      });
-      if (error instanceof ApiError) {
-        throw error;
-      }
-      throw parseApiError(error);
-    }
-  },
-
-  /**
-   * Récupère les monstres du joueur
-   * @param {string} username - Nom d'utilisateur
-   * @returns {Promise<Array<string>>} - Tableau d'IDs de monstres
-   */
-  async getMonsters(username: string): Promise<Array<string | number>> {
-    try {
-      if (!username || typeof username !== 'string') {
-        throw new ApiError(
-          ErrorTypes.VALIDATION,
-          'Username must be a non-empty string',
-          400
-        );
-      }
-
-      logger.debug('JoueurService', 'Fetching player monsters', { username });
-
-      const url = JoueurRoutes.GET_MONSTERS.replace(':username', username);
-      const response = await joueurApi.get(url);
-
-      const monsterIds = Array.isArray(response.data)
-        ? response.data
-        : response.data.monsterIds || [];
-
-      if (!Array.isArray(monsterIds)) {
-        throw new ApiError(
-          ErrorTypes.VALIDATION,
-          'Invalid monster list format',
-          200
-        );
-      }
-
-      logger.debug('JoueurService', 'Monsters fetched', {
-        username,
-        count: monsterIds.length,
-      });
-      return monsterIds;
-    } catch (error) {
-      logger.error('JoueurService', 'Failed to fetch monsters', {
-        username,
-        error: error.message,
-      });
-      if (error instanceof ApiError) {
-        throw error;
-      }
-      throw parseApiError(error);
-    }
-  },
-
-  /**
-   * Ajoute un monstre au joueur
-   * @param {string} username - Nom d'utilisateur
-   * @param {string|number} monsterId - ID du monstre
-   * @returns {Promise<Array<string>>}
-   */
-  async addMonster(
-    username: string,
-    monsterId: string | number
-  ): Promise<Array<string | number>> {
-    try {
-      if (!username || typeof username !== 'string') {
-        throw new ApiError(
-          ErrorTypes.VALIDATION,
-          'Username must be a non-empty string',
-          400
-        );
-      }
-
-      if (!monsterId) {
-        throw new ApiError(
-          ErrorTypes.VALIDATION,
-          'Monster ID is required',
-          400
-        );
-      }
-
-      logger.debug('JoueurService', 'Adding monster', { username, monsterId });
-
-      const url = JoueurRoutes.ADD_MONSTER.replace(':username', username);
-      const response = await joueurApi.post(url, { monsterId });
-
-      const monsterIds = Array.isArray(response.data)
-        ? response.data
-        : response.data.monsterIds || [];
-
-      logger.info('JoueurService', 'Monster added', { username, monsterId });
-      return monsterIds;
-    } catch (error) {
-      logger.error('JoueurService', 'Failed to add monster', {
+      logger.error('JoueurService', 'Failed to remove monster', {
         username,
         monsterId,
         error: error.message,

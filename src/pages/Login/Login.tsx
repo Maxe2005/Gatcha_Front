@@ -26,6 +26,7 @@ import {
   DarkMode,
 } from '@mui/icons-material';
 import ThemeToggle from '../../components/ThemeToggle/ThemeToggle';
+import { usePlayer } from '../../context/PlayerContext';
 
 const Login = () => {
   // State management
@@ -44,6 +45,7 @@ const Login = () => {
   const { login } = useAuth();
   const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
+  const { setPlayerData } = usePlayer();
 
   const handleToggleMode = () => {
     setIsLogin(!isLogin);
@@ -116,7 +118,8 @@ const Login = () => {
           login(token, user);
 
           try {
-            await joueurService.getPlayer(user);
+            const dataResponse = await joueurService.createPlayer(username);
+            setPlayerData(dataResponse);
           } catch (playerErr) {
             setError(
               "Compte créé, mais le profil joueur n'a pas pu être initialisé. Réessaie plus tard."
