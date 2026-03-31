@@ -63,7 +63,7 @@ export default defineConfig({
           ],
           'chunk-invocation': [
             './src/services/invocationService.ts',
-            './src/pages/Gacha.tsx',
+            './src/pages/Gatcha/Gacha.tsx',
           ],
         },
       },
