@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { adminApi } from '../../services/api';
-import ThemeToggle from '../../components/ThemeToggle';
-import '../admin/AdminDashboard.css';
+import { adminApi } from '../../../services/api';
+import ThemeToggle from '../../../components/ThemeToggle/ThemeToggle';
+import './AdminDashboard.css';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();

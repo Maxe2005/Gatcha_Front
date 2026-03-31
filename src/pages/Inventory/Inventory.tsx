@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useTheme } from '../context/ThemeContext';
-import { usePlayer } from '../context/PlayerContext';
+import { useTheme } from '../../context/ThemeContext';
+import { usePlayer } from '../../context/PlayerContext';
 import { useNavigate } from 'react-router-dom';
-import { logger } from '../services/logger';
-import GatchaCard from '../components/GatchaCard';
-import SkillCard from '../components/SkillCard';
+import { logger } from '../../services/logger';
+import GatchaCard from '../../components/GatchaCard/GatchaCard';
+import SkillCard from '../../components/SkillCard/SkillCard';
 import './Inventory.css';
-import ThemeToggle from '../components/ThemeToggle';
+import ThemeToggle from '../../components/ThemeToggle/ThemeToggle';
 
 // Mock Data pour le développement si playerData est vide
 const MOCK_INVENTORY = Array.from({ length: 24 }).map((_, i) => ({

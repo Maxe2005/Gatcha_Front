@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { useTheme } from '../context/ThemeContext';
-import { usePlayer } from '../context/PlayerContext';
+import { useTheme } from '../../context/ThemeContext';
+import { usePlayer } from '../../context/PlayerContext';
 import { useNavigate } from 'react-router-dom';
 import './Home.css';
-import ThemeToggle from '../components/ThemeToggle';
-import Portal from '../components/Portal';
+import ThemeToggle from '../../components/ThemeToggle/ThemeToggle';
+import Portal from '../../components/Portal/Portal';
 
 const Home = () => {
   const { theme } = useTheme();
@@ -147,25 +147,25 @@ const Home = () => {
 
           {/* Admin Button - visible uniquement pour l'admin */}
           {/* {playerData?.username === 'admin' && ( */}
-            <button
-              className="admin-dashboard-btn"
-              onClick={() => navigate('/admin')}
-              title="Accéder au Dashboard Admin"
-              style={{
-                marginLeft: 16,
-                padding: '8px 16px',
-                fontWeight: 'bold',
-                borderRadius: 8,
-                background: theme === 'divine' ? '#ffe066' : '#222',
-                color: theme === 'divine' ? '#222' : '#ffe066',
-                border: 'none',
-                cursor: 'pointer',
-                boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-              }}
-            >
-              Admin
-            </button>
-           {/* )} */}
+          <button
+            className="admin-dashboard-btn"
+            onClick={() => navigate('/admin')}
+            title="Accéder au Dashboard Admin"
+            style={{
+              marginLeft: 16,
+              padding: '8px 16px',
+              fontWeight: 'bold',
+              borderRadius: 8,
+              background: theme === 'divine' ? '#ffe066' : '#222',
+              color: theme === 'divine' ? '#222' : '#ffe066',
+              border: 'none',
+              cursor: 'pointer',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+            }}
+          >
+            Admin
+          </button>
+          {/* )} */}
 
           {/* Resources Section */}
           <div className="resources-section">

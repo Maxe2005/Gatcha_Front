@@ -1,7 +1,7 @@
 import React from 'react';
-import GatchaCard from '../../components/GatchaCard';
+import GatchaCard from '../../../../components/GatchaCard/GatchaCard';
 import './MonsterPreviewTab.css';
-import SkillCard from '../../components/SkillCard';
+import SkillCard from '../../../../components/SkillCard/SkillCard';
 
 const MonsterPreviewTab = ({ monster }) => (
   <div className="preview-tab" style={{ containerType: 'inline-size' }}>

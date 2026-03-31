@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { adminApiService } from '../../services/adminService';
+import { adminApiService } from '../../../../services/adminService';
 import './MonsterDataTab.css';
-import { DynamicField } from '../../components/DynamicField';
-import { useAuth } from '../../context/AuthContext';
+import { DynamicField } from '../../../../components/DynamicField';
+import { useAuth } from '../../../../context/AuthContext';
 
 const MonsterDataTab = ({
   monster,
@@ -196,10 +196,15 @@ const MonsterDataTab = ({
     try {
       setIsSaving(true);
       onActionError?.(null);
-      await adminApiService.updateMonster(monsterId, user?.username || 'Admin', editData, {
-        skipValidation,
-        notes: updateNotes || null,
-      });
+      await adminApiService.updateMonster(
+        monsterId,
+        user?.username || 'Admin',
+        editData,
+        {
+          skipValidation,
+          notes: updateNotes || null,
+        }
+      );
       const detail = await adminApiService.getMonsterDetail(monsterId);
       const history = await adminApiService.getMonsterHistory(monsterId);
       onMonsterUpdate?.(detail, history.history || []);
@@ -351,9 +356,7 @@ const MonsterDataTab = ({
                   : 'Afficher les erreurs'
               }
             >
-              {showValidationErrors
-                ? '🔴'
-                : '⚪'}
+              {showValidationErrors ? '🔴' : '⚪'}
             </button>
           )}
           {canEdit && (

@@ -1,10 +1,10 @@
 import React from 'react';
 import { AppBar, Toolbar, Box, Typography, Button } from '@mui/material';
-import ThemeToggle from './ThemeToggle';
-import { useTheme } from '../context/ThemeContext';
-import { useAuth } from '../context/AuthContext';
+import ThemeToggle from '../ThemeToggle/ThemeToggle';
+import { useTheme } from '../../context/ThemeContext';
+import { useAuth } from '../../context/AuthContext';
 import './Header.css';
-import AdminNav from './AdminNav';
+import AdminNav from '../AdminNav/AdminNav';
 
 const Header = ({ title = 'Gatcha API' }) => {
   const { theme } = useTheme();

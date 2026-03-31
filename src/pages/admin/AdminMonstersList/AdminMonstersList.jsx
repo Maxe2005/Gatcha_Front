@@ -1,10 +1,10 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { adminApi } from '../../services/api';
-import { adminApiService } from '../../services/adminService';
-import ThemeToggle from '../../components/ThemeToggle';
-import ConfirmDialog from '../../components/ConfirmDialog';
-import '../admin/AdminMonstersList.css';
+import { adminApi } from '../../../services/api';
+import { adminApiService } from '../../../services/adminService';
+import ThemeToggle from '../../../components/ThemeToggle/ThemeToggle';
+import ConfirmDialog from '../../../components/ConfirmDialog/ConfirmDialog';
+import './AdminMonstersList.css';
 
 const AdminMonstersList = () => {
   const navigate = useNavigate();

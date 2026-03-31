@@ -22,10 +22,13 @@ import {
   AccordionDetails,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import Header from '../components/Header';
-import { generateMonster, generateMonsterBatch } from '../services/api';
-import { useNotification } from '../context/NotificationContext';
-import { useTheme } from '../context/ThemeContext';
+import Header from '../../../components/Header/Header';
+import {
+  generateMonster,
+  generateMonsterBatch,
+} from '../../../services/generationService';
+import { useNotification } from '../../../context/NotificationContext';
+import { useTheme } from '../../../context/ThemeContext';
 import './GenerateMonsters.css';
 
 const GenerateMonsters = () => {

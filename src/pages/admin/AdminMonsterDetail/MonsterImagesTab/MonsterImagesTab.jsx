@@ -1,10 +1,8 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 
-import { adminApiService } from '../../services/adminService';
-import {
-  initiateImageGeneration,
-  trackImageGeneration,
-} from '../../services/api';
+import { adminApiService } from '../../../../services/adminService';
+import { initiateImageGeneration } from '../../../../services/generationService';
+import { trackImageGeneration } from '../../../../services/imageWsService';
 
 const MonsterImagesTab = ({
   monsterId,

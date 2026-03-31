@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useTheme } from '../context/ThemeContext';
+import { useTheme } from '../../context/ThemeContext';
 import './SkillCard.css';
 
 const SkillCard = ({
@@ -38,24 +38,24 @@ const SkillCard = ({
   } else {
     initialSrc = skill.imageUrl || skill.icon || defaultSkillBg;
   }
-  
+
   const [currentImage, setCurrentImage] = useState(initialSrc);
 
   useEffect(() => {
-     let initialSrc;
-     if (skill.name === 'Barrière de Lumière') {
-       initialSrc = b;
-     } else if (skill.name === 'Énigme Runique') {
-       initialSrc = e;
-     } else if (skill.name === 'Jugement Solaire') {
-       initialSrc = j;
-     } else if (skill.name === 'Poing de Pierre') {
-       initialSrc = p;
-     } else if (skill.name === 'Sagesse Ancestrale') {
-       initialSrc = s;
-     } else {
-       initialSrc = skill.imageUrl || skill.icon || defaultSkillBg;
-     }
+    let initialSrc;
+    if (skill.name === 'Barrière de Lumière') {
+      initialSrc = b;
+    } else if (skill.name === 'Énigme Runique') {
+      initialSrc = e;
+    } else if (skill.name === 'Jugement Solaire') {
+      initialSrc = j;
+    } else if (skill.name === 'Poing de Pierre') {
+      initialSrc = p;
+    } else if (skill.name === 'Sagesse Ancestrale') {
+      initialSrc = s;
+    } else {
+      initialSrc = skill.imageUrl || skill.icon || defaultSkillBg;
+    }
     setCurrentImage(initialSrc);
   }, [skill, theme, defaultSkillBg]);
 

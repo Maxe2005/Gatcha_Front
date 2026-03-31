@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
-import { adminApiService } from '../../services/adminService';
-import ThemeToggle from '../../components/ThemeToggle';
-import '../admin/AdminMonsterDetail.css';
-import MonsterSummaryTab from './MonsterSummaryTab';
-import MonsterDataTab from './MonsterDataTab';
-import MonsterValidationTab from './MonsterValidationTab';
-import MonsterHistoryTab from './MonsterHistoryTab';
-import MonsterPreviewTab from './MonsterPreviewTab';
-import MonsterImagesTab from './MonsterImagesTab';
+import { adminApiService } from '../../../services/adminService';
+import ThemeToggle from '../../../components/ThemeToggle/ThemeToggle';
+import './AdminMonsterDetail.css';
+import MonsterSummaryTab from './MonsterSummaryTab/MonsterSummaryTab';
+import MonsterDataTab from './MonsterDataTab/MonsterDataTab';
+import MonsterValidationTab from './MonsterValidationTab/MonsterValidationTab';
+import MonsterHistoryTab from './MonsterHistoryTab/MonsterHistoryTab';
+import MonsterPreviewTab from './MonsterPerviewTab/MonsterPreviewTab';
+import MonsterImagesTab from './MonsterImagesTab/MonsterImagesTab';
 
 const AdminMonsterDetail = () => {
   const { monsterId } = useParams();

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { useTheme } from '../context/ThemeContext';
-import { useBackgroundView } from '../context/BackgroundViewContext';
+import { useTheme } from '../../context/ThemeContext';
+import { useBackgroundView } from '../../context/BackgroundViewContext';
 import { IconButton } from '@mui/material';
 import { LightMode, DarkMode } from '@mui/icons-material';
 import './ThemeToggle.css';

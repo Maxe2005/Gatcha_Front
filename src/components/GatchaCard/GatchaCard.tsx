@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { adminApiService } from '../services/adminService';
+import { adminApiService } from '../../services/adminService';
 import './GatchaCard.css';
 
 const clampPercent = (value) => Math.max(0, Math.min(100, value));

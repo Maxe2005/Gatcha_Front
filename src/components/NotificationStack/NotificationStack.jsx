@@ -1,7 +1,7 @@
 import React from 'react';
 import { Alert, Stack, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import { useNotification } from '../context/NotificationContext';
+import { useNotification } from '../../context/NotificationContext';
 import './NotificationStack.css';
 
 const NotificationStack = () => {

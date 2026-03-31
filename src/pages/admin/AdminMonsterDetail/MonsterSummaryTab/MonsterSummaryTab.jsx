@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { adminApiService } from '../../services/adminService';
-import { useAuth } from '../../context/AuthContext';
-import ReviewModal from './ReviewModal';
-import CorrectModal from './CorrectModal';
-import RejectModal from './RejectModal';
+import { adminApiService } from '../../../../services/adminService';
+import { useAuth } from '../../../../context/AuthContext';
+import ReviewModal from '../../ReviewModal';
+import CorrectModal from '../../CorrectModal';
+import RejectModal from '../../RejectModal';
 import './MonsterSummaryTab.css';
 
 const MonsterSummaryTab = ({

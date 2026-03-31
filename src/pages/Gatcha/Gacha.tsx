@@ -1,8 +1,8 @@
 import React, { useMemo, useState, useEffect } from 'react';
-import { useAuth } from '../context/AuthContext';
-import { useTheme } from '../context/ThemeContext';
-import { invocationService } from '../services/invocationService';
-import { notifySuccess, notifyError } from '../services/notificationService';
+import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
+import { invocationService } from '../../services/invocationService';
+import { notifySuccess, notifyError } from '../../services/notificationService';
 import {
   Container,
   Box,
@@ -10,7 +10,7 @@ import {
   Button,
   CircularProgress,
 } from '@mui/material';
-import GatchaCard from '../components/GatchaCard';
+import GatchaCard from '../../components/GatchaCard/GatchaCard';
 import { useNavigate } from 'react-router-dom';
 import './Gacha.css';
 

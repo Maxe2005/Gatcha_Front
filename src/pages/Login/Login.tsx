@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { useTheme } from '../context/ThemeContext';
-import { authService } from '../services/authService';
-import { joueurService } from '../services/joueurService';
+import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
+import { authService } from '../../services/authService';
+import { joueurService } from '../../services/joueurService';
 import './Login.scss';
 import {
   Box,
@@ -25,7 +25,7 @@ import {
   LightMode,
   DarkMode,
 } from '@mui/icons-material';
-import ThemeToggle from '../components/ThemeToggle';
+import ThemeToggle from '../../components/ThemeToggle/ThemeToggle';
 
 const Login = () => {
   // State management
