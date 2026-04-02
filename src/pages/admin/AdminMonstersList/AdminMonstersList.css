@@ -700,3 +700,186 @@
     width: 100%;
   }
 }
+
+/* --- Overrides to ensure admin monsters layout is stable across branches --- */
+.admin-monsters-list .list-header h1 {
+  font-size: 2rem !important;
+  line-height: 1.15 !important;
+  margin: 0 !important;
+}
+
+.admin-monsters-list .filters-container,
+.admin-monsters-list .monsters-table {
+  position: relative !important;
+  z-index: 1 !important;
+}
+
+.admin-monsters-list .monsters-table table {
+  font-size: 1rem !important;
+}
+
+.admin-monsters-list .monster-name {
+  font-size: 1.2rem !important;
+  line-height: 1.2 !important;
+}
+
+.admin-monsters-list .empty-state {
+  font-size: 1.05rem !important;
+}
+
+/* Prevent any unintended huge title styles leaking from globals */
+.admin-monsters-list h1,
+.admin-monsters-list h2,
+.admin-monsters-list h3 {
+  font-weight: 600 !important;
+}
+
+/* Search input: centered, constrained width like target design */
+/* Use > and :first-of-type because an absolute-positioned button appears first in DOM */
+.admin-monsters-list .filters-container > .filters-row:first-of-type {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  gap: 1rem !important;
+}
+
+.admin-monsters-list
+  .filters-container
+  > .filters-row:first-of-type
+  .filter-group {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  width: 100% !important;
+  max-width: 560px !important;
+}
+
+.admin-monsters-list .filters-row:first-child .filter-group label {
+  margin-bottom: 0.5rem !important;
+  text-align: center !important;
+  font-family: var(--font-title) !important;
+  font-size: 1.05rem !important;
+  color: var(--text-primary, #fff) !important;
+  letter-spacing: 1px !important;
+}
+
+.admin-monsters-list
+  .filters-container
+  > .filters-row:first-of-type
+  .filter-search,
+.admin-monsters-list #search-keyword {
+  max-width: 520px !important;
+  width: 100% !important;
+  margin: 0 auto !important;
+  padding: 0.8rem 1.2rem !important;
+  border-radius: 10px !important;
+  background: rgba(0, 0, 0, 0.45) !important;
+  color: var(--text-primary) !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45) inset !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+/* Filters row: center labels and style selects like target */
+.admin-monsters-list .filters-row {
+  align-items: center !important;
+}
+
+.admin-monsters-list .filter-group {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+}
+
+.admin-monsters-list .filter-group label {
+  text-align: center !important;
+  margin-bottom: 0.6rem !important;
+  font-size: 0.95rem !important;
+  color: var(--text-primary, #fff) !important;
+}
+
+.admin-monsters-list .filter-select {
+  display: block !important;
+  min-width: 260px !important;
+  max-width: 420px !important;
+  width: 100% !important;
+  margin: 0 auto !important;
+  padding: 0.9rem 1.4rem !important;
+  border-radius: 12px !important;
+  background: rgba(0, 0, 0, 0.65) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  text-transform: uppercase !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.8px !important;
+}
+
+.admin-monsters-list .btn-reset-filters {
+  background: transparent !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  color: var(--text-secondary, #ccc) !important;
+}
+
+/* Ensure no label overlap */
+.admin-monsters-list .filters-container label {
+  position: static !important;
+}
+
+@media (max-width: 1024px) {
+  .admin-monsters-list .filter-select,
+  .admin-monsters-list .filter-search {
+    max-width: 100% !important;
+  }
+}
+
+/* Strong overrides for filter controls to match previous visual design */
+.admin-monsters-list .filters-container {
+  background: rgba(30, 30, 30, 0.80) !important;
+  border: 2px solid var(--border-color) !important;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45) !important;
+  padding: 1.5rem !important;
+  border-radius: 12px !important;
+}
+
+.admin-monsters-list .filters-row {
+  gap: 1.5rem !important;
+}
+
+.admin-monsters-list .filter-group label {
+  color: var(--text-secondary, #ccc) !important;
+  font-size: 0.95rem !important;
+}
+
+.admin-monsters-list .filter-search {
+  width: 100% !important;
+  padding: 0.75rem 1rem !important;
+  border-radius: 8px !important;
+  border: 1px solid var(--border-color) !important;
+  background: rgba(0, 0, 0, 0.45) !important;
+  color: var(--text-primary) !important;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35) inset !important;
+}
+
+.admin-monsters-list .filter-search::placeholder {
+  color: var(--text-secondary, #999) !important;
+}
+
+.admin-monsters-list .filter-select {
+  padding: 0.6rem 1rem !important;
+  border-radius: 8px !important;
+  border: 1px solid var(--border-color) !important;
+  background: rgba(0, 0, 0, 0.45) !important;
+  color: var(--text-primary) !important;
+}
+
+.admin-monsters-list .btn-reset-filters {
+  top: 1.25rem !important;
+  left: 1.25rem !important;
+  z-index: 3 !important;
+}
+
+@media (max-width: 1024px) {
+  .admin-monsters-list .filter-select,
+  .admin-monsters-list .filter-search {
+    width: 100% !important;
+  }
+}
