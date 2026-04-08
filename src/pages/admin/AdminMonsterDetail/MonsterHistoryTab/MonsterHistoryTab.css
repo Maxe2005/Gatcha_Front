@@ -1,0 +1,115 @@
+/* Styles pour l'onglet Historique — palette alignée avec AdminMonsterDetail */
+.history-tab {
+  padding: 16px;
+  font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  color: var(--text-primary, #222);
+}
+
+.history-tab h2 {
+  margin: 0 0 12px 0;
+  font-size: 18px;
+  color: var(--text-primary, #222);
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.history-item {
+  border: 1px solid var(--border-color, #e6eef8);
+  background: var(--card-bg, #ffffff);
+  padding: 14px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(16,24,40,0.04);
+}
+
+.history-item .history-header {
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+  margin-bottom: 8px;
+}
+
+.history-header strong {
+  flex: 1 1 auto;
+  font-size: 14px;
+  color: var(--text-primary, #222);
+}
+
+.history-header .actor {
+  color: var(--text-secondary, #666);
+  font-size: 13px;
+}
+
+.history-header .time {
+  color: #718096;
+  font-size: 12px;
+}
+
+.history-body .summary {
+  margin-bottom: 8px;
+  color: var(--text-primary, #222);
+}
+
+.history-transition {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-weight: 600;
+}
+
+.history-transition .from-state,
+.history-transition .to-state {
+  background: var(--chip-bg, #f3f6ff);
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+
+.history-transition .arrow {
+  color: #a0aec0;
+}
+
+.data-update {
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--text-primary, #222);
+}
+
+.data-update ul {
+  margin: 6px 0 8px 18px;
+}
+
+.data-update .diff {
+  background: var(--chip-bg, #f3f6ff);
+  padding: 8px;
+  border-radius: 8px;
+  overflow: auto;
+  max-height: 220px;
+  font-size: 12px;
+}
+
+/* Utiliser les couleurs d'accent existantes : bleu pour transition, doré pour update */
+.event-state_transition {
+  border-left: 4px solid #667eea; /* même accent que l'onglet actif */
+}
+
+.event-data_update {
+  border-left: 4px solid #ffd700; /* or utilisé dans data-tab */
+}
+
+.note {
+  margin-top: 6px;
+  color: var(--text-secondary, #666);
+  font-style: italic;
+}
+
+@media (prefers-color-scheme: dark) {
+  .history-tab { color: #e2e8f0; }
+  .history-item { background: #1b1f2a; border-color: #2d3748; box-shadow: none; }
+  .history-header .actor, .history-header .time, .note { color: #a0aec0; }
+  .history-transition .from-state, .history-transition .to-state { background: #2d3748; }
+  .data-update .diff { background: #2d3748; }
+}

@@ -65,7 +65,19 @@ export const adminApiService = {
 
   getMonsterHistory: async (monsterId) => {
     const response = await adminApi.get(`/monsters/${monsterId}/history`);
-    return response.data;
+    const data = response.data;
+    // Nouvelle forme d'API : { monster_id, current_state, timeline: [...] }
+    // Pour garder la compatibilité avec le code existant, normaliser
+    // la réponse pour retourner `{ history: [...] }` lorsque `timeline` existe.
+    if (data && Array.isArray(data.timeline)) {
+      return {
+        monster_id: data.monster_id,
+        current_state: data.current_state,
+        history: data.timeline,
+      };
+    }
+
+    return data;
   },
 
   reviewMonster: async (monsterId, username = 'Admin', notes = null) => {
