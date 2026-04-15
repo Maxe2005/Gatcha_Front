@@ -108,7 +108,7 @@ export const adminApiService = {
     monsterId,
     username = 'Admin',
     monsterData,
-    options = {}
+    options: { skipValidation?: boolean; notes?: string } = {}
   ) => {
     const payload = {
       monster_data: monsterData,
@@ -142,7 +142,7 @@ export const adminApiService = {
   },
 
   // Global monster stats for cards by workflow state
-  getMonsterStatsByState: async (state = 'PENDING_REVIEW', options = {}) => {
+  getMonsterStatsByState: async (state = 'PENDING_REVIEW', options: { forceRefresh?: boolean } = {}) => {
     const normalizedState = normalizeState(state);
     const forceRefresh = Boolean(options.forceRefresh);
 
