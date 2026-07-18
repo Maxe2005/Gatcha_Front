@@ -41,7 +41,7 @@ const Infos = lazy(() => import('./pages/Infos/Infos'));
 
 const PrivateRoute = ({ children }) => {
   const { token } = useAuth();
-  // if (!token) return <Navigate to="/login" />;
+  if (!token) return <Navigate to="/login" />;
   return children;
 };
 
