@@ -2,6 +2,10 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Git workflow (required)
+
+For any piece of work beyond a trivial one-line fix: create a dedicated branch (`feat/...`, `fix/...`, `perf/...`) from `development`, commit in atomic steps with French conventional-commit messages (`feat:`/`fix:`/`perf:`/`docs:` + body explaining the why), then merge back with `--no-ff`. Never commit sizeable work directly on `development` or `master`.
+
 ## What this is
 
 React front-end for the Gatcha game — a git submodule of the `GatchaApi` orchestrator repo (which has its own CLAUDE.md covering the whole stack). Commits here are independent of the root repo; the root only tracks the pinned commit. Stack: Vite 7 + React 18 + TypeScript, MUI, framer-motion, axios, react-router v6. Node >= 20.19 required.

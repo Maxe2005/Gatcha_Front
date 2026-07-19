@@ -1,6 +1,7 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
+import { usePlayer } from '../../context/PlayerContext';
 import { invocationService } from '../../services/invocationService';
 import { notifySuccess, notifyError } from '../../services/notificationService';
 import {
@@ -13,119 +14,16 @@ import {
 import GatchaCard from '../../components/GatchaCard/GatchaCard';
 import { useNavigate } from 'react-router-dom';
 import './Gacha.css';
-import { MonsterData } from '../../types/monster';
-import { Element } from '../../enums/elements.enum';
-import { Rank } from '../../enums/ranks.enum';
-
-const normalizeMonster = (data) => {
-  if (!data) return null;
-
-  const parseNumber = (value) => {
-    const num = Number(value);
-    return Number.isFinite(num) ? num : 0;
-  };
-
-  const stats = data.stats || {};
-
-  return {
-    name: data.name || data.nom || 'Monstre Mystère',
-    rank: data.rank || data.rang || '?',
-    element: (data.element || data.type || 'neutre').toLowerCase(),
-    description:
-      data.description ||
-      data.lore ||
-      data.cardDescription ||
-      data.card_description ||
-      '',
-    stats: {
-      hp: parseNumber(stats.hp ?? data.hp),
-      atk: parseNumber(stats.atk ?? data.atk),
-      def: parseNumber(stats.def ?? data.def),
-      vit: parseNumber(stats.vit ?? data.vit),
-    },
-  };
-};
-
-const secondary_monster = {
-  name: 'Abyssal-Hydra',
-  element: Element.WATER,
-  rank: Rank.EPIC,
-  stats: {
-    hp: 1500.0,
-    atk: 130.0,
-    def: 150.0,
-    vit: 40.0,
-  },
-  level: 10.0,
-  description:
-    "Terreur des fosses marines. Ses trois têtes pensent à l'unisson pour noyer tout espoir.",
-  skills: [
-    {
-      name: 'Morsure Profonde',
-      description: 'Les trois têtes mordent en synchronisation.',
-      damage: 90.0,
-      ratio: {
-        stat: 'ATK',
-        percent: 1.3,
-      },
-      cooldown: 0.0,
-      level: 1.0,
-      lvlMax: 5.0,
-      rank: Rank.COMMON,
-    },
-    {
-      name: 'Lumière Hypnotique',
-      description: "Utilise ses lanternes pour étourdir l'adversaire.",
-      damage: 50.0,
-      ratio: {
-        stat: 'DEF',
-        percent: 0.6,
-      },
-      cooldown: 3.0,
-      level: 1.0,
-      lvlMax: 5.0,
-      rank: Rank.RARE,
-    },
-    {
-      name: 'Régénération Abyssale',
-      description: 'Plonge dans un état de transe pour soigner ses blessures.',
-      damage: 0.0,
-      ratio: {
-        stat: 'HP',
-        percent: 0.3,
-      },
-      cooldown: 5.0,
-      level: 1.0,
-      lvlMax: 5.0,
-      rank: Rank.EPIC,
-    },
-    {
-      name: 'Jugement de la Fosse',
-      description: 'Invoque la pression des abysses pour écraser les ennemis.',
-      damage: 300.0,
-      ratio: {
-        stat: 'DEF',
-        percent: 2.5,
-      },
-      cooldown: 6.0,
-      level: 1.0,
-      lvlMax: 3.0,
-      rank: Rank.LEGENDARY,
-    },
-  ],
-};
-
-const monster_mock = secondary_monster;
+import type { MonsterData } from '../../types/monster';
 
 const Gacha = () => {
   const { user } = useAuth();
   const { theme } = useTheme();
-  const [monster, setMonster] = useState < MonsterData | null>(monster_mock);
+  const { refreshPlayerData } = usePlayer();
+  const [monster, setMonster] = useState<MonsterData | null>(null);
   const [loading, setLoading] = useState(false);
   const [isRevealed, setIsRevealed] = useState(false);
   const navigate = useNavigate();
-
-  const normalizedMonster = useMemo(() => normalizeMonster(monster), [monster]);
 
   useEffect(() => {
     const timer = setTimeout(() => setIsRevealed(true), 60);
@@ -136,9 +34,13 @@ const Gacha = () => {
     setLoading(true);
     setMonster(null);
     try {
+      // Le service normalise déjà la réponse (name/rank/element/stats)
       const invokedMonster = await invocationService.invoke(user.username);
       setMonster(invokedMonster);
       notifySuccess('✨ Invocation réussie!');
+      // Recharge le joueur pour que le nouveau monstre apparaisse
+      // dans l'inventaire sans rechargement de page
+      refreshPlayerData();
     } catch (err) {
       notifyError(err);
       setMonster(null);
@@ -192,9 +94,9 @@ const Gacha = () => {
           )}
         </Button>
 
-        {normalizedMonster && (
+        {monster && (
           <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-            <GatchaCard monstre={normalizedMonster} />
+            <GatchaCard monstre={monster} />
           </Box>
         )}
       </Container>

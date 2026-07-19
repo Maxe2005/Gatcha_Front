@@ -32,12 +32,12 @@
 }
 
 .admin-monsters-list::before {
-  background-image: url('/assets/backgrounds/admin/monsters-list/admin_monsters-list_dark.png');
+  background-image: url('/assets/backgrounds/admin/monsters-list/admin_monsters-list_dark.webp');
   opacity: 1;
 }
 
 .admin-monsters-list::after {
-  background-image: url('/assets/backgrounds/admin/monsters-list/admin_monsters-list_divine.png');
+  background-image: url('/assets/backgrounds/admin/monsters-list/admin_monsters-list_divine.webp');
   opacity: 0;
 }
 

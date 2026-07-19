@@ -152,7 +152,7 @@ const AdminDashboard = () => {
                       >
                         {state}
                       </span>
-                      <span className="state-count">{count}</span>
+                      <span className="state-count">{String(count)}</span>
                     </div>
                   ))}
                 </div>

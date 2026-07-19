@@ -31,6 +31,7 @@ export default defineConfig({
       '/admin-service': {
         target: 'http://localhost:8000',
         changeOrigin: true,
+        ws: true, // WebSocket de suivi de génération d'images
         rewrite: (path) => path.replace(/^\/admin-service/, ''),
       },
     },

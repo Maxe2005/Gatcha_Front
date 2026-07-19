@@ -23,10 +23,10 @@
   opacity: 1;
 }
 .profile-container.divine::before {
-  background-image: url('/assets/backgrounds/home/Home_background_light.png');
+  background-image: url('/assets/backgrounds/home/Home_background_light.webp');
 }
 .profile-container.dark::before {
-  background-image: url('/assets/backgrounds/home/Home_background_dark.png');
+  background-image: url('/assets/backgrounds/home/Home_background_dark.webp');
 }
 
 /* subtle overlay to improve text contrast */

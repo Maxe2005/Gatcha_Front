@@ -9,8 +9,10 @@ export const trackImageGeneration = (
   onError?: ErrorCb
 ): WebSocket => {
   const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+  // Passe par le préfixe /admin-service comme tous les appels au service
+  // de génération (proxy Vite en dev, nginx en prod — les deux gèrent le WS)
   const ws = new WebSocket(
-    `${protocol}//${window.location.host}/api/v1/monsters/images/ws/${batchId}`
+    `${protocol}//${window.location.host}/admin-service/api/v1/monsters/images/ws/${batchId}`
   );
 
   ws.onopen = () => {

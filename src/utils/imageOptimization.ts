@@ -62,7 +62,7 @@ export const preloadImage = (imagePath) => {
   link.rel = 'preload';
   link.as = 'image';
   link.href = getOptimizedImageUrl(imagePath);
-  link.imagesrcset = getResponsiveImageProps(imagePath).srcSet;
+  link.imageSrcset = getResponsiveImageProps(imagePath).srcSet;
   document.head.appendChild(link);
 };
 
