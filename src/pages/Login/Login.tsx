@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
-import { authService } from '../../services/authService';
+import { authService, CredentialRules } from '../../services/authService';
 import { joueurService } from '../../services/joueurService';
 import './Login.scss';
 import {
@@ -233,6 +233,11 @@ const Login = () => {
                 ),
               }}
               placeholder="Votre identifiant unique"
+              helperText={
+                !isLogin
+                  ? `${CredentialRules.USERNAME_MIN_LENGTH} à ${CredentialRules.USERNAME_MAX_LENGTH} caractères : lettres, chiffres, . _ -`
+                  : undefined
+              }
             />
           </div>
 
@@ -264,6 +269,11 @@ const Login = () => {
                   </InputAdornment>
                 ),
               }}
+              helperText={
+                !isLogin
+                  ? `${CredentialRules.PASSWORD_MIN_LENGTH} caractères minimum`
+                  : undefined
+              }
             />
           </div>
 

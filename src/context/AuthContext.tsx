@@ -40,6 +40,12 @@ export const AuthProvider = ({ children }) => {
   const verificationPromise = useRef(null);
 
   const logout = useCallback(() => {
+    // Révocation du token côté API (fire-and-forget) : la déconnexion
+    // locale n'attend pas la réponse et n'échoue jamais
+    const currentToken = getTokenFromCookie();
+    if (currentToken) {
+      authService.logout(currentToken);
+    }
     setToken(null);
     document.cookie = 'token=; path=/; max-age=0';
     setUser(null);

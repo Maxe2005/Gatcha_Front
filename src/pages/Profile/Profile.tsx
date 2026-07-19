@@ -10,7 +10,7 @@ import { logger } from '../../services/logger';
 
 const Profile = () => {
   const { theme } = useTheme();
-  const { playerData, loading } = usePlayer();
+  const { playerData } = usePlayer();
   const { logout, token } = useAuth();
   const navigate = useNavigate();
 
@@ -21,12 +21,8 @@ const Profile = () => {
 
   const xpPercent = playerData ? (playerData.experience % 1000) / 10 : 0;
 
-  const handleLogout = async () => {
-    try {
-      await authService.logout();
-    } catch (e) {
-      // ignore
-    }
+  const handleLogout = () => {
+    // La révocation du token côté API est gérée par AuthContext.logout
     logout();
     navigate('/login');
   };
