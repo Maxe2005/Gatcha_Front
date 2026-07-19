@@ -8,38 +8,6 @@ import SkillCard from '../../components/SkillCard/SkillCard';
 import './Inventory.css';
 import ThemeToggle from '../../components/ThemeToggle/ThemeToggle';
 
-// Mock Data pour le développement si playerData est vide
-const MOCK_INVENTORY = Array.from({ length: 24 }).map((_, i) => ({
-  id: i,
-  nom: `Monster ${i + 1}`,
-  element: ['fire', 'water', 'wind', 'earth', 'light', 'darkness'][i % 6],
-  rang: ['COMMON', 'RARE', 'EPIC', 'LEGENDARY'][i % 4],
-  stats: { hp: 100 + i * 10, atk: 50 + i * 5, def: 30 + i * 2, vit: 10 + i },
-  lore: 'Une créature ancienne cachée dans les profondeurs de ce monde.',
-  image: null,
-  skills: [
-    {
-      name: 'Frappe Rapide',
-      description: 'Inflige 120% dégâts physiques.',
-      cost: 10,
-      cooldown: 3,
-    },
-    {
-      name: 'Bouclier Élémentaire',
-      description: 'Réduit les dégâts de 30% pendant 2 tours.',
-      cost: 25,
-      cooldown: 8,
-    },
-    {
-      name: 'Ultimatum',
-      description:
-        'Une attaque dévastatrice qui consomme tous les HP restants.',
-      cost: 0,
-      cooldown: 120,
-    },
-  ],
-}));
-
 const Inventory = () => {
   const { theme } = useTheme();
   const { playerData, monsters, loadingMonsters, loading } = usePlayer();
@@ -52,9 +20,8 @@ const Inventory = () => {
     loadingMonsters,
   });
 
-  // Utiliser les monstres du joueur si disponibles
-  const inventoryData = monsters; // MOCK_INVENTORY;
-  //   const inventoryData = monsters.length > 0 ? monsters : MOCK_INVENTORY;
+  // Monstres du joueur (normalisés par monstersService : name/rank/element)
+  const inventoryData = monsters;
 
   const [filterRarity, setFilterRarity] = useState('ALL');
   const [filterElement, setFilterElement] = useState('ALL');
@@ -65,7 +32,8 @@ const Inventory = () => {
 
   // Filter Logic
   const filteredCards = inventoryData.filter((card) => {
-    if (filterRarity !== 'ALL' && card.rang !== filterRarity) return false;
+    if (filterRarity !== 'ALL' && card.rank?.toUpperCase() !== filterRarity)
+      return false;
     if (
       filterElement !== 'ALL' &&
       card.element?.toUpperCase() !== filterElement
@@ -180,7 +148,7 @@ const Inventory = () => {
         )}
         <div
           className="inventory-grid"
-          style={{ '--cards-per-row': cardsPerRow }}
+          style={{ '--cards-per-row': cardsPerRow } as React.CSSProperties}
         >
           {filteredCards.map((monster, index) => (
             <div
@@ -226,10 +194,10 @@ const Inventory = () => {
 
             {/* RIGHT: INFO & SKILLS */}
             <div className="detail-right">
-              <h1 className="detail-title">{selectedMonster.nom}</h1>
+              <h1 className="detail-title">{selectedMonster.name}</h1>
               <div className="detail-tags">
-                <span className={`tag rank-${selectedMonster.rang}`}>
-                  {selectedMonster.rang}
+                <span className={`tag rank-${selectedMonster.rank}`}>
+                  {selectedMonster.rank}
                 </span>
                 <span className={`tag element-${selectedMonster.element}`}>
                   {selectedMonster.element}
@@ -254,7 +222,7 @@ const Inventory = () => {
               <div className="detail-lore">
                 <h3>Origine</h3>
                 <p>
-                  {selectedMonster.lore ||
+                  {selectedMonster.description ||
                     "L'origine de cette créature reste un mystère pour les érudits."}
                 </p>
               </div>
