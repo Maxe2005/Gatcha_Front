@@ -116,8 +116,8 @@ const Home = () => {
               <img
                 src={
                   theme === 'divine'
-                    ? '/assets/home_icons/Cadre_avatar_divine.png'
-                    : '/assets/home_icons/Cardre_avatar_dark.png'
+                    ? '/assets/home_icons/Cadre_avatar_divine.webp'
+                    : '/assets/home_icons/Cardre_avatar_dark.webp'
                 }
                 alt="Avatar Frame"
                 className="avatar-frame-image"
@@ -210,8 +210,8 @@ const Home = () => {
           <img
             src={
               theme === 'divine'
-                ? '/assets/home_icons/Inventaire_divine.png'
-                : '/assets/home_icons/Inventaire_dark.png'
+                ? '/assets/home_icons/Inventaire_divine.webp'
+                : '/assets/home_icons/Inventaire_dark.webp'
             }
             alt="Inventaire"
             className="nav-icon-image"
@@ -223,8 +223,8 @@ const Home = () => {
           <img
             src={
               theme === 'divine'
-                ? '/assets/home_icons/Profile_divine.png'
-                : '/assets/home_icons/Profile_dark.png'
+                ? '/assets/home_icons/Profile_divine.webp'
+                : '/assets/home_icons/Profile_dark.webp'
             }
             alt="Profil"
             className="nav-icon-image"

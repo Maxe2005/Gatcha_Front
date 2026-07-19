@@ -26,12 +26,12 @@
 }
 
 .admin-monster-detail::before {
-  background-image: url('/assets/backgrounds/admin/monster-one/admin_monster-one_dark.png');
+  background-image: url('/assets/backgrounds/admin/monster-one/admin_monster-one_dark.webp');
   opacity: 1;
 }
 
 .admin-monster-detail::after {
-  background-image: url('/assets/backgrounds/admin/monster-one/admin_monster-one_divine.png');
+  background-image: url('/assets/backgrounds/admin/monster-one/admin_monster-one_divine.webp');
   opacity: 0;
 }
 

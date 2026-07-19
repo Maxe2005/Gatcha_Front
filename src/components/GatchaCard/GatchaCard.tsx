@@ -17,14 +17,14 @@ const GatchaCard = ({
   disableClickFlip = false,
   onClick = (e) => {},
 }) => {
-  const defaultImage = '/assets/monsters/Default_Monster.png';
-  const defaultElementImage = '/assets/elements/Default_Element.png';
-  const defaultRankImage = '/assets/ranks/Default_Rank.png';
+  const defaultImage = '/assets/monsters/Default_Monster.webp';
+  const defaultElementImage = '/assets/elements/Default_Element.webp';
+  const defaultRankImage = '/assets/ranks/Default_Rank.webp';
   const [isFlipped, setIsFlipped] = useState(false);
   const [stateStats, setStateStats] = useState(null);
 
   const initialSrc = monstre?.name
-    ? `/assets/monsters/${monstre.name}.png`
+    ? `/assets/monsters/${monstre.name}.webp`
     : defaultImage;
   const [currentImage, setCurrentImage] = useState(initialSrc);
 
@@ -34,7 +34,7 @@ const GatchaCard = ({
       monstre?.ImageUrl
         ? monstre?.ImageUrl
         : monstre?.name
-          ? `/assets/monsters/${monstre.name}.png`
+          ? `/assets/monsters/${monstre.name}.webp`
           : defaultImage
     );
   }, [monstre]);
@@ -83,20 +83,20 @@ const GatchaCard = ({
 
   // Mapping rang vers image
   const rankToImage = {
-    [Rank.COMMON]: '/assets/ranks/Rank_Common.png',
-    [Rank.RARE]: '/assets/ranks/Rank_Rare.png',
-    [Rank.EPIC]: '/assets/ranks/Rank_Epic.png',
-    [Rank.LEGENDARY]: '/assets/ranks/Rank_Legendary.png',
+    [Rank.COMMON]: '/assets/ranks/Rank_Common.webp',
+    [Rank.RARE]: '/assets/ranks/Rank_Rare.webp',
+    [Rank.EPIC]: '/assets/ranks/Rank_Epic.webp',
+    [Rank.LEGENDARY]: '/assets/ranks/Rank_Legendary.webp',
   };
 
   // Mapping élément vers image
   const elementToImage = {
-    [Element.FIRE]: '/assets/elements/Element_fire.png',
-    [Element.WATER]: '/assets/elements/Element_water.png',
-    [Element.WIND]: '/assets/elements/Element_wind.png',
-    [Element.EARTH]: '/assets/elements/Element_earth.png',
-    [Element.LIGHT]: '/assets/elements/Element_light.png',
-    [Element.DARKNESS]: '/assets/elements/Element_darkness.png',
+    [Element.FIRE]: '/assets/elements/Element_fire.webp',
+    [Element.WATER]: '/assets/elements/Element_water.webp',
+    [Element.WIND]: '/assets/elements/Element_wind.webp',
+    [Element.EARTH]: '/assets/elements/Element_earth.webp',
+    [Element.LIGHT]: '/assets/elements/Element_light.webp',
+    [Element.DARKNESS]: '/assets/elements/Element_darkness.webp',
   };
 
   const stats = [

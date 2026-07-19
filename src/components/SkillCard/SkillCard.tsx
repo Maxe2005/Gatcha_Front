@@ -15,15 +15,15 @@ const SkillCard = ({
 
   const defaultSkillBg =
     theme === 'dark'
-      ? '/assets/skills/Default_skill_dark.png'
-      : '/assets/skills/Default_skill_divine.png';
+      ? '/assets/skills/Default_skill_dark.webp'
+      : '/assets/skills/Default_skill_divine.webp';
 
   // const initialSrc = skill.imageUrl || skill.icon || defaultSkillBg;
-  const b = '/assets/Barrière_de_Lumière.png';
-  const e = '/assets/Enigme_Runique.png';
-  const j = '/assets/Jugement_Solaire.png';
-  const p = '/assets/Poing_de_Pierre.png';
-  const s = '/assets/sphinx_skill_4.png';
+  const b = '/assets/Barrière_de_Lumière.webp';
+  const e = '/assets/Enigme_Runique.webp';
+  const j = '/assets/Jugement_Solaire.webp';
+  const p = '/assets/Poing_de_Pierre.webp';
+  const s = '/assets/sphinx_skill_4.webp';
   let initialSrc;
   if (skill.name === 'Barrière de Lumière') {
     initialSrc = b;
@@ -72,13 +72,13 @@ const SkillCard = ({
   const rankClass = normalizedRank.toLowerCase();
 
   const rankToImage = {
-    COMMON: '/assets/ranks/Rank_Common.png',
-    RARE: '/assets/ranks/Rank_Rare.png',
-    EPIC: '/assets/ranks/Rank_Epic.png',
-    LEGENDARY: '/assets/ranks/Rank_Legendary.png',
+    COMMON: '/assets/ranks/Rank_Common.webp',
+    RARE: '/assets/ranks/Rank_Rare.webp',
+    EPIC: '/assets/ranks/Rank_Epic.webp',
+    LEGENDARY: '/assets/ranks/Rank_Legendary.webp',
   };
 
-  const defaultRankImage = '/assets/ranks/Default_Rank.png';
+  const defaultRankImage = '/assets/ranks/Default_Rank.webp';
   const description =
     skill.description ||
     skill.desc ||

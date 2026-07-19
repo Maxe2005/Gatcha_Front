@@ -130,7 +130,7 @@ const Portal = ({ onInvoke, isLoading = false, transitioning = false }) => {
                 transition={{ duration: transitionDuration, ease: 'linear' }}
               >
                 <img
-                  src={`/assets/portail/Anneau_portail_${theme}.png`}
+                  src={`/assets/portail/Anneau_portail_${theme}.webp`}
                   alt="Ring"
                   className="warp-ring-image"
                 />
@@ -144,7 +144,7 @@ const Portal = ({ onInvoke, isLoading = false, transitioning = false }) => {
                 transition={{ duration: transitionDuration, ease: 'linear' }}
               >
                 <img
-                  src={`/assets/portail/Vortex_portail_${theme}.png`}
+                  src={`/assets/portail/Vortex_portail_${theme}.webp`}
                   alt="Vortex"
                   className="warp-vortex-image"
                 />
@@ -182,7 +182,7 @@ const Portal = ({ onInvoke, isLoading = false, transitioning = false }) => {
             variants={vortexVariants}
           >
             <img
-              src={`/assets/portail/Vortex_portail_${theme}.png`}
+              src={`/assets/portail/Vortex_portail_${theme}.webp`}
               alt="Vortex"
               className="vortex-image"
             />
@@ -211,7 +211,7 @@ const Portal = ({ onInvoke, isLoading = false, transitioning = false }) => {
               >
                 <div className="glyph-inner">
                   <img
-                    src={`/assets/portail/glyphes/${theme}/Glyphes_${theme}_${index + 1}.png`}
+                    src={`/assets/portail/glyphes/${theme}/Glyphes_${theme}_${index + 1}.webp`}
                     alt={`Glyphe ${index + 1}`}
                     className="glyph-image"
                   />
@@ -235,7 +235,7 @@ const Portal = ({ onInvoke, isLoading = false, transitioning = false }) => {
             variants={ringVariants}
           >
             <img
-              src={`/assets/portail/Anneau_portail_${theme}.png`}
+              src={`/assets/portail/Anneau_portail_${theme}.webp`}
               alt="Anneau du portail"
               className="ring-image"
             />

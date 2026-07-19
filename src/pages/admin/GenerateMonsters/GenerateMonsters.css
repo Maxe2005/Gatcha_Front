@@ -33,7 +33,7 @@
 /* Thème Divine - Atmosphère céleste et lumineuse */
 .generate-page.theme-divine {
   background:
-    url('/assets/backgrounds/generate/background_generate_monster_divine.png')
+    url('/assets/backgrounds/generate/background_generate_monster_divine.webp')
       center/cover no-repeat fixed,
     radial-gradient(
       ellipse at top,
@@ -140,7 +140,7 @@
 /* Thème Dark - Atmosphère sombre et mystérieuse */
 .generate-page.theme-dark {
   background:
-    url('/assets/backgrounds/generate/background_generate_monster_dark.png')
+    url('/assets/backgrounds/generate/background_generate_monster_dark.webp')
       center/cover no-repeat fixed,
     radial-gradient(
       ellipse at top left,

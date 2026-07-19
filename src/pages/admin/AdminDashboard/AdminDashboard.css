@@ -26,12 +26,12 @@
 }
 
 .admin-dashboard::before {
-  background-image: url('/assets/backgrounds/admin/dashboard/admin_dashboard_dark.png');
+  background-image: url('/assets/backgrounds/admin/dashboard/admin_dashboard_dark.webp');
   opacity: 1;
 }
 
 .admin-dashboard::after {
-  background-image: url('/assets/backgrounds/admin/dashboard/admin_dashboard_divine.png');
+  background-image: url('/assets/backgrounds/admin/dashboard/admin_dashboard_divine.webp');
   opacity: 0;
 }
 

@@ -31,12 +31,12 @@
 
 /* Backgrounds per theme */
 .infos-page.divine {
-  background-image: url('/assets/backgrounds/home/Home_background_light.png');
+  background-image: url('/assets/backgrounds/home/Home_background_light.webp');
   background-size: cover;
   background-position: center;
 }
 .infos-page.dark {
-  background-image: url('/assets/backgrounds/login/background_login_dark.png');
+  background-image: url('/assets/backgrounds/login/background_login_dark.webp');
   background-size: cover;
   background-position: center;
 }
