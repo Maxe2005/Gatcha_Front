@@ -31,8 +31,8 @@ const initDB = () => {
       resolve(db);
     };
 
-    request.onupgradeneeded = (event) => {
-      const database = event.target.result;
+    request.onupgradeneeded = () => {
+      const database = request.result;
 
       // Créer les object stores s'ils n'existent pas
       if (!database.objectStoreNames.contains(STORES.MONSTERS)) {

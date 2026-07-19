@@ -1,13 +1,23 @@
 import React from 'react';
 import './ErrorBoundary.css';
 
+type ErrorBoundaryState = {
+  hasError: boolean;
+  error: Error | null;
+  errorInfo: React.ErrorInfo | null;
+  errorCount: number;
+};
+
 /**
  * ErrorBoundary Component
  * Captures React errors and prevents full app crash
  * Provides fallback UI and error recovery options
  */
-class ErrorBoundary extends React.Component {
-  constructor(props) {
+class ErrorBoundary extends React.Component<
+  React.PropsWithChildren,
+  ErrorBoundaryState
+> {
+  constructor(props: React.PropsWithChildren) {
     super(props);
     this.state = {
       hasError: false,
@@ -21,7 +31,7 @@ class ErrorBoundary extends React.Component {
     return { hasError: true };
   }
 
-  componentDidCatch(error, errorInfo) {
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     // Log l'erreur
     this.setState((prev) => ({
       error,

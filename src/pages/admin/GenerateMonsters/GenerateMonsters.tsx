@@ -391,7 +391,6 @@ const GenerateMonsters = () => {
                       réessayer dans quelques instants.
                     </Typography>
                     <Accordion
-                      size="small"
                       sx={{
                         backgroundColor: 'transparent',
                         mt: 1,

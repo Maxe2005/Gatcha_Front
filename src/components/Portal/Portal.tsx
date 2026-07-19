@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import type { Variants } from 'framer-motion';
 import { useTheme } from '../../context/ThemeContext';
 import './Portal.css';
 
@@ -55,7 +56,7 @@ const Portal = ({ onInvoke, isLoading = false, transitioning = false }) => {
   };
 
   // Animation configs pour Framer Motion
-  const glyphRotationVariants = {
+  const glyphRotationVariants: Variants = {
     idle: {
       rotate: [0, 360],
       transition: { duration: 12, repeat: Infinity, ease: 'linear' },
@@ -70,7 +71,7 @@ const Portal = ({ onInvoke, isLoading = false, transitioning = false }) => {
     },
   };
 
-  const ringVariants = {
+  const ringVariants: Variants = {
     idle: {
       scale: [1, 1.02, 1],
       rotate: [0, -5, 0],
@@ -94,7 +95,7 @@ const Portal = ({ onInvoke, isLoading = false, transitioning = false }) => {
     },
   };
 
-  const vortexVariants = {
+  const vortexVariants: Variants = {
     idle: {
       rotate: [0, -360],
       transition: { duration: 8, repeat: Infinity, ease: 'linear' },
@@ -201,10 +202,12 @@ const Portal = ({ onInvoke, isLoading = false, transitioning = false }) => {
               <div
                 key={`glyph-${index}`}
                 className="glyph"
-                style={{
-                  '--glyph-index': index,
-                  transform: `rotate(calc(var(--glyph-index) * 45deg))`,
-                }}
+                style={
+                  {
+                    '--glyph-index': index,
+                    transform: `rotate(calc(var(--glyph-index) * 45deg))`,
+                  } as React.CSSProperties
+                }
               >
                 <div className="glyph-inner">
                   <img

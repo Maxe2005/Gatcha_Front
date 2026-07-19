@@ -162,12 +162,12 @@ export const monstersService = {
         logger.debug('MonstersService', 'Monster found in cache', {
           monsterId,
         });
-        return cached;
+        return cached as MonsterData;
       }
 
       logger.debug('MonstersService', 'Fetching monster', { monsterId });
 
-      const url = MonstersRoutes.GET_MONSTER.replace(':id', monsterId);
+      const url = MonstersRoutes.GET_MONSTER.replace(':id', String(monsterId));
       const response = await monstersApi.get(url);
 
       const normalizedData = normalizeMonsterData(response.data);
