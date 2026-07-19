@@ -22,8 +22,6 @@ import {
   Visibility,
   VisibilityOff,
   AutoAwesome as MagicIcon,
-  LightMode,
-  DarkMode,
 } from '@mui/icons-material';
 import ThemeToggle from '../../components/ThemeToggle/ThemeToggle';
 import { usePlayer } from '../../context/PlayerContext';
@@ -43,7 +41,7 @@ const Login = () => {
   const [error, setError] = useState('');
 
   const { login } = useAuth();
-  const { theme, toggleTheme } = useTheme();
+  const { theme } = useTheme();
   const navigate = useNavigate();
   const { setPlayerData } = usePlayer();
 
