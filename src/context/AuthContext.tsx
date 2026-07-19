@@ -11,8 +11,8 @@ import { authService } from '../services/authService';
  * AuthContext - Responsabilité unique : AUTHENTIFICATION
  *
  * Gère uniquement :
- * - Le token JWT (stockage cookie + state)
- * - Les informations utilisateur de base (username)
+ * - Le token (stockage cookie + state)
+ * - Les informations utilisateur de base (username, role)
  * - Les actions d'authentification (login, logout, verifyToken)
  *
  * NE GÈRE PAS :
@@ -32,16 +32,12 @@ export const AuthProvider = ({ children }) => {
   };
 
   const [token, setToken] = useState(getTokenFromCookie());
-  const [user, setUser] = useState<{ username: string } | null>(null);
+  const [user, setUser] = useState<{
+    username: string;
+    role: 'USER' | 'ADMIN' | null;
+  } | null>(null);
   const hasVerified = useRef(false);
   const verificationPromise = useRef(null);
-
-  const login = useCallback((newToken, username) => {
-    // Store in cookie FIRST: secure flag should be added in production with https
-    document.cookie = `token=${newToken}; path=/; max-age=86400; SameSite=Lax`;
-    setToken(newToken);
-    setUser({ username }); // We might want to decode token or just store username
-  }, []);
 
   const logout = useCallback(() => {
     setToken(null);
@@ -60,7 +56,7 @@ export const AuthProvider = ({ children }) => {
         try {
           const response = await authService.verifyToken(tokenToVerify);
           if (response && response.username) {
-            setUser({ username: response.username });
+            setUser({ username: response.username, role: response.role });
             return response;
           } else {
             logout();
@@ -79,6 +75,20 @@ export const AuthProvider = ({ children }) => {
     [logout]
   );
 
+  const login = useCallback(
+    (newToken, username) => {
+      // Store in cookie FIRST: secure flag should be added in production with https
+      document.cookie = `token=${newToken}; path=/; max-age=86400; SameSite=Lax`;
+      setToken(newToken);
+      // Le login ne renvoie que le token : le rôle reste inconnu (null)
+      // jusqu'à ce que verify-token le renseigne
+      setUser({ username, role: null });
+      hasVerified.current = true;
+      verifyToken(newToken);
+    },
+    [verifyToken]
+  );
+
   // Vérifier le token au chargement si user est null mais token existe
   useEffect(() => {
     if (token && !user && !hasVerified.current) {
@@ -87,8 +97,12 @@ export const AuthProvider = ({ children }) => {
     }
   }, [token, user, verifyToken]);
 
+  const isAdmin = user?.role === 'ADMIN';
+
   return (
-    <AuthContext.Provider value={{ token, user, login, logout, verifyToken }}>
+    <AuthContext.Provider
+      value={{ token, user, isAdmin, login, logout, verifyToken }}
+    >
       {children}
     </AuthContext.Provider>
   );

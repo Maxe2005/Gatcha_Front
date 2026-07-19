@@ -46,9 +46,12 @@ const PrivateRoute = ({ children }) => {
 };
 
 const AdminRoute = ({ children }) => {
-  // const { token, user } = useAuth();
-  // if (!token) return <Navigate to="/login" />;
-  // if (user?.username !== 'admin') return <Navigate to="/home" />;
+  const { token, user } = useAuth();
+  if (!token) return <Navigate to="/login" />;
+  // Token présent mais verify-token pas encore résolu : on attend le rôle
+  if (!user?.role)
+    return <LoadingFallback message="Vérification des accès..." />;
+  if (user.role !== 'ADMIN') return <Navigate to="/home" />;
   return children;
 };
 

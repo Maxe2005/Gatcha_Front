@@ -7,7 +7,7 @@ const AdminNav = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  if (user?.username !== 'admin') {
+  if (user?.role !== 'ADMIN') {
     return null;
   }
 

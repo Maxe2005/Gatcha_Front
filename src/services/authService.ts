@@ -15,8 +15,17 @@ export const AuthRoutes = {
   LOGIN: '/user/login',
   REGISTER: '/user',
   VERIFY_TOKEN: '/user/verify-token',
-  LOGOUT: '/user/logout',
   DELETE: '/user/delete',
+  ADMIN_REGISTER: '/user/admin/register',
+  ADMIN_DELETE: (username) => `/user/admin/delete/${username}`,
+};
+
+/**
+ * Rôles gérés par le service d'authentification
+ */
+export const Roles = {
+  USER: 'USER',
+  ADMIN: 'ADMIN',
 };
 
 /**
@@ -67,30 +76,10 @@ const validateRegisterInput = (username, password, passwordConfirm) => {
 };
 
 /**
- * Hash le mot de passe en SHA-256 (hex) avant envoi
+ * Normalise la réponse de login/register
+ * L'API ne renvoie que { token } : le username est celui fourni en entrée
  */
-const hashPassword = async (password) => {
-  if (!window.crypto?.subtle) {
-    throw new ApiError(
-      ErrorTypes.VALIDATION,
-      'Crypto API unavailable for password hashing',
-      400
-    );
-  }
-
-  const encoder = new TextEncoder();
-  const data = encoder.encode(password);
-  const digest = await window.crypto.subtle.digest('SHA-256', data);
-
-  return Array.from(new Uint8Array(digest))
-    .map((byte) => byte.toString(16).padStart(2, '0'))
-    .join('');
-};
-
-/**
- * Normalise la réponse de login
- */
-const normalizeLoginResponse = (data) => {
+const normalizeLoginResponse = (data, username) => {
   if (!data.token || typeof data.token !== 'string') {
     throw new ApiError(
       ErrorTypes.VALIDATION,
@@ -101,9 +90,7 @@ const normalizeLoginResponse = (data) => {
 
   return {
     token: data.token,
-    username: data.username || data.user || 'Unknown',
-    userId: data.userId || data.id,
-    expiresIn: data.expiresIn || 86400, // 24h default
+    username,
   };
 };
 
@@ -121,7 +108,7 @@ const normalizeVerifyTokenResponse = (data) => {
 
   return {
     username: data.username,
-    userId: data.userId || data.id,
+    role: data.role || Roles.USER,
     isValid: true,
   };
 };
@@ -153,14 +140,14 @@ export const authService = {
 
       logger.debug('AuthService', 'Attempting login', { username });
 
-      const hashedPassword = await hashPassword(password);
-
+      // Le mot de passe est envoyé en clair : le hachage (BCrypt) est
+      // désormais géré par le service d'authentification
       const response = await authApi.post(AuthRoutes.LOGIN, {
         username,
-        password: hashedPassword,
+        password,
       });
 
-      const normalizedData = normalizeLoginResponse(response.data);
+      const normalizedData = normalizeLoginResponse(response.data, username);
       logger.info('AuthService', 'Login successful', { username });
 
       return normalizedData;
@@ -204,14 +191,14 @@ export const authService = {
 
       logger.debug('AuthService', 'Attempting registration', { username });
 
-      const hashedPassword = await hashPassword(password);
-
+      // Le mot de passe est envoyé en clair : le hachage (BCrypt) est
+      // désormais géré par le service d'authentification
       const response = await authApi.post(AuthRoutes.REGISTER, {
         username,
-        password: hashedPassword,
+        password,
       });
 
-      const normalizedData = normalizeLoginResponse(response.data);
+      const normalizedData = normalizeLoginResponse(response.data, username);
       logger.info('AuthService', 'Registration successful', { username });
 
       return normalizedData;
@@ -262,21 +249,13 @@ export const authService = {
 
   /**
    * Logout utilisateur
+   * L'API ne propose pas d'endpoint de logout (token opaque à expiration) :
+   * la déconnexion est purement locale (suppression du cookie côté front)
    * @returns {Promise<{success}>}
    */
   async logout() {
-    try {
-      logger.debug('AuthService', 'Logging out');
-
-      await authApi.post(AuthRoutes.LOGOUT, {});
-      logger.info('AuthService', 'Logout successful');
-
-      return { success: true };
-    } catch (error) {
-      logger.error('AuthService', 'Logout error', { error: error.message });
-      // Logout échoue mais on considère comme succès localement
-      return { success: true };
-    }
+    logger.info('AuthService', 'Logout (local only)');
+    return { success: true };
   },
 
   /**
@@ -302,6 +281,92 @@ export const authService = {
       return { success: true };
     } catch (error) {
       logger.error('AuthService', 'Account deletion error', {
+        error: error.message,
+      });
+      if (error instanceof ApiError) {
+        throw error;
+      }
+      throw parseApiError(error);
+    }
+  },
+
+  /**
+   * [ADMIN] Création d'un utilisateur avec un rôle donné
+   * @param {string} token - Token de l'admin appelant
+   * @param {string} username - Nom du nouvel utilisateur
+   * @param {string} password - Mot de passe du nouvel utilisateur
+   * @param {Role} role - Rôle attribué (USER ou ADMIN)
+   * @returns {Promise<{token, username}>} - Token du nouvel utilisateur
+   */
+  async adminRegister(token, username, password, role = Roles.USER) {
+    try {
+      const validationErrors = validateLoginInput(username, password);
+      if (validationErrors.length > 0) {
+        throw new ApiError(
+          ErrorTypes.VALIDATION,
+          `Invalid registration inputs: ${validationErrors.join(', ')}`,
+          400
+        );
+      }
+      if (!Object.values(Roles).includes(role)) {
+        throw new ApiError(ErrorTypes.VALIDATION, `Invalid role: ${role}`, 400);
+      }
+
+      logger.debug('AuthService', 'Admin registration', { username, role });
+
+      const response = await authApi.post(AuthRoutes.ADMIN_REGISTER, {
+        token,
+        username,
+        password,
+        role,
+      });
+
+      const normalizedData = normalizeLoginResponse(response.data, username);
+      logger.info('AuthService', 'Admin registration successful', {
+        username,
+        role,
+      });
+
+      return normalizedData;
+    } catch (error) {
+      logger.error('AuthService', 'Admin registration error', {
+        username,
+        error: error.message,
+      });
+      if (error instanceof ApiError) {
+        throw error;
+      }
+      throw parseApiError(error);
+    }
+  },
+
+  /**
+   * [ADMIN] Suppression d'un utilisateur par son username
+   * @param {string} token - Token de l'admin appelant
+   * @param {string} username - Nom de l'utilisateur à supprimer
+   * @returns {Promise<{success}>}
+   */
+  async adminDeleteUser(token, username) {
+    try {
+      if (!username || typeof username !== 'string') {
+        throw new ApiError(
+          ErrorTypes.VALIDATION,
+          'Username must be a non-empty string',
+          400
+        );
+      }
+
+      logger.debug('AuthService', 'Admin user deletion', { username });
+
+      await authApi.post(AuthRoutes.ADMIN_DELETE(username), { token });
+      logger.info('AuthService', 'Admin user deletion successful', {
+        username,
+      });
+
+      return { success: true };
+    } catch (error) {
+      logger.error('AuthService', 'Admin user deletion error', {
+        username,
         error: error.message,
       });
       if (error instanceof ApiError) {
