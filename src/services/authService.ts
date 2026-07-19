@@ -15,9 +15,21 @@ export const AuthRoutes = {
   LOGIN: '/user/login',
   REGISTER: '/user',
   VERIFY_TOKEN: '/user/verify-token',
+  LOGOUT: '/user/logout',
   DELETE: '/user/delete',
   ADMIN_REGISTER: '/user/admin/register',
   ADMIN_DELETE: (username) => `/user/admin/delete/${username}`,
+};
+
+/**
+ * Règles de création de compte — miroir de UserValidator côté API
+ * (username 3-32 caractères [a-zA-Z0-9._-], mot de passe >= 8 caractères)
+ */
+export const CredentialRules = {
+  USERNAME_MIN_LENGTH: 3,
+  USERNAME_MAX_LENGTH: 32,
+  USERNAME_PATTERN: /^[a-zA-Z0-9._-]+$/,
+  PASSWORD_MIN_LENGTH: 8,
 };
 
 /**
@@ -29,22 +41,60 @@ export const Roles = {
 };
 
 /**
- * Valide les credentials de connexion
+ * Valide les credentials de connexion.
+ * Volontairement laxiste (non-vide uniquement) : l'API n'impose ses règles
+ * de format qu'à la création de compte, et les comptes existants doivent
+ * pouvoir continuer à se connecter.
  */
 const validateLoginInput = (username, password) => {
   const errors = [];
 
   if (!username || typeof username !== 'string') {
-    errors.push('Username is required and must be a string');
-  }
-  if (username.length < 3) {
-    errors.push('Username must be at least 3 characters');
+    errors.push("Le nom d'utilisateur est requis");
   }
   if (!password || typeof password !== 'string') {
-    errors.push('Password is required and must be a string');
+    errors.push('Le mot de passe est requis');
   }
-  if (password.length < 6) {
-    errors.push('Password must be at least 6 characters');
+
+  return errors;
+};
+
+/**
+ * Valide username + mot de passe à la création — mêmes règles que l'API
+ */
+const validateNewCredentials = (username, password) => {
+  const errors = [];
+  const {
+    USERNAME_MIN_LENGTH,
+    USERNAME_MAX_LENGTH,
+    USERNAME_PATTERN,
+    PASSWORD_MIN_LENGTH,
+  } = CredentialRules;
+
+  if (!username || typeof username !== 'string' || !username.trim()) {
+    errors.push("Le nom d'utilisateur est requis");
+  } else {
+    if (
+      username.length < USERNAME_MIN_LENGTH ||
+      username.length > USERNAME_MAX_LENGTH
+    ) {
+      errors.push(
+        `Le nom d'utilisateur doit faire entre ${USERNAME_MIN_LENGTH} et ${USERNAME_MAX_LENGTH} caractères`
+      );
+    }
+    if (!USERNAME_PATTERN.test(username)) {
+      errors.push(
+        "Le nom d'utilisateur ne peut contenir que des lettres, chiffres, points, tirets et underscores"
+      );
+    }
+  }
+
+  if (!password || typeof password !== 'string' || !password.trim()) {
+    errors.push('Le mot de passe est requis');
+  } else if (password.length < PASSWORD_MIN_LENGTH) {
+    errors.push(
+      `Le mot de passe doit faire au moins ${PASSWORD_MIN_LENGTH} caractères`
+    );
   }
 
   return errors;
@@ -54,22 +104,10 @@ const validateLoginInput = (username, password) => {
  * Valide les données d'enregistrement
  */
 const validateRegisterInput = (username, password, passwordConfirm) => {
-  const errors = [];
+  const errors = validateNewCredentials(username, password);
 
-  if (!username || typeof username !== 'string') {
-    errors.push('Username is required and must be a string');
-  }
-  if (username.length < 3) {
-    errors.push('Username must be at least 3 characters');
-  }
-  if (!password || typeof password !== 'string') {
-    errors.push('Password is required and must be a string');
-  }
-  if (password.length < 6) {
-    errors.push('Password must be at least 6 characters');
-  }
   if (password !== passwordConfirm) {
-    errors.push('Passwords do not match');
+    errors.push('Les mots de passe ne correspondent pas');
   }
 
   return errors;
@@ -248,14 +286,27 @@ export const authService = {
   },
 
   /**
-   * Logout utilisateur
-   * L'API ne propose pas d'endpoint de logout (token opaque à expiration) :
-   * la déconnexion est purement locale (suppression du cookie côté front)
+   * Logout utilisateur : révoque le token côté API (liste de révocation),
+   * puis la déconnexion locale (cookie) est faite par AuthContext.
+   * Un échec de révocation n'empêche jamais la déconnexion locale.
+   * @param {string} token - Token à révoquer
    * @returns {Promise<{success}>}
    */
-  async logout() {
-    logger.info('AuthService', 'Logout (local only)');
-    return { success: true };
+  async logout(token) {
+    try {
+      if (token) {
+        await authApi.post(AuthRoutes.LOGOUT, { token });
+        logger.info('AuthService', 'Token revoked on logout');
+      }
+      return { success: true };
+    } catch (error) {
+      // Token déjà expiré/invalide ou service injoignable : on se
+      // déconnecte quand même localement
+      logger.warn('AuthService', 'Logout revocation failed', {
+        error: error.message,
+      });
+      return { success: true };
+    }
   },
 
   /**
@@ -300,7 +351,7 @@ export const authService = {
    */
   async adminRegister(token, username, password, role = Roles.USER) {
     try {
-      const validationErrors = validateLoginInput(username, password);
+      const validationErrors = validateNewCredentials(username, password);
       if (validationErrors.length > 0) {
         throw new ApiError(
           ErrorTypes.VALIDATION,
