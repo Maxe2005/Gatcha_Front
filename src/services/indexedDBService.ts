@@ -3,6 +3,7 @@
  * Persiste les données: monstres, joueur, ressources
  * Synchronise avec les services API
  */
+import type { MonsterData } from '../types/monster';
 
 const DB_NAME = 'GatchaDB';
 const DB_VERSION = 1;
@@ -16,13 +17,13 @@ const STORES = {
   CACHE_META: 'cacheMeta', // Timestamps pour validité du cache
 };
 
-let db = null;
+let db: IDBDatabase | null = null;
 
 /**
  * Initialise la base IndexedDB
  */
 const initDB = () => {
-  return new Promise((resolve, reject) => {
+  return new Promise<IDBDatabase>((resolve, reject) => {
     const request = indexedDB.open(DB_NAME, DB_VERSION);
 
     request.onerror = () => reject(request.error);
@@ -68,19 +69,20 @@ const initDB = () => {
 };
 
 /**
- * Assure que la DB est initialisée
+ * Assure que la DB est initialisée et la retourne
  */
-const ensureDB = async () => {
+const ensureDB = async (): Promise<IDBDatabase> => {
   if (!db) {
-    await initDB();
+    db = await initDB();
   }
+  return db;
 };
 
 /**
  * Sauvegarde un monstre dans le cache
  */
-export const cacheMonster = async (monster) => {
-  await ensureDB();
+export const cacheMonster = async (monster: MonsterData) => {
+  const db = await ensureDB();
   return new Promise((resolve, reject) => {
     const transaction = db.transaction([STORES.MONSTERS], 'readwrite');
     const store = transaction.objectStore(STORES.MONSTERS);
@@ -94,7 +96,7 @@ export const cacheMonster = async (monster) => {
 /**
  * Sauvegarde plusieurs monstres
  */
-export const cacheMonsters = async (monsters) => {
+export const cacheMonsters = async (monsters: MonsterData[]) => {
   await ensureDB();
   return Promise.all(monsters.map((monster) => cacheMonster(monster)));
 };
@@ -102,8 +104,8 @@ export const cacheMonsters = async (monsters) => {
 /**
  * Récupère un monstre du cache
  */
-export const getMonsterFromCache = async (id) => {
-  await ensureDB();
+export const getMonsterFromCache = async (id: string | number) => {
+  const db = await ensureDB();
   return new Promise((resolve, reject) => {
     const transaction = db.transaction([STORES.MONSTERS], 'readonly');
     const store = transaction.objectStore(STORES.MONSTERS);
@@ -118,7 +120,7 @@ export const getMonsterFromCache = async (id) => {
  * Récupère tous les monstres du cache
  */
 export const getAllMonstersFromCache = async () => {
-  await ensureDB();
+  const db = await ensureDB();
   return new Promise((resolve, reject) => {
     const transaction = db.transaction([STORES.MONSTERS], 'readonly');
     const store = transaction.objectStore(STORES.MONSTERS);
@@ -132,8 +134,8 @@ export const getAllMonstersFromCache = async () => {
 /**
  * Récupère les monstres filtrés par rang
  */
-export const getMonstersByRankFromCache = async (rank) => {
-  await ensureDB();
+export const getMonstersByRankFromCache = async (rank: string) => {
+  const db = await ensureDB();
   return new Promise((resolve, reject) => {
     const transaction = db.transaction([STORES.MONSTERS], 'readonly');
     const store = transaction.objectStore(STORES.MONSTERS);
@@ -148,8 +150,11 @@ export const getMonstersByRankFromCache = async (rank) => {
 /**
  * Sauvegarde les données du joueur
  */
-export const cachePlayerData = async (username, playerData) => {
-  await ensureDB();
+export const cachePlayerData = async (
+  username: string,
+  playerData: Record<string, unknown>
+) => {
+  const db = await ensureDB();
   return new Promise((resolve, reject) => {
     const transaction = db.transaction([STORES.PLAYER], 'readwrite');
     const store = transaction.objectStore(STORES.PLAYER);
@@ -163,8 +168,8 @@ export const cachePlayerData = async (username, playerData) => {
 /**
  * Récupère les données du joueur
  */
-export const getPlayerDataFromCache = async (username) => {
-  await ensureDB();
+export const getPlayerDataFromCache = async (username: string) => {
+  const db = await ensureDB();
   return new Promise((resolve, reject) => {
     const transaction = db.transaction([STORES.PLAYER], 'readonly');
     const store = transaction.objectStore(STORES.PLAYER);
@@ -178,8 +183,11 @@ export const getPlayerDataFromCache = async (username) => {
 /**
  * Sauvegarde les ressources du joueur
  */
-export const cacheResources = async (username, resources) => {
-  await ensureDB();
+export const cacheResources = async (
+  username: string,
+  resources: Record<string, unknown>
+) => {
+  const db = await ensureDB();
   return new Promise((resolve, reject) => {
     const transaction = db.transaction([STORES.RESOURCES], 'readwrite');
     const store = transaction.objectStore(STORES.RESOURCES);
@@ -193,8 +201,8 @@ export const cacheResources = async (username, resources) => {
 /**
  * Récupère les ressources du joueur
  */
-export const getResourcesFromCache = async (username) => {
-  await ensureDB();
+export const getResourcesFromCache = async (username: string) => {
+  const db = await ensureDB();
   return new Promise((resolve, reject) => {
     const transaction = db.transaction([STORES.RESOURCES], 'readonly');
     const store = transaction.objectStore(STORES.RESOURCES);
@@ -208,8 +216,11 @@ export const getResourcesFromCache = async (username) => {
 /**
  * Ajoute un enregistrement à l'historique d'invocations
  */
-export const addInvocationHistory = async (username, monster) => {
-  await ensureDB();
+export const addInvocationHistory = async (
+  username: string,
+  monster: MonsterData
+) => {
+  const db = await ensureDB();
   return new Promise((resolve, reject) => {
     const transaction = db.transaction(
       [STORES.INVOCATION_HISTORY],
@@ -230,8 +241,8 @@ export const addInvocationHistory = async (username, monster) => {
 /**
  * Récupère l'historique d'invocations d'un joueur
  */
-export const getInvocationHistory = async (username, limit = 50) => {
-  await ensureDB();
+export const getInvocationHistory = async (username: string, limit = 50) => {
+  const db = await ensureDB();
   return new Promise((resolve, reject) => {
     const transaction = db.transaction([STORES.INVOCATION_HISTORY], 'readonly');
     const store = transaction.objectStore(STORES.INVOCATION_HISTORY);
@@ -250,8 +261,8 @@ export const getInvocationHistory = async (username, limit = 50) => {
 /**
  * Valide si le cache est encore frais (< 1 heure)
  */
-export const isCacheFresh = async (key, maxAgeMs = 3600000) => {
-  await ensureDB();
+export const isCacheFresh = async (key: string, maxAgeMs = 3600000) => {
+  const db = await ensureDB();
   return new Promise((resolve, reject) => {
     const transaction = db.transaction([STORES.CACHE_META], 'readonly');
     const store = transaction.objectStore(STORES.CACHE_META);
@@ -271,8 +282,8 @@ export const isCacheFresh = async (key, maxAgeMs = 3600000) => {
 /**
  * Marque une clé comme fraîchement mises en cache
  */
-export const markCacheFresh = async (key) => {
-  await ensureDB();
+export const markCacheFresh = async (key: string) => {
+  const db = await ensureDB();
   return new Promise((resolve, reject) => {
     const transaction = db.transaction([STORES.CACHE_META], 'readwrite');
     const store = transaction.objectStore(STORES.CACHE_META);
@@ -287,7 +298,7 @@ export const markCacheFresh = async (key) => {
  * Efface le cache entier
  */
 export const clearAllCache = async () => {
-  await ensureDB();
+  const db = await ensureDB();
   const storeNames = Object.values(STORES);
   return Promise.all(
     storeNames.map(
@@ -308,7 +319,7 @@ export const clearAllCache = async () => {
  * Efface le cache des monstres uniquement
  */
 export const clearMonstersCache = async () => {
-  await ensureDB();
+  const db = await ensureDB();
   return new Promise((resolve, reject) => {
     const transaction = db.transaction([STORES.MONSTERS], 'readwrite');
     const store = transaction.objectStore(STORES.MONSTERS);

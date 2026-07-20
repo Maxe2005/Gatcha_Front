@@ -9,6 +9,9 @@ import { ApiError, ErrorTypes, parseApiError } from './apiClient';
 import { logger } from './logger';
 import type { MonsterData } from '../types/monster';
 
+const getErrorMessage = (error: unknown): string =>
+  error instanceof Error ? error.message : String(error);
+
 /**
  * Routes disponibles sur le service d'Invocation
  */
@@ -20,7 +23,7 @@ export const InvocationRoutes = {
  * Valide les données d'un monstre invoqué
  */
 const validateInvokedMonster = (data: any): string[] => {
-  const errors = [];
+  const errors: string[] = [];
 
   if (!data.id && !data.nom && !data.name) {
     errors.push('Monster must have an ID or name');
@@ -108,7 +111,7 @@ export const invocationService = {
     } catch (error) {
       logger.error('InvocationService', 'Failed to invoke monster', {
         username,
-        error: error.message,
+        error: getErrorMessage(error),
       });
       if (error instanceof ApiError) {
         throw error;

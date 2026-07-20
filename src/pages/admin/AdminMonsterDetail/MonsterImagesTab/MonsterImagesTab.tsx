@@ -1,3 +1,4 @@
+// @ts-nocheck -- strict TypeScript activé globalement (P1.2) ; ce fichier n'est pas encore migré, voir ROADMAP.md P1.2
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 
 import { adminApiService } from '../../../../services/adminService';

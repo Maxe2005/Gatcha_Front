@@ -4,7 +4,7 @@ const MONSTER_STATS_CACHE_KEY = 'monster-stats-by-state-v1';
 const monsterStatsByStateCache = new Map();
 const monsterStatsByStateInFlight = new Map();
 
-const normalizeState = (state) =>
+const normalizeState = (state?: string) =>
   String(state || 'PENDING_REVIEW').toUpperCase();
 
 const loadMonsterStatsSessionCache = () => {
@@ -58,12 +58,12 @@ export const adminApiService = {
     return response.data;
   },
 
-  getMonsterDetail: async (monsterId) => {
+  getMonsterDetail: async (monsterId: string | number) => {
     const response = await adminApi.get(`/monsters/${monsterId}`);
     return response.data;
   },
 
-  getMonsterHistory: async (monsterId) => {
+  getMonsterHistory: async (monsterId: string | number) => {
     const response = await adminApi.get(`/monsters/${monsterId}/history`);
     const data = response.data;
     // Nouvelle forme d'API : { monster_id, current_state, timeline: [...] }
@@ -80,7 +80,11 @@ export const adminApiService = {
     return data;
   },
 
-  reviewMonster: async (monsterId, username = 'Admin', notes = null) => {
+  reviewMonster: async (
+    monsterId: string | number,
+    username = 'Admin',
+    notes: string | null = null
+  ) => {
     const payload = {
       admin_name: username,
       notes,
@@ -92,7 +96,11 @@ export const adminApiService = {
     return response.data;
   },
 
-  correctMonster: async (monsterId, username = 'Admin', notes = null) => {
+  correctMonster: async (
+    monsterId: string | number,
+    username = 'Admin',
+    notes: string | null = null
+  ) => {
     const payload = {
       admin_name: username,
       notes,
@@ -105,9 +113,9 @@ export const adminApiService = {
   },
 
   updateMonster: async (
-    monsterId,
+    monsterId: string | number,
     username = 'Admin',
-    monsterData,
+    monsterData: unknown,
     options: { skipValidation?: boolean; notes?: string } = {}
   ) => {
     const payload = {
@@ -123,7 +131,11 @@ export const adminApiService = {
     return response.data;
   },
 
-  rejectMonster: async (monsterId, username = 'Admin', notes = null) => {
+  rejectMonster: async (
+    monsterId: string | number,
+    username = 'Admin',
+    notes: string | null = null
+  ) => {
     const payload = {
       admin_name: username,
       notes,
@@ -173,7 +185,7 @@ export const adminApiService = {
   },
 
   // Process a single generated monster
-  processGeneratedMonster: async (monsterId) => {
+  processGeneratedMonster: async (monsterId: string | number) => {
     const response = await adminApi.post(
       `/monsters/${monsterId}/process-generated`
     );
@@ -186,7 +198,7 @@ export const adminApiService = {
   },
 
   // Transmit a single approved monster to invocation API
-  transmitMonster: async (monsterId, force = false) => {
+  transmitMonster: async (monsterId: string | number, force = false) => {
     const response = await generationApi.post(
       `/transmission/transmit/${monsterId}`,
       null,
@@ -210,12 +222,12 @@ export const adminApiService = {
   },
 
   // Monster images endpoints
-  getMonsterImages: async (monsterId) => {
+  getMonsterImages: async (monsterId: string | number) => {
     const response = await generationApi.get(`/monsters/images/${monsterId}`);
     return response.data;
   },
 
-  setMonsterDefaultImage: async (monsterId, imageId) => {
+  setMonsterDefaultImage: async (monsterId: string | number, imageId: string | number) => {
     const payload = { image_id: imageId };
     const response = await generationApi.put(
       `/monsters/images/${monsterId}/default`,
@@ -224,7 +236,11 @@ export const adminApiService = {
     return response.data;
   },
 
-  renameMonsterImage: async (monsterId, imageId, newName) => {
+  renameMonsterImage: async (
+    monsterId: string | number,
+    imageId: string | number,
+    newName: string
+  ) => {
     const payload = { new_name: newName };
     const response = await generationApi.patch(
       `/monsters/images/${monsterId}/${imageId}/rename`,
@@ -234,7 +250,7 @@ export const adminApiService = {
   },
 
   // Initiate async image generation (returns batch_id)
-  initiateImageGeneration: async (payload) => {
+  initiateImageGeneration: async (payload: unknown) => {
     const response = await generationApi.post(`/images/generate`, payload);
     return response.data;
   },
@@ -264,19 +280,20 @@ export const reviewActions = ['approve'];
 /**
  * Parse JSON safely
  */
-export const parseJSON = (jsonString) => {
+export const parseJSON = (jsonString: string) => {
   try {
     return JSON.parse(jsonString);
   } catch (error) {
-    throw new Error(`JSON invalide: ${error.message}`);
+    const message = error instanceof Error ? error.message : String(error);
+    throw new Error(`JSON invalide: ${message}`);
   }
 };
 
 /**
  * Validate corrected data structure
  */
-export const validateMonsterData = (data) => {
-  const errors = [];
+export const validateMonsterData = (data: Record<string, unknown>) => {
+  const errors: string[] = [];
 
   if (!data.nom || typeof data.nom !== 'string') {
     errors.push('Le nom du monstre est requis');

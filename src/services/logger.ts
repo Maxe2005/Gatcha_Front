@@ -27,7 +27,7 @@ class Logger {
    * @param {string} message - Log message
    * @param {any} data - Additional data
    */
-  debug(namespace, message, data = {}) {
+  debug(namespace: string, message: string, data: unknown = {}) {
     if (this.level <= LOG_LEVEL.DEBUG && this.isDev) {
       console.debug(`[${namespace}]`, message, data);
     }
@@ -39,7 +39,7 @@ class Logger {
    * @param {string} message - Log message
    * @param {any} data - Additional data
    */
-  info(namespace, message, data = {}) {
+  info(namespace: string, message: string, data: unknown = {}) {
     if (this.level <= LOG_LEVEL.INFO && this.isDev) {
       console.info(`[${namespace}]`, message, data);
     }
@@ -51,7 +51,7 @@ class Logger {
    * @param {string} message - Log message
    * @param {any} data - Additional data
    */
-  warn(namespace, message, data = {}) {
+  warn(namespace: string, message: string, data: unknown = {}) {
     if (this.level <= LOG_LEVEL.WARN) {
       console.warn(`[${namespace}]`, message, data);
     }
@@ -63,7 +63,7 @@ class Logger {
    * @param {string} message - Log message
    * @param {any} data - Additional data
    */
-  error(namespace, message, data = {}) {
+  error(namespace: string, message: string, data: unknown = {}) {
     if (this.level <= LOG_LEVEL.ERROR) {
       console.error(`[${namespace}]`, message, data);
     }

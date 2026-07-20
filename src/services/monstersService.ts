@@ -17,6 +17,9 @@ import type { MonsterData } from '../types/monster';
 import { Element } from '../enums/elements.enum';
 import { Rank } from '../enums/ranks.enum';
 
+const getErrorMessage = (error: unknown): string =>
+  error instanceof Error ? error.message : String(error);
+
 /**
  * Routes disponibles sur le service Monstres
  */
@@ -32,7 +35,7 @@ export const MonstersRoutes = {
  */
 const validateMonsterStats = (stats: any): string[] => {
   const requiredStats = ['hp', 'atk', 'def', 'vit'];
-  const errors = [];
+  const errors: string[] = [];
 
   if (!stats || typeof stats !== 'object') {
     errors.push('Stats must be an object');
@@ -55,7 +58,7 @@ const validateMonsterStats = (stats: any): string[] => {
  * Normalise les données d'un monstre
  */
 const normalizeMonsterData = (data: any): MonsterData => {
-  const errors = [];
+  const errors: string[] = [];
 
   if (!data.id && !data.nom && !data.name) {
     errors.push('Monster must have an ID or name');
@@ -176,7 +179,7 @@ export const monstersService = {
     } catch (error) {
       logger.error('MonstersService', 'Failed to fetch monster', {
         monsterId,
-        error: error.message,
+        error: getErrorMessage(error),
       });
       if (error instanceof ApiError) {
         throw error;
@@ -208,13 +211,13 @@ export const monstersService = {
       });
 
       // Chercher tous les monstres dans le cache
-      const idsToFetch = [];
-      const cachedMonsters = [];
+      const idsToFetch: (string | number)[] = [];
+      const cachedMonsters: MonsterData[] = [];
 
       for (const id of monsterIds) {
         const cached = await getMonsterFromCache(String(id));
         if (cached) {
-          cachedMonsters.push(cached);
+          cachedMonsters.push(cached as MonsterData);
         } else {
           idsToFetch.push(id);
         }
@@ -224,9 +227,9 @@ export const monstersService = {
       if (idsToFetch.length === 0) {
         logger.debug('MonstersService', 'All monsters found in cache');
         // Retourner dans le même ordre que demandé
-        return monsterIds.map((id) =>
-          cachedMonsters.find((m) => String(m.id) === String(id))
-        );
+        return monsterIds
+          .map((id) => cachedMonsters.find((m) => String(m.id) === String(id)))
+          .filter((m): m is MonsterData => m !== undefined);
       }
 
       const idsString = idsToFetch.join(',');
@@ -254,13 +257,13 @@ export const monstersService = {
 
       // Combiner les monstres cachés + nouveaux dans l'ordre demandé
       const allMonsters = [...cachedMonsters, ...normalizedData];
-      return monsterIds.map((id) =>
-        allMonsters.find((m) => String(m.id) === String(id))
-      );
+      return monsterIds
+        .map((id) => allMonsters.find((m) => String(m.id) === String(id)))
+        .filter((m): m is MonsterData => m !== undefined);
     } catch (error) {
       logger.error('MonstersService', 'Failed to fetch monsters', {
         count: monsterIds.length,
-        error: error.message,
+        error: getErrorMessage(error),
       });
       if (error instanceof ApiError) {
         throw error;
@@ -312,7 +315,7 @@ export const monstersService = {
     } catch (error) {
       logger.error('MonstersService', 'Failed to fetch monsters for player', {
         username,
-        error: error.message,
+        error: getErrorMessage(error),
       });
       if (error instanceof ApiError) {
         throw error;
@@ -355,13 +358,13 @@ export const monstersService = {
         description: '',
         skills: [],
         imageUrl: '',
-      });
+      } as unknown as MonsterData);
 
       logger.debug('MonstersService', 'Monster deleted', { monsterId });
     } catch (error) {
       logger.error('MonstersService', 'Failed to delete monster', {
         monsterId,
-        error: error.message,
+        error: getErrorMessage(error),
       });
       if (error instanceof ApiError) {
         throw error;

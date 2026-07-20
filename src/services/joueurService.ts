@@ -9,6 +9,9 @@ import { ApiError, ErrorTypes, parseApiError } from './apiClient';
 import { logger } from './logger';
 import type { PlayerData } from '../types/player';
 
+const getErrorMessage = (error: unknown): string =>
+  error instanceof Error ? error.message : String(error);
+
 /**
  * Routes disponibles sur le service Joueur
  */
@@ -27,7 +30,7 @@ export const JoueurRoutes = {
  * @returns {string[]}
  */
 const validatePlayerData = (data: any): string[] => {
-  const errors = [];
+  const errors: string[] = [];
 
   if (!data.username || typeof data.username !== 'string') {
     errors.push('Invalid username');
@@ -105,7 +108,7 @@ export const joueurService = {
     } catch (error) {
       logger.error('JoueurService', 'Failed to fetch player', {
         username,
-        error: error.message,
+        error: getErrorMessage(error),
       });
       if (error instanceof ApiError) {
         throw error;
@@ -141,7 +144,7 @@ export const joueurService = {
     } catch (error) {
       logger.error('JoueurService', 'Failed to create player', {
         username,
-        error: error.message,
+        error: getErrorMessage(error),
       });
       if (error instanceof ApiError) {
         throw error;
@@ -190,7 +193,7 @@ export const joueurService = {
       logger.error('JoueurService', 'Failed to add experience', {
         username,
         xp,
-        error: error.message,
+        error: getErrorMessage(error),
       });
       if (error instanceof ApiError) {
         throw error;
@@ -245,7 +248,7 @@ export const joueurService = {
       logger.error('JoueurService', 'Failed to remove monster', {
         username,
         monsterId,
-        error: error.message,
+        error: getErrorMessage(error),
       });
       if (error instanceof ApiError) {
         throw error;
