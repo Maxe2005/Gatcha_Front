@@ -7,9 +7,99 @@
     filter 1s ease-out;
   will-change: opacity, filter;
   container-type: inline-size;
+  flex-grow: 1;
+  min-height: 100vh;
+  background: var(--bg-primary);
 }
 
 .gacha-page.revealed {
   opacity: 1;
   filter: blur(0);
+}
+
+.gacha-back-bar {
+  padding: 16px;
+}
+
+.gacha-back-btn {
+  background: transparent;
+  border: 1px solid var(--text-primary);
+  color: var(--text-primary);
+  border-radius: 4px;
+  padding: 6px 16px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.gacha-back-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.gacha-container {
+  max-width: 900px;
+  margin: 0 auto;
+  margin-top: 32px;
+  padding-bottom: 32px;
+  text-align: center;
+}
+
+.gacha-title {
+  color: var(--text-primary);
+  font-family: 'Cinzel', serif;
+  font-size: 2.5rem;
+  margin-bottom: 16px;
+}
+
+.gacha-invoke-btn {
+  margin-top: 16px;
+  margin-bottom: 32px;
+  padding: 16px 32px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.gacha-invoke-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.gacha-invoke-btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.gacha-invoke-btn.dark {
+  background: #c0392b;
+  color: white;
+}
+
+.gacha-invoke-btn.divine {
+  background: #ffd700;
+  color: black;
+}
+
+.gacha-invoke-spinner {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.35);
+  border-top-color: currentColor;
+  animation: gacha-invoke-spin 0.8s linear infinite;
+}
+
+@keyframes gacha-invoke-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.gacha-result {
+  display: flex;
+  justify-content: center;
+  margin-top: 32px;
 }

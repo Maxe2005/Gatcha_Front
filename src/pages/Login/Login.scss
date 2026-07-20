@@ -122,72 +122,92 @@
   margin-bottom: 24px;
 }
 
-.login-input {
-  width: 100%;
+.login-label {
+  display: block;
+  color: var(--label-color);
+  font-family: var(--font-body);
+  font-weight: 500;
+  margin-bottom: 6px;
 }
 
-.login-input .MuiOutlinedInput-root {
+.login-input-field {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 12px;
   background-color: var(--input-bg);
-  color: var(--input-text-color);
   border-radius: 4px; /* More angular for games */
+  border: 1px solid rgba(255, 255, 255, 0.2);
   transition: all 0.3s ease;
 }
 
-.login-input .MuiOutlinedInput-root input {
-  color: var(--input-text-color) !important;
-}
-
-.login-input .MuiOutlinedInput-root fieldset {
-  border-color: rgba(255, 255, 255, 0.2);
-  border-width: 1px;
-}
-
-.login-input .MuiOutlinedInput-root:hover fieldset {
+.login-input-field:hover {
   border-color: var(--primary-color);
-  border-width: 1px;
 }
 
-.login-input .MuiOutlinedInput-root.Mui-focused fieldset {
+.login-input-field:focus-within {
   border-color: var(--primary-color);
-  border-width: 1px;
   box-shadow: 0 0 10px var(--shadow-color);
 }
 
-.login-input .MuiInputLabel-root {
-  color: var(--label-color) !important;
+.login-input {
+  flex: 1;
+  width: 100%;
+  padding: 14px 0;
+  border: none;
+  background: transparent;
+  color: var(--input-text-color) !important;
   font-family: var(--font-body);
-  font-weight: 500 !important;
+  font-size: 1rem;
 }
 
-.login-input .MuiInputLabel-root.Mui-focused {
-  color: var(--primary-color) !important;
+.login-input:focus {
+  outline: none;
+}
+
+.login-helper-text {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-family: var(--font-body);
 }
 
 /* Icons */
 .login-icon-primary {
   color: var(--primary-color);
+  flex-shrink: 0;
 }
 .login-icon-secondary {
   color: var(--text-secondary);
+  flex-shrink: 0;
+}
+.login-icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
 }
 
 /* Alert */
 .login-alert {
-  background-color: var(--error-bg) !important;
-  color: var(--error-text) !important;
-  border: 1px solid var(--error-border) !important;
+  background-color: var(--error-bg);
+  color: var(--error-text);
+  border: 1px solid var(--error-border);
+  border-radius: 4px;
+  padding: 12px 16px;
   font-family: var(--font-body);
-  margin-bottom: 24px !important;
+  margin-bottom: 24px;
   font-weight: 500;
-}
-
-/* Alert text color override for all child elements */
-.login-alert .MuiAlert-message {
-  color: var(--error-text) !important;
 }
 
 /* Button */
 .login-button {
+  width: 100%;
   background: var(--button-gradient) !important;
   color: white !important; /* Always white text for contrast on strong gradients */
   padding: 14px 0 !important;
@@ -202,6 +222,30 @@
   position: relative;
   overflow: hidden;
   border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  cursor: pointer;
+}
+
+.login-button-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.login-button-spinner {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 3px solid rgba(255, 255, 255, 0.35);
+  border-top-color: white;
+  animation: login-button-spin 0.8s linear infinite;
+}
+
+@keyframes login-button-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .login-button:hover {
@@ -238,9 +282,12 @@
   font-family: var(--font-body);
 }
 .login-toggle-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
   color: var(--primary-color) !important;
   font-weight: 700 !important;
-  text-transform: none !important;
+  font-size: 1em;
   font-family: var(--font-body) !important;
   margin-left: 4px !important;
 }

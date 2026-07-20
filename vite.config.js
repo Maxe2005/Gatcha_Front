@@ -36,9 +36,6 @@ export default defineConfig({
       },
     },
   },
-  optimizeDeps: {
-    include: ['@emotion/react', '@emotion/styled', '@mui/material/Tooltip'],
-  },
   build: {
     // Optimiser la compression et le splitting
     rollupOptions: {
@@ -47,7 +44,6 @@ export default defineConfig({
           // Vendor chunks
           'vendor-react': ['react', 'react-dom', 'react-router-dom'],
           'vendor-animation': ['framer-motion'],
-          'vendor-ui': ['@mui/material', '@mui/icons-material'],
           'vendor-utils': ['axios', 'react-hot-toast'],
           // Feature chunks
           'chunk-auth': [

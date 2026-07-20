@@ -7,28 +7,12 @@ import './cursors.css';
 import './transitions.css';
 import './particleSystem';
 import { injectColorsToCSS } from './pages/admin/colors';
-import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
 
 // Inject CSS variables from color constants at startup
 injectColorsToCSS();
 
-const theme = createTheme({
-  palette: {
-    mode: 'dark',
-    primary: {
-      main: '#90caf9',
-    },
-    secondary: {
-      main: '#f48fb1',
-    },
-  },
-});
-
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <App />
-    </ThemeProvider>
+    <App />
   </React.StrictMode>
 );
