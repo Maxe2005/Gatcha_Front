@@ -313,6 +313,25 @@
     background-color 0.6s ease;
 }
 
+/* Admin */
+.admin-dashboard-btn {
+  margin-left: 16px;
+  padding: 8px 16px;
+  font-weight: bold;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+.home-container.divine .admin-dashboard-btn {
+  background: #ffe066;
+  color: #222;
+}
+.home-container.dark .admin-dashboard-btn {
+  background: #222;
+  color: #ffe066;
+}
+
 /* Resources */
 .resources-section {
   display: flex;
