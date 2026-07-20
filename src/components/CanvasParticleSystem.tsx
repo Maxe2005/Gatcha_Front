@@ -117,20 +117,111 @@ class CanvasParticle {
 }
 
 /**
+ * Particule ambiante : nait sur un cercle autour du centre et y converge
+ * en rétrécissant/s'estompant (remplace l'ancien DOM + setInterval de Home)
+ */
+class AmbientParticle {
+  startX: number;
+  startY: number;
+  x: number;
+  y: number;
+  centerX: number;
+  centerY: number;
+  size: number;
+  life: number;
+  decay: number;
+  color: string;
+  glow: string;
+
+  constructor(canvasWidth: number, canvasHeight: number, isDark: boolean) {
+    const angle = Math.random() * Math.PI * 2;
+    const radius = Math.min(canvasWidth, canvasHeight) * 0.5;
+    this.centerX = canvasWidth / 2;
+    this.centerY = canvasHeight / 2;
+    this.startX = this.centerX + Math.cos(angle) * radius;
+    this.startY = this.centerY + Math.sin(angle) * radius;
+    this.x = this.startX;
+    this.y = this.startY;
+    this.size = 2 + Math.random() * 4;
+    this.life = 1;
+
+    const durationSeconds = 2 + Math.random(); // 2-3s, ~60fps
+    this.decay = 1 / (durationSeconds * 60);
+
+    this.color = isDark ? '#ff6b6b' : '#ffeb99';
+    this.glow = isDark ? 'rgba(255, 50, 50, 0.7)' : 'rgba(255, 200, 0, 0.6)';
+  }
+
+  update() {
+    const progress = 1 - this.life;
+    this.x = this.startX + (this.centerX - this.startX) * progress;
+    this.y = this.startY + (this.centerY - this.startY) * progress;
+    this.life -= this.decay;
+  }
+
+  draw(ctx: CanvasRenderingContext2D) {
+    if (this.life <= 0) return;
+
+    const scale = Math.max(0, this.life);
+    const radius = (this.size / 2) * scale;
+    if (radius <= 0) return;
+
+    ctx.globalAlpha = Math.max(0, this.life * 0.8 + 0.2) * scale;
+    ctx.fillStyle = this.color;
+    ctx.shadowColor = this.glow;
+    ctx.shadowBlur = 6;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, radius, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+    ctx.globalAlpha = 1;
+  }
+
+  isAlive() {
+    return this.life > 0;
+  }
+}
+
+const MAX_AMBIENT_PARTICLES = 40;
+const AMBIENT_SPAWN_INTERVAL_MS = 150;
+
+/**
  * CanvasParticleSystem
  * Système de particules ultra-performant utilisant Canvas
  * Remplace le système DOM pour 3-4x plus de performance
  *
+ * Deux modes :
+ * - "interactive" (défaut) : particules générées au clic/survol de la souris
+ *   (utilisé sur l'écran de chargement global).
+ * - "ambient" : particules générées en continu, qui convergent vers le
+ *   centre (utilisé en fond du portail de Home).
+ *
  * Utilisation:
  * <CanvasParticleSystem theme={theme} />
+ * <CanvasParticleSystem theme={theme} mode="ambient" paused={isTransitioning} />
  */
-const CanvasParticleSystem = ({ theme = 'divine' }: { theme?: 'divine' | 'dark' }) => {
+const CanvasParticleSystem = ({
+  theme = 'divine',
+  mode = 'interactive',
+  paused = false,
+}: {
+  theme?: 'divine' | 'dark';
+  mode?: 'interactive' | 'ambient';
+  paused?: boolean;
+}) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const particlesRef = useRef<CanvasParticle[]>([]);
+  const particlesRef = useRef<(CanvasParticle | AmbientParticle)[]>([]);
   const animationRef = useRef<number | null>(null);
   const mouseTrailRef = useRef<{ x: number; y: number } | null>(null);
+  const lastSpawnRef = useRef<number>(0);
+  const pausedRef = useRef(paused);
 
   const isDark = theme === 'dark';
+  const isAmbient = mode === 'ambient';
+
+  useEffect(() => {
+    pausedRef.current = paused;
+  }, [paused]);
 
   // Initialiser le canvas au montage
   useEffect(() => {
@@ -149,30 +240,54 @@ const CanvasParticleSystem = ({ theme = 'divine' }: { theme?: 'divine' | 'dark' 
   }, []);
 
   // Boucle d'animation optimisée
-  const animate = useCallback(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+  const animate = useCallback(
+    (timestamp: number) => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
 
-    const ctx = canvas.getContext('2d', { alpha: true });
+      const ctx = canvas.getContext('2d', { alpha: true });
 
-    // Effacer le canvas
-    ctx.fillStyle = 'rgba(0, 0, 0, 0.05)'; // Trail effect léger
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+      // Effacer le canvas
+      if (isAmbient) {
+        // Fond ambiant : effacement complet, pas de traînée résiduelle
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Mettre à jour et dessiner les particules
-    const particles = particlesRef.current;
-    for (let i = particles.length - 1; i >= 0; i--) {
-      const particle = particles[i];
-      particle.update();
-      particle.draw(ctx);
-
-      if (!particle.isAlive()) {
-        particles.splice(i, 1);
+        if (
+          !pausedRef.current &&
+          timestamp - lastSpawnRef.current >= AMBIENT_SPAWN_INTERVAL_MS
+        ) {
+          lastSpawnRef.current = timestamp;
+          particlesRef.current.push(
+            new AmbientParticle(canvas.width, canvas.height, isDark)
+          );
+          if (particlesRef.current.length > MAX_AMBIENT_PARTICLES) {
+            particlesRef.current.splice(
+              0,
+              particlesRef.current.length - MAX_AMBIENT_PARTICLES
+            );
+          }
+        }
+      } else {
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.05)'; // Trail effect léger
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
       }
-    }
 
-    animationRef.current = requestAnimationFrame(animate);
-  }, []);
+      // Mettre à jour et dessiner les particules
+      const particles = particlesRef.current;
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const particle = particles[i];
+        particle.update();
+        particle.draw(ctx);
+
+        if (!particle.isAlive()) {
+          particles.splice(i, 1);
+        }
+      }
+
+      animationRef.current = requestAnimationFrame(animate);
+    },
+    [isAmbient, isDark]
+  );
 
   // Démarrer l'animation
   useEffect(() => {
@@ -230,15 +345,15 @@ const CanvasParticleSystem = ({ theme = 'divine' }: { theme?: 'divine' | 'dark' 
   return (
     <canvas
       ref={canvasRef}
-      onClick={handleCanvasClick}
-      onMouseMove={handleMouseMove}
+      onClick={isAmbient ? undefined : handleCanvasClick}
+      onMouseMove={isAmbient ? undefined : handleMouseMove}
       style={{
-        position: 'fixed',
+        position: isAmbient ? 'absolute' : 'fixed',
         top: 0,
         left: 0,
         width: '100%',
         height: '100%',
-        pointerEvents: 'auto',
+        pointerEvents: isAmbient ? 'none' : 'auto',
         zIndex: 1,
       }}
     />
