@@ -78,6 +78,24 @@ export const notifyWarning = (message) => {
 };
 
 /**
+ * Show info toast notification
+ * @param {string} message - Info message
+ * @param {number} duration - Duration in ms (default 4000)
+ */
+export const notifyInfo = (message, duration = 4000) => {
+  toast(message, {
+    icon: 'ℹ️',
+    duration,
+    position: 'bottom-right',
+    style: {
+      background: '#3498db',
+      color: 'white',
+      fontFamily: "'Montserrat', sans-serif",
+    },
+  });
+};
+
+/**
  * Show loading toast notification
  * @param {string} message - Loading message
  * @returns {string} - Toast ID for update/dismiss

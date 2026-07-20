@@ -18,8 +18,6 @@ import GenerateMonsters from './pages/admin/GenerateMonsters/GenerateMonsters';
 import AdminDashboard from './pages/admin/AdminDashboard/AdminDashboard';
 import AdminMonstersList from './pages/admin/AdminMonstersList/AdminMonstersList';
 import AdminMonsterDetail from './pages/admin/AdminMonsterDetail/AdminMonsterDetail';
-import { NotificationProvider } from './context/NotificationContext';
-import NotificationStack from './components/NotificationStack/NotificationStack';
 import { BackgroundViewProvider } from './context/BackgroundViewContext';
 
 // // Fonction pour simuler un délai de chargement (pour le développement)
@@ -170,18 +168,15 @@ function App() {
       <ThemeProvider>
         <LoadingProvider>
           <BackgroundViewProvider>
-            <NotificationProvider>
-              <AuthProvider>
-                <MonsterProvider>
-                  <PlayerProvider>
-                    <Router>
-                      <AppContent />
-                      <NotificationStack />
-                    </Router>
-                  </PlayerProvider>
-                </MonsterProvider>
-              </AuthProvider>
-            </NotificationProvider>
+            <AuthProvider>
+              <MonsterProvider>
+                <PlayerProvider>
+                  <Router>
+                    <AppContent />
+                  </Router>
+                </PlayerProvider>
+              </MonsterProvider>
+            </AuthProvider>
           </BackgroundViewProvider>
         </LoadingProvider>
       </ThemeProvider>

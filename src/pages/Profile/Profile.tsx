@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useTheme } from '../../context/ThemeContext';
 import { usePlayer } from '../../context/PlayerContext';
 import { useAuth } from '../../context/AuthContext';
@@ -6,6 +6,8 @@ import { authService } from '../../services/authService';
 import { useNavigate } from 'react-router-dom';
 import './Profile.css';
 import ThemeToggle from '../../components/ThemeToggle/ThemeToggle';
+import ConfirmDialog from '../../components/ConfirmDialog/ConfirmDialog';
+import { notifyError } from '../../services/notificationService';
 import { logger } from '../../services/logger';
 
 const Profile = () => {
@@ -13,6 +15,7 @@ const Profile = () => {
   const { playerData } = usePlayer();
   const { logout, token } = useAuth();
   const navigate = useNavigate();
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
 
   logger.debug('Profile', 'Render', {
     playerData,
@@ -28,18 +31,13 @@ const Profile = () => {
   };
 
   const handleDeleteAccount = async () => {
-    const ok = window.confirm(
-      'Voulez-vous vraiment supprimer votre compte ? Cette action est irréversible.'
-    );
-    if (!ok) return;
+    setIsDeleteConfirmOpen(false);
     try {
       await authService.deleteAccount(token);
       logout();
       navigate('/login');
     } catch {
-      // affichage minimal — le projet a déjà NotificationService
-      // eslint-disable-next-line no-alert
-      alert('Erreur lors de la suppression du compte.');
+      notifyError('Erreur lors de la suppression du compte.');
     }
   };
 
@@ -101,7 +99,7 @@ const Profile = () => {
             </button>
             <button
               className="action-btn delete-btn"
-              onClick={handleDeleteAccount}
+              onClick={() => setIsDeleteConfirmOpen(true)}
             >
               Supprimer le compte
             </button>
@@ -125,6 +123,16 @@ const Profile = () => {
           </div>
         </section>
       </main>
+
+      <ConfirmDialog
+        isOpen={isDeleteConfirmOpen}
+        title="Supprimer le compte"
+        message="Voulez-vous vraiment supprimer votre compte ? Cette action est irréversible."
+        confirmText="Supprimer"
+        onConfirm={handleDeleteAccount}
+        onCancel={() => setIsDeleteConfirmOpen(false)}
+        isDangerous
+      />
     </div>
   );
 };
