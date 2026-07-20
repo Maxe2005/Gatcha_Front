@@ -1,6 +1,5 @@
 // @ts-nocheck -- strict TypeScript activé globalement (P1.2) ; ce fichier n'est pas encore migré, voir ROADMAP.md P1.2
 import React from 'react';
-import { AppBar, Toolbar, Box, Typography, Button } from '@mui/material';
 import ThemeToggle from '../ThemeToggle/ThemeToggle';
 import { useTheme } from '../../context/ThemeContext';
 import { useAuth } from '../../context/AuthContext';
@@ -12,33 +11,23 @@ const Header = ({ title = 'Gatcha API' }) => {
   const { user, logout } = useAuth();
 
   return (
-    <AppBar position="static" className={`header header-${theme}`}>
-      <Toolbar className="header-toolbar">
-        <Typography variant="h6" className="header-title">
-          {title}
-        </Typography>
-        <Box className="header-actions">
+    <header className={`header header-${theme}`}>
+      <div className="header-toolbar">
+        <span className="header-title">{title}</span>
+        <div className="header-actions">
           <AdminNav />
+          {user && <span className="header-username">{user.username}</span>}
           {user && (
-            <Typography variant="subtitle1" className="header-username">
-              {user.username}
-            </Typography>
-          )}
-          {user && (
-            <Button
-              onClick={logout}
-              variant="outlined"
-              className="header-logout"
-            >
+            <button onClick={logout} className="header-logout">
               Logout
-            </Button>
+            </button>
           )}
-          <Box className="header-theme-toggle">
+          <div className="header-theme-toggle">
             <ThemeToggle />
-          </Box>
-        </Box>
-      </Toolbar>
-    </AppBar>
+          </div>
+        </div>
+      </div>
+    </header>
   );
 };
 

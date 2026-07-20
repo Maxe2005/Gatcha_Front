@@ -5,13 +5,6 @@ import { useTheme } from '../../context/ThemeContext';
 import { usePlayer } from '../../context/PlayerContext';
 import { invocationService } from '../../services/invocationService';
 import { notifySuccess, notifyError } from '../../services/notificationService';
-import {
-  Container,
-  Box,
-  Typography,
-  Button,
-  CircularProgress,
-} from '@mui/material';
 import GatchaCard from '../../components/GatchaCard/GatchaCard';
 import { useNavigate } from 'react-router-dom';
 import './Gacha.css';
@@ -51,57 +44,40 @@ const Gacha = () => {
   };
 
   return (
-    <Box
+    <div
       className={`gacha-page ${theme === 'dark' ? 'theme-dark' : 'theme-divine'} ${isRevealed ? 'revealed' : 'entering'}`}
-      sx={{ flexGrow: 1, minHeight: '100vh', background: 'var(--bg-primary)' }}
     >
-      <Box sx={{ p: 2 }}>
-        <Button onClick={() => navigate('/home')} variant="outlined">
-          ← Retour Home
-        </Button>
-      </Box>
-
-      <Container maxWidth="md" sx={{ mt: 4, textAlign: 'center', pb: 4 }}>
-        <Typography
-          variant="h3"
-          gutterBottom
-          sx={{ color: 'var(--text-primary)', fontFamily: 'Cinzel, serif' }}
+      <div className="gacha-back-bar">
+        <button
+          onClick={() => navigate('/home')}
+          className="gacha-back-btn"
         >
-          Chambre d&apos;Invocation
-        </Typography>
+          ← Retour Home
+        </button>
+      </div>
 
-        <Button
-          variant="contained"
-          size="large"
+      <div className="gacha-container">
+        <h1 className="gacha-title">Chambre d&apos;Invocation</h1>
+
+        <button
           onClick={handleInvoke}
           disabled={loading}
-          sx={{
-            mt: 2,
-            mb: 4,
-            fontSize: '1.2rem',
-            py: 2,
-            px: 4,
-            background: theme === 'dark' ? '#c0392b' : '#ffd700',
-            color: theme === 'dark' ? 'white' : 'black',
-            '&:hover': {
-              transform: 'translateY(-2px)',
-            },
-          }}
+          className={`gacha-invoke-btn ${theme}`}
         >
           {loading ? (
-            <CircularProgress size={24} color="inherit" />
+            <span className="gacha-invoke-spinner" aria-hidden="true" />
           ) : (
             'INVOQUER'
           )}
-        </Button>
+        </button>
 
         {monster && (
-          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+          <div className="gacha-result">
             <GatchaCard monstre={monster} />
-          </Box>
+          </div>
         )}
-      </Container>
-    </Box>
+      </div>
+    </div>
   );
 };
 

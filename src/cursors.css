@@ -60,8 +60,6 @@ summary,
 [type='submit'],
 [type='button'],
 .clickable,
-.MuiButton-root,
-.MuiIconButton-root,
 .login-toggle-btn {
   cursor: var(--cursor-pointer) !important;
 }
@@ -78,9 +76,7 @@ input[type='search'],
 input[type='tel'],
 input[type='url'],
 textarea,
-[contenteditable='true'],
-.MuiTextField-root input,
-.MuiInputBase-input {
+[contenteditable='true'] {
   cursor: var(--cursor-text) !important;
 }
 
@@ -94,7 +90,6 @@ input:disabled,
 textarea:disabled,
 select:disabled,
 [aria-disabled='true'],
-.MuiButton-root:disabled,
 .disabled {
   cursor: var(--cursor-not-allowed) !important;
 }
