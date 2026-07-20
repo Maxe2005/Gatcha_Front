@@ -6,7 +6,7 @@ const SkillCard = ({
   skill,
   flipOnHover = false,
   disableClickFlip = false,
-  onClick = (e) => {},
+  onClick = (_e) => {},
 }) => {
   const { theme } = useTheme();
   const [isFlipped, setIsFlipped] = useState(false);

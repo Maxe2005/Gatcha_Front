@@ -118,7 +118,7 @@ const Login = () => {
           try {
             const dataResponse = await joueurService.createPlayer(username);
             setPlayerData(dataResponse);
-          } catch (playerErr) {
+          } catch {
             setError(
               "Compte créé, mais le profil joueur n'a pas pu être initialisé. Réessaie plus tard."
             );

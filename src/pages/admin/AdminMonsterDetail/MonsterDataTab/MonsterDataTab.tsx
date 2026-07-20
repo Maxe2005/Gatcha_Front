@@ -104,7 +104,7 @@ const MonsterDataTab = ({
 
   const getformatPathString = (path) => {
     let pathString = '';
-    for (let segment of path) {
+    for (const segment of path) {
       if (typeof segment === 'number') {
         pathString += `[${segment}]`;
       } else {

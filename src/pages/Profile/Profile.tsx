@@ -36,7 +36,7 @@ const Profile = () => {
       await authService.deleteAccount(token);
       logout();
       navigate('/login');
-    } catch (err) {
+    } catch {
       // affichage minimal — le projet a déjà NotificationService
       // eslint-disable-next-line no-alert
       alert('Erreur lors de la suppression du compte.');

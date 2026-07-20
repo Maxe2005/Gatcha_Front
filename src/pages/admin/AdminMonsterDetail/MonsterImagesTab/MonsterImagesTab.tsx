@@ -154,8 +154,8 @@ const MonsterImagesTab = ({
   // Ajout du champ image_name
   const [newImageName, setNewImageName] = useState(() => {
     // Génère un nom unique par défaut
-    let base = 'image_' + (monsterImages.length + 1);
-    let existingNames = monsterImages.map((img) => img.image_name);
+    const base = 'image_' + (monsterImages.length + 1);
+    const existingNames = monsterImages.map((img) => img.image_name);
     let i = 1;
     let name = base;
     while (existingNames.includes(name)) {

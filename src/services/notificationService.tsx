@@ -64,7 +64,7 @@ export const notifyError = (error, duration = 4000) => {
  * @param {string} message - Warning message
  */
 export const notifyWarning = (message) => {
-  toast((t) => (
+  toast(() => (
     <span>⚠️ {message}</span>
   ), {
     duration: 3000,

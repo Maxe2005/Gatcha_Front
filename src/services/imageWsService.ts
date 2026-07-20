@@ -37,7 +37,7 @@ export const trackImageGeneration = (
       } else if (data.monster) {
         onProgress?.({ image: JSON.parse(data.monster) });
       }
-    } catch (e) {
+    } catch {
       onProgress?.({ status: message });
     }
   };
