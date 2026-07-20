@@ -21,9 +21,14 @@ export class ApiError extends Error {
   name: string;
   type: string;
   statusCode: number | null;
-  originalError: any;
+  originalError: unknown;
   timestamp: Date;
-  constructor(type, message, statusCode = null, originalError = null) {
+  constructor(
+    type: string,
+    message: string,
+    statusCode: number | null = null,
+    originalError: unknown = null
+  ) {
     super(message);
     this.name = 'ApiError';
     this.type = type;
@@ -38,8 +43,8 @@ export class ApiError extends Error {
  * @param {Error} error - Axios error object
  * @returns {ApiError} - Standardized error
  */
-export const parseApiError = (error) => {
-  if (!error.response) {
+export const parseApiError = (error: unknown) => {
+  if (!axios.isAxiosError<{ message?: string }>(error) || !error.response) {
     return new ApiError(
       ErrorTypes.NETWORK,
       'Connexion perdue. Vérifiez votre connexion internet.',
@@ -49,7 +54,7 @@ export const parseApiError = (error) => {
   }
 
   const { status, data } = error.response;
-  let type, message;
+  let type: string, message: string;
 
   switch (status) {
     case 400:
@@ -87,7 +92,7 @@ export const parseApiError = (error) => {
  * @param {string} baseURL - API base URL
  * @returns {AxiosInstance} - Configured axios instance
  */
-export const createApiClient = (baseURL) => {
+export const createApiClient = (baseURL: string) => {
   const instance = axios.create({
     baseURL,
     timeout: 10000,

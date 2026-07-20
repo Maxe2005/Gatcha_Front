@@ -1,5 +1,5 @@
 import toast from 'react-hot-toast';
-import { ErrorTypes } from './apiClient';
+import { ErrorTypes, ApiError } from './apiClient';
 
 /**
  * Notification Service
@@ -11,7 +11,7 @@ import { ErrorTypes } from './apiClient';
  * @param {string} message - Success message
  * @param {number} duration - Duration in ms (default 3000)
  */
-export const notifySuccess = (message, duration = 3000) => {
+export const notifySuccess = (message: string, duration = 3000) => {
   toast.success(message, {
     duration,
     position: 'bottom-right',
@@ -28,24 +28,24 @@ export const notifySuccess = (message, duration = 3000) => {
  * @param {Error|ApiError|string} error - Error object or message
  * @param {number} duration - Duration in ms (default 4000)
  */
-export const notifyError = (error, duration = 4000) => {
-  let message = error;
+export const notifyError = (error: ApiError | Error | string, duration = 4000) => {
+  let message = typeof error === 'string' ? error : error.message;
   let icon = '❌';
 
-  if (error?.type === ErrorTypes.NETWORK) {
+  if (error instanceof ApiError && error.type === ErrorTypes.NETWORK) {
     message = 'Connexion perdue...';
     icon = '📡';
-  } else if (error?.type === ErrorTypes.UNAUTHORIZED) {
+  } else if (error instanceof ApiError && error.type === ErrorTypes.UNAUTHORIZED) {
     message = 'Authentification requise. Veuillez vous reconnecter.';
     icon = '🔐';
-  } else if (error?.type === ErrorTypes.FORBIDDEN) {
+  } else if (error instanceof ApiError && error.type === ErrorTypes.FORBIDDEN) {
     message = 'Accès refusé';
     icon = '🚫';
-  } else if (error?.type === ErrorTypes.SERVER) {
+  } else if (error instanceof ApiError && error.type === ErrorTypes.SERVER) {
     message = 'Erreur serveur, réessayez plus tard';
     icon = '⚠️';
   } else if (error instanceof Error) {
-    message = error.message || 'Une erreur s\'est produite';
+    message = error.message || "Une erreur s'est produite";
   }
 
   toast.error(`${icon} ${message}`, {
@@ -63,7 +63,7 @@ export const notifyError = (error, duration = 4000) => {
  * Show warning toast notification
  * @param {string} message - Warning message
  */
-export const notifyWarning = (message) => {
+export const notifyWarning = (message: string) => {
   toast(() => (
     <span>⚠️ {message}</span>
   ), {
@@ -82,7 +82,7 @@ export const notifyWarning = (message) => {
  * @param {string} message - Info message
  * @param {number} duration - Duration in ms (default 4000)
  */
-export const notifyInfo = (message, duration = 4000) => {
+export const notifyInfo = (message: string, duration = 4000) => {
   toast(message, {
     icon: 'ℹ️',
     duration,
@@ -100,7 +100,7 @@ export const notifyInfo = (message, duration = 4000) => {
  * @param {string} message - Loading message
  * @returns {string} - Toast ID for update/dismiss
  */
-export const notifyLoading = (message) => {
+export const notifyLoading = (message: string) => {
   return toast.loading(message, {
     position: 'bottom-right',
     style: {
@@ -117,7 +117,11 @@ export const notifyLoading = (message) => {
  * @param {string} message - New message
  * @param {string} type - 'success', 'error', 'loading' (default 'success')
  */
-export const updateToast = (toastId, message, type = 'success') => {
+export const updateToast = (
+  toastId: string,
+  message: string,
+  type: 'success' | 'error' = 'success'
+) => {
   if (type === 'success') {
     toast.success(message, {
       id: toastId,
@@ -137,6 +141,6 @@ export const updateToast = (toastId, message, type = 'success') => {
  * Dismiss a specific toast
  * @param {string} toastId - Toast ID to dismiss
  */
-export const dismissToast = (toastId) => {
+export const dismissToast = (toastId: string) => {
   toast.dismiss(toastId);
 };

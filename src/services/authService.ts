@@ -8,6 +8,9 @@ import { authApi } from './api';
 import { ApiError, ErrorTypes, parseApiError } from './apiClient';
 import { logger } from './logger';
 
+const getErrorMessage = (error: unknown): string =>
+  error instanceof Error ? error.message : String(error);
+
 /**
  * Routes disponibles sur le service d'authentification
  */
@@ -18,7 +21,7 @@ export const AuthRoutes = {
   LOGOUT: '/user/logout',
   DELETE: '/user/delete',
   ADMIN_REGISTER: '/user/admin/register',
-  ADMIN_DELETE: (username) => `/user/admin/delete/${username}`,
+  ADMIN_DELETE: (username: string) => `/user/admin/delete/${username}`,
 };
 
 /**
@@ -46,8 +49,8 @@ export const Roles = {
  * de format qu'à la création de compte, et les comptes existants doivent
  * pouvoir continuer à se connecter.
  */
-const validateLoginInput = (username, password) => {
-  const errors = [];
+const validateLoginInput = (username: string, password: string) => {
+  const errors: string[] = [];
 
   if (!username || typeof username !== 'string') {
     errors.push("Le nom d'utilisateur est requis");
@@ -62,8 +65,8 @@ const validateLoginInput = (username, password) => {
 /**
  * Valide username + mot de passe à la création — mêmes règles que l'API
  */
-const validateNewCredentials = (username, password) => {
-  const errors = [];
+const validateNewCredentials = (username: string, password: string) => {
+  const errors: string[] = [];
   const {
     USERNAME_MIN_LENGTH,
     USERNAME_MAX_LENGTH,
@@ -103,7 +106,11 @@ const validateNewCredentials = (username, password) => {
 /**
  * Valide les données d'enregistrement
  */
-const validateRegisterInput = (username, password, passwordConfirm) => {
+const validateRegisterInput = (
+  username: string,
+  password: string,
+  passwordConfirm: string
+) => {
   const errors = validateNewCredentials(username, password);
 
   if (password !== passwordConfirm) {
@@ -117,7 +124,7 @@ const validateRegisterInput = (username, password, passwordConfirm) => {
  * Normalise la réponse de login/register
  * L'API ne renvoie que { token } : le username est celui fourni en entrée
  */
-const normalizeLoginResponse = (data, username) => {
+const normalizeLoginResponse = (data: { token?: string }, username: string) => {
   if (!data.token || typeof data.token !== 'string') {
     throw new ApiError(
       ErrorTypes.VALIDATION,
@@ -135,7 +142,10 @@ const normalizeLoginResponse = (data, username) => {
 /**
  * Normalise la réponse de vérification de token
  */
-const normalizeVerifyTokenResponse = (data) => {
+const normalizeVerifyTokenResponse = (data: {
+  username?: string;
+  role?: string;
+}) => {
   if (!data.username) {
     throw new ApiError(
       ErrorTypes.VALIDATION,
@@ -161,7 +171,7 @@ export const authService = {
    * @param {string} password - Mot de passe
    * @returns {Promise<{token, username, userId, expiresIn}>}
    */
-  async login(username, password) {
+  async login(username: string, password: string) {
     try {
       // Validation des inputs
       const validationErrors = validateLoginInput(username, password);
@@ -192,7 +202,7 @@ export const authService = {
     } catch (error) {
       logger.error('AuthService', 'Login error', {
         username,
-        error: error.message,
+        error: getErrorMessage(error),
       });
       if (error instanceof ApiError) {
         throw error;
@@ -208,7 +218,7 @@ export const authService = {
    * @param {string} passwordConfirm - Confirmation mot de passe
    * @returns {Promise<{token, username, userId}>}
    */
-  async register(username, password, passwordConfirm) {
+  async register(username: string, password: string, passwordConfirm: string) {
     try {
       // Validation des inputs
       const validationErrors = validateRegisterInput(
@@ -243,7 +253,7 @@ export const authService = {
     } catch (error) {
       logger.error('AuthService', 'Registration error', {
         username,
-        error: error.message,
+        error: getErrorMessage(error),
       });
       if (error instanceof ApiError) {
         throw error;
@@ -257,7 +267,7 @@ export const authService = {
    * @param {string} token - Token JWT à vérifier
    * @returns {Promise<{username, userId, isValid}>}
    */
-  async verifyToken(token) {
+  async verifyToken(token: string) {
     try {
       if (!token || typeof token !== 'string') {
         throw new ApiError(
@@ -276,7 +286,7 @@ export const authService = {
       return normalizedData;
     } catch (error) {
       logger.error('AuthService', 'Token verification error', {
-        error: error.message,
+        error: getErrorMessage(error),
       });
       if (error instanceof ApiError) {
         throw error;
@@ -292,7 +302,7 @@ export const authService = {
    * @param {string} token - Token à révoquer
    * @returns {Promise<{success}>}
    */
-  async logout(token) {
+  async logout(token: string) {
     try {
       if (token) {
         await authApi.post(AuthRoutes.LOGOUT, { token });
@@ -303,7 +313,7 @@ export const authService = {
       // Token déjà expiré/invalide ou service injoignable : on se
       // déconnecte quand même localement
       logger.warn('AuthService', 'Logout revocation failed', {
-        error: error.message,
+        error: getErrorMessage(error),
       });
       return { success: true };
     }
@@ -314,7 +324,7 @@ export const authService = {
    * @param {string} token - Token JWT de l'utilisateur à supprimer
    * @returns {Promise<{success}>}
    */
-  async deleteAccount(token) {
+  async deleteAccount(token: string) {
     try {
       if (!token || typeof token !== 'string') {
         throw new ApiError(
@@ -332,7 +342,7 @@ export const authService = {
       return { success: true };
     } catch (error) {
       logger.error('AuthService', 'Account deletion error', {
-        error: error.message,
+        error: getErrorMessage(error),
       });
       if (error instanceof ApiError) {
         throw error;
@@ -349,7 +359,12 @@ export const authService = {
    * @param {Role} role - Rôle attribué (USER ou ADMIN)
    * @returns {Promise<{token, username}>} - Token du nouvel utilisateur
    */
-  async adminRegister(token, username, password, role = Roles.USER) {
+  async adminRegister(
+    token: string,
+    username: string,
+    password: string,
+    role: string = Roles.USER
+  ) {
     try {
       const validationErrors = validateNewCredentials(username, password);
       if (validationErrors.length > 0) {
@@ -382,7 +397,7 @@ export const authService = {
     } catch (error) {
       logger.error('AuthService', 'Admin registration error', {
         username,
-        error: error.message,
+        error: getErrorMessage(error),
       });
       if (error instanceof ApiError) {
         throw error;
@@ -397,7 +412,7 @@ export const authService = {
    * @param {string} username - Nom de l'utilisateur à supprimer
    * @returns {Promise<{success}>}
    */
-  async adminDeleteUser(token, username) {
+  async adminDeleteUser(token: string, username: string) {
     try {
       if (!username || typeof username !== 'string') {
         throw new ApiError(
@@ -418,7 +433,7 @@ export const authService = {
     } catch (error) {
       logger.error('AuthService', 'Admin user deletion error', {
         username,
-        error: error.message,
+        error: getErrorMessage(error),
       });
       if (error instanceof ApiError) {
         throw error;
