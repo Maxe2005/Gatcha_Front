@@ -68,7 +68,7 @@ export const AuthProvider = ({ children }) => {
             logout();
             return null;
           }
-        } catch (error) {
+        } catch {
           logout();
           return null;
         } finally {

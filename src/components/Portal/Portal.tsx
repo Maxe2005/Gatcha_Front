@@ -10,7 +10,6 @@ const Portal = ({ onInvoke, isLoading = false, transitioning = false }) => {
   const [state, setState] = useState('idle'); // idle, hover, activating, active
   const portalRef = useRef(null);
   const hoverTimestampRef = useRef(null);
-  const HOVER_MIN_DURATION = 3000;
   const transitionDuration = 2.0;
 
   const handleMouseEnter = () => {

@@ -11,7 +11,7 @@ function slugify(text: any) {
   return String(text)
     .toLowerCase()
     .replace(/\s+/g, '-')
-    .replace(/[^a-z0-9\-]/g, '');
+    .replace(/[^a-z0-9-]/g, '');
 }
 
 export default function Infos() {
@@ -54,14 +54,15 @@ export default function Infos() {
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   };
 
-  const Heading =
-    (Tag: string) =>
-    ({ children }: { children: any }) => {
+  const Heading = (Tag: string) => {
+    const HeadingComponent = ({ children }: { children: any }) => {
       const text = Array.isArray(children) ? children.join('') : children;
       const id = slugify(text);
-      // @ts-ignore
       return React.createElement(Tag, { id }, children);
     };
+    HeadingComponent.displayName = `Heading(${Tag})`;
+    return HeadingComponent;
+  };
 
   return (
     <div className={`infos-page ${theme}`}>

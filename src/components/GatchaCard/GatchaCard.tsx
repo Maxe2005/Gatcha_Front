@@ -15,7 +15,7 @@ const GatchaCard = ({
   monstre,
   flipOnHover = false,
   disableClickFlip = false,
-  onClick = (e) => {},
+  onClick = (_e) => {},
 }) => {
   const defaultImage = '/assets/monsters/Default_Monster.webp';
   const defaultElementImage = '/assets/elements/Default_Element.webp';

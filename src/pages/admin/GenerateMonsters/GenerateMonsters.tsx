@@ -87,7 +87,7 @@ const GenerateMonsters = () => {
         setBatchCount(parsed.batchCount);
         setIsLoading(true);
         setStartTime(parsed.startedAt);
-      } catch (e) {
+      } catch {
         localStorage.removeItem('monsterBatchPending');
       }
     }
@@ -105,10 +105,9 @@ const GenerateMonsters = () => {
   // Suivi WebSocket (sera branché après POST)
   useEffect(() => {
     if (!pendingBatch || !pendingBatch.batchId) return;
-    let ws;
     let isClosed = false;
-    let monsters = [];
-    ws = new window.WebSocket(
+    const monsters = [];
+    const ws = new window.WebSocket(
       `${window.location.protocol === 'https:' ? 'wss' : 'ws'}://localhost:8000/api/v1/monsters/ws/${pendingBatch.batchId}`
     );
     wsRef.current = ws;
@@ -143,7 +142,7 @@ const GenerateMonsters = () => {
             20000
           );
         }
-      } catch (e) {
+      } catch {
         // ignore parse error
       }
     };

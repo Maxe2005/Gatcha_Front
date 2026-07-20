@@ -85,7 +85,7 @@ const AdminMonsterDetail = () => {
         const imagesRes = await adminApiService.getMonsterImages(monsterId);
         setMonsterImages(imagesRes.images || []);
         setDefaultImage(imagesRes.default_image || null);
-      } catch (err) {
+      } catch {
         setMonsterImages([]);
         setDefaultImage(null);
       }

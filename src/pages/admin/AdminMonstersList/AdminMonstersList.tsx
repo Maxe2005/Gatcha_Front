@@ -123,7 +123,7 @@ const AdminMonstersList = () => {
 
   // Filter monsters based on current filters
   const getFilteredMonsters = useCallback(() => {
-    let filtered = allMonsters.filter((monster) => {
+    const filtered = allMonsters.filter((monster) => {
       // Search by name
       if (
         searchKeyword &&

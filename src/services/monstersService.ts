@@ -13,17 +13,9 @@ import {
   cacheMonster,
   cacheMonsters,
 } from './indexedDBService';
-import type { MonsterData, MonsterStats } from '../types/monster';
-import type { MonsterSkill } from '../types/skill';
+import type { MonsterData } from '../types/monster';
 import { Element } from '../enums/elements.enum';
 import { Rank } from '../enums/ranks.enum';
-
-type MonsterSearchCriteria = {
-  element?: string;
-  rang?: string;
-  minLevel?: number;
-  maxLevel?: number;
-};
 
 /**
  * Routes disponibles sur le service Monstres
