@@ -27,19 +27,19 @@ import {
   generateMonster,
   generateMonsterBatch,
 } from '../../../services/generationService';
-import { useNotification } from '../../../context/NotificationContext';
+import {
+  notifySuccess,
+  notifyError,
+  notifyInfo,
+  notifyLoading,
+  dismissToast,
+} from '../../../services/notificationService';
 import { useTheme } from '../../../context/ThemeContext';
 import './GenerateMonsters.css';
 
 const GenerateMonsters = () => {
   const { theme } = useTheme();
   const isDark = theme === 'dark';
-  const {
-    success,
-    error: showError,
-    addNotification,
-    removeNotification,
-  } = useNotification();
   const navigate = useNavigate();
 
   const [prompt, setPrompt] = useState('');
@@ -118,29 +118,28 @@ const GenerateMonsters = () => {
           setIsLoading(false);
           setPendingBatch(null);
           localStorage.removeItem('monsterBatchPending');
-          success(`✅ ${monsters.length} monstre(s) généré(s) avec succès !`);
+          notifySuccess(
+            `${monsters.length} monstre(s) généré(s) avec succès !`,
+            20000
+          );
           ws.close();
           isClosed = true;
         } else if (data.error) {
           const errorMessage = parseErrorMessage(data.error);
           setError(errorMessage);
-          showError(`❌ Erreur: ${errorMessage}`);
+          notifyError(errorMessage);
           setIsLoading(false);
           setPendingBatch(null);
           localStorage.removeItem('monsterBatchPending');
           if (!isClosed) ws.close();
         } else if (data.info) {
-          addNotification(`ℹ️ ${data.info}`, 'info', 20000);
+          notifyInfo(data.info, 20000);
         } else if (data.monster) {
           const monster = data.monster;
           monsters.push(monster);
           setGeneratedMonsters((prev) => [...prev, monster]);
 
-          addNotification(
-            `✅ Monstre généré : ${monster.nom || 'Inconnu'}`,
-            'success',
-            20000
-          );
+          notifySuccess(`Monstre généré : ${monster.nom || 'Inconnu'}`, 20000);
         }
       } catch {
         // ignore parse error
@@ -178,20 +177,13 @@ const GenerateMonsters = () => {
     return lines[0] || str;
   };
 
-  const startBackgroundNotification = (label) =>
-    addNotification(`⏳ ${label} en cours...`, 'info', 0);
-
-  const finishBackgroundNotification = (notificationId) => {
-    if (notificationId) removeNotification(notificationId);
-  };
-
   const handleGenerateSingle = async () => {
     if (!prompt.trim()) {
-      showError('Veuillez entrer un prompt');
+      notifyError('Veuillez entrer un prompt');
       return;
     }
     if (localStorage.getItem('monsterBatchPending')) {
-      showError('Une génération de monstres est déjà en cours.');
+      notifyError('Une génération de monstres est déjà en cours.');
       return;
     }
     setIsLoading(true);
@@ -199,7 +191,7 @@ const GenerateMonsters = () => {
     setGeneratedMonsters([]);
     setStartTime(Date.now());
     setElapsedTime(0);
-    const notificationId = startBackgroundNotification('Generation du monstre');
+    const toastId = notifyLoading('Génération du monstre en cours...');
     try {
       const result = await generateMonster(prompt);
       if (result && result.batch_id) {
@@ -217,26 +209,26 @@ const GenerateMonsters = () => {
     } catch (err) {
       const errorMessage = parseErrorMessage(err);
       setError(errorMessage);
-      showError(`❌ Erreur: ${errorMessage}`);
+      notifyError(errorMessage);
       setIsLoading(false);
       setPendingBatch(null);
       localStorage.removeItem('monsterBatchPending');
     } finally {
-      finishBackgroundNotification(notificationId);
+      dismissToast(toastId);
     }
   };
 
   const handleGenerateBatch = async () => {
     if (!prompt.trim()) {
-      showError('Veuillez entrer un prompt');
+      notifyError('Veuillez entrer un prompt');
       return;
     }
     if (batchCount < 1 || batchCount > 10) {
-      showError('Le nombre de monstres doit être entre 1 et 10');
+      notifyError('Le nombre de monstres doit être entre 1 et 10');
       return;
     }
     if (localStorage.getItem('monsterBatchPending')) {
-      showError('Une génération de monstres est déjà en cours.');
+      notifyError('Une génération de monstres est déjà en cours.');
       return;
     }
     setIsLoading(true);
@@ -244,8 +236,8 @@ const GenerateMonsters = () => {
     setGeneratedMonsters([]);
     setStartTime(Date.now());
     setElapsedTime(0);
-    const notificationId = startBackgroundNotification(
-      `Generation de ${batchCount} monstre(s)`
+    const toastId = notifyLoading(
+      `Génération de ${batchCount} monstre(s) en cours...`
     );
     try {
       const result = await generateMonsterBatch(batchCount, prompt);
@@ -264,12 +256,12 @@ const GenerateMonsters = () => {
     } catch (err) {
       const errorMessage = parseErrorMessage(err);
       setError(errorMessage);
-      showError(`❌ Erreur: ${errorMessage}`);
+      notifyError(errorMessage);
       setIsLoading(false);
       setPendingBatch(null);
       localStorage.removeItem('monsterBatchPending');
     } finally {
-      finishBackgroundNotification(notificationId);
+      dismissToast(toastId);
     }
   };
 
