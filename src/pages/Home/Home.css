@@ -166,41 +166,6 @@
   pointer-events: none;
 }
 
-.particle {
-  position: absolute;
-  border-radius: 50%;
-  background: var(--particle-color);
-  box-shadow: 0 0 6px var(--particle-color);
-  filter: blur(0.5px);
-}
-
-.particle.divine {
-  box-shadow:
-    0 0 6px #ffeb99,
-    0 0 12px rgba(255, 200, 0, 0.6);
-}
-
-.particle.dark {
-  box-shadow:
-    0 0 6px #ff6b6b,
-    0 0 12px rgba(255, 50, 50, 0.7);
-}
-
-@keyframes float-to-center {
-  0% {
-    opacity: 1;
-    transform: translate(0, 0) scale(1);
-  }
-  85% {
-    opacity: 0.8;
-    transform: translate(calc(-50vw + 50%), calc(-50vh + 50%)) scale(0.6);
-  }
-  100% {
-    opacity: 0;
-    transform: translate(calc(-50vw + 50%), calc(-50vh + 50%)) scale(0);
-  }
-}
-
 /* =========================================
    TOP HUD
    ========================================= */
