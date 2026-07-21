@@ -19,9 +19,12 @@ npm run preview
 npm run lint         # ESLint (babel parser — does NOT type-check)
 npm run format       # Prettier, writes in place
 npm run typecheck    # tsc --noEmit
+npm test             # vitest run — see Testing below
 ```
 
-There is **no test framework** configured (no Jest/Vitest despite `babel.config.json` existing) — there is no way to run tests.
+### Testing
+
+Vitest (`vitest.config.ts`, node environment) covers the pure normalization/validation logic of the API service layer: `authService.test.ts`, `invocationService.test.ts`, `monstersService.test.ts`, `joueurService.test.ts` (all colocated under `src/services/`). Each test file mocks `./api` (the axios instances) and `./logger` with `vi.mock` so tests never hit the network; `monstersService.test.ts` also mocks `./indexedDBService` since IndexedDB isn't available under Vitest's node environment. Run a single file with `npx vitest run src/services/authService.test.ts`. UI components have no test coverage yet.
 
 The local `Makefile` (`make up/down/restart/logs/...`) does not run anything locally: it proxies to the root repo's `docker-compose.yaml` scoped to the `gatcha-front` service, which builds the production image (nginx serving `dist/`). For development, use `npm run dev` directly.
 

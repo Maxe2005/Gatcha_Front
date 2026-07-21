@@ -168,7 +168,7 @@ export const joueurService = {
           400
         );
       }
-      if (typeof xp !== 'number' || xp <= 0) {
+      if (!Number.isFinite(xp) || xp <= 0) {
         throw new ApiError(
           ErrorTypes.VALIDATION,
           'XP must be a positive number',
