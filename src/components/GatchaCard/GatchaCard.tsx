@@ -139,6 +139,19 @@ const GatchaCard = ({
     <div
       className={`card-container ${flipOnHover ? 'hover-flip' : ''}`}
       onClick={handleClick}
+      {...(!disableClickFlip
+        ? {
+            role: 'button',
+            tabIndex: 0,
+            'aria-label': `${monstre.name || 'Monstre'} (retourner la carte)`,
+            onKeyDown: (e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleClick(e);
+              }
+            },
+          }
+        : {})}
     >
       {/* Hidden image to handle load errors (fallback to default) */}
       <img

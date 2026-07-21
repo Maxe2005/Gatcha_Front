@@ -141,6 +141,19 @@ const SkillCard = ({
     <div
       className={`skill-card-container ${flipOnHover ? 'hover-flip' : ''}`}
       onClick={handleClick}
+      {...(!disableClickFlip
+        ? {
+            role: 'button',
+            tabIndex: 0,
+            'aria-label': `${skill.name || 'Compétence'} (retourner la carte)`,
+            onKeyDown: (e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleClick(e);
+              }
+            },
+          }
+        : {})}
     >
       <img
         src={currentImage}

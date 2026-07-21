@@ -219,6 +219,17 @@ const CanvasParticleSystem = ({
 
   const isDark = theme === 'dark';
   const isAmbient = mode === 'ambient';
+  const prefersReducedMotionRef = useRef(false);
+
+  useEffect(() => {
+    const query = window.matchMedia('(prefers-reduced-motion: reduce)');
+    prefersReducedMotionRef.current = query.matches;
+    const handleChange = (e: MediaQueryListEvent) => {
+      prefersReducedMotionRef.current = e.matches;
+    };
+    query.addEventListener('change', handleChange);
+    return () => query.removeEventListener('change', handleChange);
+  }, []);
 
   useEffect(() => {
     pausedRef.current = paused;
@@ -255,6 +266,7 @@ const CanvasParticleSystem = ({
 
         if (
           !pausedRef.current &&
+          !prefersReducedMotionRef.current &&
           timestamp - lastSpawnRef.current >= AMBIENT_SPAWN_INTERVAL_MS
         ) {
           lastSpawnRef.current = timestamp;
@@ -304,6 +316,7 @@ const CanvasParticleSystem = ({
   // Handler pour les clics
   const handleCanvasClick = useCallback(
     (e: React.MouseEvent<HTMLCanvasElement>) => {
+      if (prefersReducedMotionRef.current) return;
       const canvas = canvasRef.current;
       const rect = canvas.getBoundingClientRect();
       const x = e.clientX - rect.left;
@@ -321,6 +334,7 @@ const CanvasParticleSystem = ({
   // Handler pour le trail sur mouvement
   const handleMouseMove = useCallback(
     (e: React.MouseEvent<HTMLCanvasElement>) => {
+      if (prefersReducedMotionRef.current) return;
       const canvas = canvasRef.current;
       const rect = canvas.getBoundingClientRect();
       const x = e.clientX - rect.left;

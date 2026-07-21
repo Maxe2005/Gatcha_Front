@@ -1,5 +1,5 @@
 // @ts-nocheck -- strict TypeScript activé globalement (P1.2) ; ce fichier n'est pas encore migré, voir ROADMAP.md P1.2
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useTheme } from '../../context/ThemeContext';
 import { usePlayer } from '../../context/PlayerContext';
 import { useNavigate } from 'react-router-dom';
@@ -9,6 +9,7 @@ import SkillCard from '../../components/SkillCard/SkillCard';
 import './Inventory.css';
 import ThemeToggle from '../../components/ThemeToggle/ThemeToggle';
 import PageBackground from '../../components/PageBackground/PageBackground';
+import { useFocusTrap } from '../../hooks/useFocusTrap';
 
 const Inventory = () => {
   const { theme } = useTheme();
@@ -31,6 +32,9 @@ const Inventory = () => {
 
   const [selectedMonster, setSelectedMonster] = useState(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const modalRef = useRef(null);
+
+  useFocusTrap(!!selectedMonster, modalRef);
 
   // Filter Logic
   const filteredCards = inventoryData.filter((card) => {
@@ -139,7 +143,16 @@ const Inventory = () => {
             <div
               key={monster.id || index}
               className="inventory-card-wrapper"
+              role="button"
+              tabIndex={0}
+              aria-label={`Voir les détails de ${monster.name || 'ce monstre'}`}
               onClick={() => handleCardDoubleClick(monster)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                  e.preventDefault();
+                  handleCardDoubleClick(monster);
+                }
+              }}
             >
               <GatchaCard
                 monstre={monster}
@@ -159,12 +172,20 @@ const Inventory = () => {
       {/* DETAIL MODAL OVERLAY */}
       {selectedMonster && (
         <div
+          ref={modalRef}
           className={`detail-overlay ${isTransitioning ? 'fade-in' : 'visible'}`}
+          role="dialog"
+          aria-modal="true"
+          aria-label={`Détails de ${selectedMonster.name || 'ce monstre'}`}
           onClick={(e) => {
             if (e.target === e.currentTarget) closeDetailView();
           }}
         >
-          <button className="close-btn" onClick={closeDetailView}>
+          <button
+            className="close-btn"
+            onClick={closeDetailView}
+            aria-label="Fermer"
+          >
             ×
           </button>
 
