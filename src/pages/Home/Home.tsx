@@ -70,7 +70,7 @@ const Home = () => {
             avatarFrameImage={
               theme === 'divine'
                 ? '/assets/home_icons/Cadre_avatar_divine.webp'
-                : '/assets/home_icons/Cardre_avatar_dark.webp'
+                : '/assets/home_icons/Cadre_avatar_dark.webp'
             }
             onAvatarClick={() => navigate('/profile')}
           />

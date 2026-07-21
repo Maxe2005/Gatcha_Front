@@ -70,4 +70,3 @@ Routing: pages are lazy-loaded with `Suspense`. `PrivateRoute` redirects to `/lo
 - Terser strips `console.*` in production builds, so console logging is dev-only by construction.
 - Naming is inconsistent around "Gatcha/Gacha": the page folder is `src/pages/Gatcha/` but the component/file is `Gacha.tsx`, route `/gacha`. Match existing spellings when navigating or importing.
 - UI copy (labels, error messages, notifications) is in **French** — keep new user-facing text in French.
-- `docs/` holds historical audit/implementation reports, not living documentation.

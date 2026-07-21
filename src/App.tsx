@@ -21,16 +21,6 @@ import AdminMonstersList from './pages/admin/AdminMonstersList/AdminMonstersList
 import AdminMonsterDetail from './pages/admin/AdminMonsterDetail/AdminMonsterDetail';
 import { BackgroundViewProvider } from './context/BackgroundViewContext';
 
-// // Fonction pour simuler un délai de chargement (pour le développement)
-// const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-
-// // Lazy load des pages pour Code Splitting avec délai simulé de 5s
-// const Login = lazy(() => delay(5000).then(() => import('./pages/Login')));
-// const Home = lazy(() => delay(5000).then(() => import('./pages/Home')));
-// const Gacha = lazy(() => delay(5000).then(() => import('./pages/Gacha')));
-// const Inventory = lazy(() =>
-//   delay(5000).then(() => import('./pages/Inventory'));
-
 const Login = lazy(() => import('./pages/Login/Login'));
 const Home = lazy(() => import('./pages/Home/Home'));
 const Gacha = lazy(() => import('./pages/Gatcha/Gacha'));
