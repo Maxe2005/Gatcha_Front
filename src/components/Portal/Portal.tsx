@@ -22,18 +22,8 @@ const Portal = ({ onInvoke, isLoading = false, transitioning = false }) => {
 
   const handleMouseLeave = () => {
     if (!isLoading && state === 'hover') {
-      // const elapsedTime =
-      //   Date.now() - (hoverTimestampRef.current || Date.now());
-
-      // if (elapsedTime < HOVER_MIN_DURATION) {
-      //   setTimeout(() => {
-      //     setState('idle');
-      //     hoverTimestampRef.current = null;
-      //   }, HOVER_MIN_DURATION);
-      // } else {
       setState('idle');
       hoverTimestampRef.current = null;
-      // }
     }
   };
 
