@@ -10,6 +10,8 @@ import ThemeToggle from '../../components/ThemeToggle/ThemeToggle';
 import ConfirmDialog from '../../components/ConfirmDialog/ConfirmDialog';
 import { notifyError } from '../../services/notificationService';
 import { logger } from '../../services/logger';
+import PageBackground from '../../components/PageBackground/PageBackground';
+import { PlayerAvatar, PlayerResources } from '../../components/GameHUD/GameHUD';
 
 const Profile = () => {
   const { theme } = useTheme();
@@ -44,10 +46,7 @@ const Profile = () => {
 
   return (
     <div className={`profile-container ${theme}`}>
-      <div className="background-layer global-bg">
-        <div className="sky-gradient" />
-        <div className="clouds-layer" />
-      </div>
+      <PageBackground theme={theme} className="global-bg" showFogEffects={false} />
 
       <div className="profile-header glass-panel">
         <button className="nav-back-btn" onClick={() => navigate('/home')}>
@@ -55,41 +54,21 @@ const Profile = () => {
         </button>
 
         <div className="profile-main">
-          <div className="avatar-block">
-            <div className="avatar-frame">
-              <div className="avatar-placeholder">
-                {playerData?.username?.charAt(0).toUpperCase() || '?'}
-              </div>
-            </div>
-            <div className="player-meta">
-              <h2 className="player-name">
-                {playerData?.username || 'Voyageur'}
-              </h2>
-              <div className="level-row">
-                <span className="level-badge">
-                  Niv. {playerData?.level || 1}
-                </span>
-                <div className="xp-bar-container">
-                  <div className="xp-bar" style={{ width: `${xpPercent}%` }} />
-                </div>
-              </div>
-            </div>
-          </div>
+          <PlayerAvatar
+            variant="panel"
+            username={playerData?.username}
+            level={playerData?.level}
+            xpPercent={xpPercent}
+          />
 
-          <div className="resources-block">
-            <div className="resource-item">
-              <div className="label">Or</div>
-              <div className="value">{playerData?.gold ?? 0}</div>
-            </div>
-            <div className="resource-item">
-              <div className="label">Gemmes</div>
-              <div className="value">{playerData?.gems ?? 0}</div>
-            </div>
-            <div className="resource-item">
-              <div className="label">Tickets</div>
-              <div className="value">{playerData?.tickets ?? 0}</div>
-            </div>
-          </div>
+          <PlayerResources
+            variant="panel"
+            resources={{
+              gold: playerData?.gold ?? 0,
+              gems: playerData?.gems ?? 0,
+              tickets: playerData?.tickets ?? 0,
+            }}
+          />
 
           <div className="header-actions">
             <button className="action-btn" onClick={handleLogout}>
