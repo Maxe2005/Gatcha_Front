@@ -8,6 +8,7 @@ import GatchaCard from '../../components/GatchaCard/GatchaCard';
 import SkillCard from '../../components/SkillCard/SkillCard';
 import './Inventory.css';
 import ThemeToggle from '../../components/ThemeToggle/ThemeToggle';
+import PageBackground from '../../components/PageBackground/PageBackground';
 
 const Inventory = () => {
   const { theme } = useTheme();
@@ -68,25 +69,8 @@ const Inventory = () => {
     <div
       className={`inventory-container ${theme} ${selectedMonster ? 'blur-background' : ''}`}
     >
-      {/* BACKGROUND (Copied structure from Home for consistency) */}
-      <div className="background-layer global-bg">
-        <div className="sky-gradient"></div>
-        <div className="clouds-layer"></div>
-        <div className={theme === 'divine' ? 'divine-rays' : 'dark-fog'}>
-          {theme === 'divine' ? (
-            <>
-              <div className="ray r1"></div>
-              <div className="ray r2"></div>
-            </>
-          ) : (
-            <>
-              <div className="fog f1"></div>
-              <div className="fog f2"></div>
-              <div className="embers"></div>
-            </>
-          )}
-        </div>
-      </div>
+      {/* BACKGROUND (structure partagée avec Home via PageBackground) */}
+      <PageBackground theme={theme} className="global-bg" rayCount={2} />
 
       {/* HEADER / HUD */}
       <div className="filter-bar glass-panel">

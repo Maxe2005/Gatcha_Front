@@ -8,6 +8,8 @@ import './Home.css';
 import ThemeToggle from '../../components/ThemeToggle/ThemeToggle';
 import Portal from '../../components/Portal/Portal';
 import CanvasParticleSystem from '../../components/CanvasParticleSystem';
+import PageBackground from '../../components/PageBackground/PageBackground';
+import { PlayerAvatar, PlayerResources } from '../../components/GameHUD/GameHUD';
 
 const Home = () => {
   const { theme } = useTheme();
@@ -46,25 +48,7 @@ const Home = () => {
       className={`home-container ${theme} ${isLoaded ? 'loaded' : ''} ${isTransitioning ? 'transitioning' : ''}`}
     >
       {/* BACKGROUND LAYER */}
-      <div className="background-layer">
-        <div className="sky-gradient"></div>
-        <div className="clouds-layer"></div>
-        {theme === 'divine' ? (
-          <div className="divine-rays">
-            <div className="ray r1"></div>
-            <div className="ray r2"></div>
-            <div className="ray r3"></div>
-          </div>
-        ) : (
-          <div className="dark-fog">
-            <div className="fog f1"></div>
-            <div className="fog f2"></div>
-            <div className="embers"></div>
-          </div>
-        )}
-        <div className="scenery scenery-left"></div>
-        <div className="scenery scenery-right"></div>
-      </div>
+      <PageBackground theme={theme} rayCount={3} showScenery />
 
       {/* COUCHE E : Particules & FX */}
       <div className="portal-layer particles-layer">
@@ -78,44 +62,18 @@ const Home = () => {
       {/* TOP HUD */}
       <header className="top-hud">
         <div className="hud-content">
-          {/* Avatar Section */}
-          <div
-            className="avatar-section"
-            onClick={() => navigate('/profile')}
-            title="Profile"
-          >
-            <div className="avatar-frame">
-              <img
-                src={
-                  theme === 'divine'
-                    ? '/assets/home_icons/Cadre_avatar_divine.webp'
-                    : '/assets/home_icons/Cardre_avatar_dark.webp'
-                }
-                alt="Avatar Frame"
-                className="avatar-frame-image"
-              />
-              <div className="avatar-placeholder">
-                {playerData?.username?.charAt(0).toUpperCase() || '?'}
-              </div>
-              <div className="status-indicator"></div>
-            </div>
-            <div className="player-info">
-              <span className="player-name">
-                {playerData?.username || 'Voyageur'}
-              </span>
-              <div className="level-info">
-                <span className="level-badge">
-                  Niv. {playerData?.level || 1}
-                </span>
-                <div className="xp-bar-container">
-                  <div
-                    className="xp-bar"
-                    style={{ width: `${xpPercent}%` }}
-                  ></div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <PlayerAvatar
+            variant="floating"
+            username={playerData?.username}
+            level={playerData?.level}
+            xpPercent={xpPercent}
+            avatarFrameImage={
+              theme === 'divine'
+                ? '/assets/home_icons/Cadre_avatar_divine.webp'
+                : '/assets/home_icons/Cardre_avatar_dark.webp'
+            }
+            onAvatarClick={() => navigate('/profile')}
+          />
 
           {/* Admin Button - visible uniquement pour l'admin */}
           {isAdmin && (
@@ -128,21 +86,7 @@ const Home = () => {
             </button>
           )}
 
-          {/* Resources Section */}
-          <div className="resources-section">
-            <div className="resource-item gold" title="Or">
-              <span className="icon">🪙</span>
-              <span className="count">{resources.gold.toLocaleString()}</span>
-            </div>
-            <div className="resource-item gems" title="Gemmes">
-              <span className="icon">💎</span>
-              <span className="count">{resources.gems.toLocaleString()}</span>
-            </div>
-            <div className="resource-item tickets" title="Tickets d'invocation">
-              <span className="icon">🎫</span>
-              <span className="count">{resources.tickets}</span>
-            </div>
-          </div>
+          <PlayerResources variant="floating" resources={resources} />
 
           {/* Theme Toggle */}
           <div className="theme-toggle-wrapper">
