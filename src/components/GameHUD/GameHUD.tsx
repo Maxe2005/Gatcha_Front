@@ -57,7 +57,20 @@ export const PlayerAvatar = ({
   }
 
   return (
-    <div className="avatar-section" onClick={onAvatarClick} title="Profile">
+    <div
+      className="avatar-section"
+      onClick={onAvatarClick}
+      title="Profile"
+      role="button"
+      tabIndex={0}
+      aria-label="Voir le profil"
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onAvatarClick?.();
+        }
+      }}
+    >
       <div className="avatar-frame">
         {avatarFrameImage && (
           <img
