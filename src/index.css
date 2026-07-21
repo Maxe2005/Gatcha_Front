@@ -1,3 +1,12 @@
+/* Reset box-sizing (fourni auparavant par le CssBaseline de MUI) :
+   sans lui, le padding/bordure s'ajoutent à la largeur au lieu d'y
+   être inclus, ce qui fait déborder les champs de formulaire. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 :root {
   /* Light Theme (Default) */
   --primary-color: #f1c40f;
