@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { tokenStorage } from './tokenStorage';
 
 /**
  * Centralized API Error Handling
@@ -100,19 +101,38 @@ export const createApiClient = (baseURL: string) => {
 
   // Request interceptor - Add token to all requests
   instance.interceptors.request.use((config) => {
-    const match = document.cookie.match(/token=([^;]+)/);
-    if (match) {
-      config.headers.Authorization = `Bearer ${match[1]}`;
+    const token = tokenStorage.getAccessToken();
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   });
 
-  // Response interceptor - Standardize error handling
+  // Response interceptor - Standardize error handling, with a silent
+  // refresh-and-retry on 401 (access token expired/invalid).
+  // `refreshService` is imported dynamically here (instead of at module
+  // top-level) because it transitively imports `authService`, which itself
+  // imports this module for ApiError/parseApiError — a static import would
+  // create a require cycle that breaks the `authApi`/`createApiClient`
+  // instances built eagerly at module-load time in api.ts.
   instance.interceptors.response.use(
     (response) => response,
-    (error) => {
-      const apiError = parseApiError(error);
-      throw apiError;
+    async (error) => {
+      const status = error?.response?.status;
+      const originalRequest = error?.config;
+
+      if (status === 401 && originalRequest && !originalRequest._retry) {
+        originalRequest._retry = true;
+        const { refreshAccessToken } = await import('./refreshService');
+        const newAccessToken = await refreshAccessToken();
+        if (newAccessToken) {
+          originalRequest.headers = originalRequest.headers ?? {};
+          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+          return instance(originalRequest);
+        }
+      }
+
+      return Promise.reject(parseApiError(error));
     }
   );
 
