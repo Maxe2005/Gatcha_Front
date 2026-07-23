@@ -211,42 +211,44 @@
   color: var(--text-primary);
 }
 
+/* Palette de rareté fixe (voir CLAUDE.md), indépendante du thème divine/dark actif. */
 .skill-card-face.rank-common {
-  --rank-color: #a8a8a8;
-  --rank-glow: rgba(168, 168, 168, 0.35);
+  --rank-color: #9aa1a8;
+  --rank-glow: var(--rank-common-glow);
 }
 
 .skill-card-face.rank-rare {
-  --rank-color: #5eb3ff;
-  --rank-glow: rgba(94, 179, 255, 0.45);
+  --rank-color: #4fd8ff;
+  --rank-glow: var(--rank-rare-glow);
 }
 
 .skill-card-face.rank-epic {
-  --rank-color: #b967ff;
-  --rank-glow: rgba(185, 103, 255, 0.45);
+  --rank-color: #ff5fd1;
+  --rank-glow: var(--rank-epic-glow);
 }
 
 .skill-card-face.rank-legendary {
-  --rank-color: #ffb347;
-  --rank-glow: rgba(255, 179, 71, 0.5);
+  --rank-color: #ffd700;
+  --rank-glow: var(--rank-legendary-glow);
 }
 
 .skill-rank-badge.rank-common {
-  background: linear-gradient(135deg, #d4d4d4 0%, #a8a8a8 100%);
+  background: var(--rank-common);
   color: #1f1f1f;
 }
 
 .skill-rank-badge.rank-rare {
-  background: linear-gradient(135deg, #5eb3ff 0%, #3d8bd4 100%);
+  background: var(--rank-rare);
 }
 
 .skill-rank-badge.rank-epic {
-  background: linear-gradient(135deg, #b967ff 0%, #8e44db 100%);
+  background: var(--rank-epic);
 }
 
 .skill-rank-badge.rank-legendary {
-  background: linear-gradient(135deg, #ffb347 0%, #ff8c00 100%);
-  color: #1b1b1b;
+  background: var(--rank-legendary);
+  color: #ffffff;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
 }
 
 @media (max-width: 768px) {
