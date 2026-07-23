@@ -1,7 +1,6 @@
 // @ts-nocheck -- strict TypeScript activé globalement (P1.2) ; ce fichier n'est pas encore migré, voir ROADMAP.md P1.2
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Header from '../../../components/Header/Header';
 import {
   generateMonster,
   generateMonsterBatch,
@@ -271,7 +270,6 @@ const GenerateMonsters = () => {
 
   return (
     <div className={`generate-page theme-${theme}`} ref={pageRef}>
-      <Header />
       <div className="generate-container">
         {/* Bouton retour dashboard */}
         <button
