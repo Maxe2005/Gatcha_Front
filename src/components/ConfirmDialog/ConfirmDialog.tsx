@@ -1,5 +1,6 @@
 // @ts-nocheck -- strict TypeScript activé globalement (P1.2) ; ce fichier n'est pas encore migré, voir ROADMAP.md P1.2
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
+import { useFocusTrap } from '../../hooks/useFocusTrap';
 import './ConfirmDialog.css';
 
 const ConfirmDialog = ({
@@ -12,6 +13,19 @@ const ConfirmDialog = ({
   onCancel,
   isDangerous = false,
 }) => {
+  const dialogRef = useRef(null);
+
+  useFocusTrap(isOpen, dialogRef);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    const handleEsc = (e) => {
+      if (e.key === 'Escape') onCancel();
+    };
+    window.addEventListener('keydown', handleEsc);
+    return () => window.removeEventListener('keydown', handleEsc);
+  }, [isOpen, onCancel]);
+
   if (!isOpen) return null;
 
   const handleBackdropClick = (e) => {
@@ -22,9 +36,15 @@ const ConfirmDialog = ({
 
   return (
     <div className="confirm-dialog-backdrop" onClick={handleBackdropClick}>
-      <div className="confirm-dialog">
+      <div
+        className="confirm-dialog"
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="confirm-dialog-title"
+      >
         <div className="confirm-dialog-header">
-          <h2>{title}</h2>
+          <h2 id="confirm-dialog-title">{title}</h2>
         </div>
 
         <div className="confirm-dialog-body">
