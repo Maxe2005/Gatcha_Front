@@ -10,31 +10,63 @@ import ThemeToggle from '../../components/ThemeToggle/ThemeToggle';
 import { usePlayer } from '../../context/PlayerContext';
 
 const PersonIcon = ({ className }) => (
-  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" className={className}>
+  <svg
+    viewBox="0 0 24 24"
+    width="20"
+    height="20"
+    fill="currentColor"
+    aria-hidden="true"
+    className={className}
+  >
     <path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10zm0 2c-4.42 0-8 2.24-8 5v3h16v-3c0-2.76-3.58-5-8-5z" />
   </svg>
 );
 
 const LockIcon = ({ className }) => (
-  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true" className={className}>
+  <svg
+    viewBox="0 0 24 24"
+    width="20"
+    height="20"
+    fill="currentColor"
+    aria-hidden="true"
+    className={className}
+  >
     <path d="M12 2a5 5 0 0 0-5 5v3H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-1V7a5 5 0 0 0-5-5zm-3 8V7a3 3 0 1 1 6 0v3H9z" />
   </svg>
 );
 
 const EyeIcon = () => (
-  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
+  <svg
+    viewBox="0 0 24 24"
+    width="20"
+    height="20"
+    fill="currentColor"
+    aria-hidden="true"
+  >
     <path d="M12 5c-5 0-9.27 3.11-11 7 1.73 3.89 6 7 11 7s9.27-3.11 11-7c-1.73-3.89-6-7-11-7zm0 12a5 5 0 1 1 0-10 5 5 0 0 1 0 10zm0-8a3 3 0 1 0 0 6 3 3 0 0 0 0-6z" />
   </svg>
 );
 
 const EyeOffIcon = () => (
-  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
+  <svg
+    viewBox="0 0 24 24"
+    width="20"
+    height="20"
+    fill="currentColor"
+    aria-hidden="true"
+  >
     <path d="M2 4.27 3.28 3l18 18-1.27 1.27-3.14-3.14A11.6 11.6 0 0 1 12 20c-5 0-9.27-3.11-11-7 .74-1.67 1.87-3.11 3.26-4.24L2 4.27zM12 8a4 4 0 0 1 4 4c0 .53-.11 1.03-.29 1.49l-1.6-1.6A2 2 0 0 0 12 9.9l-1.6-1.6C10.86 8.11 11.36 8 12 8zm.03-4c5 0 9.27 3.11 11 7-.53 1.19-1.24 2.27-2.09 3.2l-1.42-1.42a9.6 9.6 0 0 0 1.5-1.78c-1.5-2.36-4.32-4.4-8.02-4.4-.9 0-1.75.12-2.55.35L8.85 5.35C9.86 5.03 10.92 4.86 12 4.86z" />
   </svg>
 );
 
 const SparkleIcon = () => (
-  <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" aria-hidden="true">
+  <svg
+    viewBox="0 0 24 24"
+    width="16"
+    height="16"
+    fill="currentColor"
+    aria-hidden="true"
+  >
     <path d="M12 2l1.8 5.2L19 9l-5.2 1.8L12 16l-1.8-5.2L5 9l5.2-1.8L12 2zm7 12 .9 2.6L22 17.5l-2.6.9L18.5 21l-.9-2.6L15 17.5l2.6-.9L18.5 14zM5 15l.7 2 2 .7-2 .7-.7 2-.7-2-2-.7 2-.7z" />
   </svg>
 );
@@ -84,16 +116,17 @@ const Login = () => {
     }
 
     try {
-      let token, user;
+      let token, refreshToken, user;
 
       if (isLogin) {
         // Login flow
         const response = await authService.login(username, password);
         token = response.token;
+        refreshToken = response.refreshToken;
         user = response.username;
 
         if (token) {
-          login(token, user);
+          login(token, refreshToken, user);
 
           // Ajouter la classe de sortie à la carte de login
           const loginCard = document.querySelector('.login-card');
@@ -123,10 +156,11 @@ const Login = () => {
           confirmPassword
         );
         token = response.token;
+        refreshToken = response.refreshToken;
         user = response.username;
 
         if (token) {
-          login(token, user);
+          login(token, refreshToken, user);
 
           try {
             const dataResponse = await joueurService.createPlayer(username);
@@ -311,11 +345,7 @@ const Login = () => {
           )}
 
           {/* Submit Button */}
-          <button
-            type="submit"
-            disabled={isLoading}
-            className="login-button"
-          >
+          <button type="submit" disabled={isLoading} className="login-button">
             {isLoading ? (
               <span className="login-button-spinner" aria-hidden="true" />
             ) : isLogin ? (

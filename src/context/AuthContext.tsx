@@ -8,6 +8,8 @@ import React, {
   useRef,
 } from 'react';
 import { authService } from '../services/authService';
+import { tokenStorage, SESSION_EXPIRED_EVENT } from '../services/tokenStorage';
+import { refreshAccessToken } from '../services/refreshService';
 /**
  * AuthContext - Responsabilité unique : AUTHENTIFICATION
  *
@@ -26,13 +28,7 @@ import { authService } from '../services/authService';
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
-  // Helper to get cookie value
-  const getTokenFromCookie = () => {
-    const match = document.cookie.match(new RegExp('(^| )token=([^;]+)'));
-    return match ? match[2] : null;
-  };
-
-  const [token, setToken] = useState(getTokenFromCookie());
+  const [token, setToken] = useState(tokenStorage.getAccessToken());
   const [user, setUser] = useState<{
     username: string;
     role: 'USER' | 'ADMIN' | null;
@@ -41,14 +37,15 @@ export const AuthProvider = ({ children }) => {
   const verificationPromise = useRef(null);
 
   const logout = useCallback(() => {
-    // Révocation du token côté API (fire-and-forget) : la déconnexion
+    // Révocation des tokens côté API (fire-and-forget) : la déconnexion
     // locale n'attend pas la réponse et n'échoue jamais
-    const currentToken = getTokenFromCookie();
+    const currentToken = tokenStorage.getAccessToken();
+    const currentRefreshToken = tokenStorage.getRefreshToken();
     if (currentToken) {
-      authService.logout(currentToken);
+      authService.logout(currentToken, currentRefreshToken);
     }
+    tokenStorage.clearTokens();
     setToken(null);
-    document.cookie = 'token=; path=/; max-age=0';
     setUser(null);
     hasVerified.current = false;
   }, []);
@@ -59,17 +56,38 @@ export const AuthProvider = ({ children }) => {
         return verificationPromise.current;
       }
 
+      const applyUser = (response) => {
+        if (response && response.username) {
+          setUser({ username: response.username, role: response.role });
+          return response;
+        }
+        return null;
+      };
+
       verificationPromise.current = (async () => {
         try {
           const response = await authService.verifyToken(tokenToVerify);
-          if (response && response.username) {
-            setUser({ username: response.username, role: response.role });
-            return response;
-          } else {
+          const applied = applyUser(response);
+          if (!applied) {
             logout();
-            return null;
           }
+          return applied;
         } catch {
+          // Le token d'accès est peut-être seulement expiré : tenter un
+          // rafraîchissement silencieux avant de forcer la déconnexion
+          const newAccessToken = await refreshAccessToken();
+          if (newAccessToken) {
+            setToken(newAccessToken);
+            try {
+              const response = await authService.verifyToken(newAccessToken);
+              const applied = applyUser(response);
+              if (applied) {
+                return applied;
+              }
+            } catch {
+              // Le nouveau token est lui aussi rejeté : déconnexion ci-dessous
+            }
+          }
           logout();
           return null;
         } finally {
@@ -83,11 +101,11 @@ export const AuthProvider = ({ children }) => {
   );
 
   const login = useCallback(
-    (newToken, username) => {
-      // Store in cookie FIRST: secure flag should be added in production with https
-      document.cookie = `token=${newToken}; path=/; max-age=86400; SameSite=Lax`;
+    (newToken, newRefreshToken, username) => {
+      // Store in cookies FIRST: secure flag is added automatically over HTTPS
+      tokenStorage.setTokens(newToken, newRefreshToken);
       setToken(newToken);
-      // Le login ne renvoie que le token : le rôle reste inconnu (null)
+      // Le login ne renvoie pas le rôle : il reste inconnu (null)
       // jusqu'à ce que verify-token le renseigne
       setUser({ username, role: null });
       hasVerified.current = true;
@@ -103,6 +121,13 @@ export const AuthProvider = ({ children }) => {
       verifyToken(token);
     }
   }, [token, user, verifyToken]);
+
+  // Déconnexion forcée si un rafraîchissement de token échoue ailleurs dans
+  // l'app (ex : intercepteur axios sur un appel API protégé)
+  useEffect(() => {
+    window.addEventListener(SESSION_EXPIRED_EVENT, logout);
+    return () => window.removeEventListener(SESSION_EXPIRED_EVENT, logout);
+  }, [logout]);
 
   const isAdmin = user?.role === 'ADMIN';
 
