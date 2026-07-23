@@ -6,24 +6,10 @@
  * CSS variables are generated from these values at runtime via injectColorsToCSS().
  */
 
-export const RANK_COLORS = {
-  COMMON: {
-    light: '#6b7280',
-    dark: '#9ca3af',
-  },
-  RARE: {
-    light: '#3b82f6',
-    dark: '#60a5fa',
-  },
-  EPIC: {
-    light: '#a855f7',
-    dark: '#c084fc',
-  },
-  LEGENDARY: {
-    light: '#f59e0b',
-    dark: '#fcd34d',
-  },
-};
+// Les couleurs de rareté (COMMON/RARE/EPIC/LEGENDARY) ne sont plus définies
+// ici : elles vivent dans les tokens --rank-* de src/index.css, palette fixe
+// partagée avec GatchaCard/SkillCard/Inventory (voir CLAUDE.md > "Direction
+// artistique & design system").
 
 export const ELEMENT_COLORS = {
   fire: {
@@ -81,18 +67,6 @@ export const getThemeColor = (colorVariants, isDarkMode = false) => {
 };
 
 /**
- * Helper function to get rank color
- * @param {string} rank - The rank name (COMMON, RARE, EPIC, LEGENDARY)
- * @param {boolean} isDarkMode - Whether dark mode is active
- * @returns {string} The color hex value
- */
-export const getRankColor = (rank, isDarkMode = false) => {
-  const rankColors = RANK_COLORS[rank];
-  if (!rankColors) return '#000';
-  return getThemeColor(rankColors, isDarkMode);
-};
-
-/**
  * Helper function to get element color
  * @param {string} element - The element name (fire, water, wind, earth, light, darkness)
  * @param {boolean} isDarkMode - Whether dark mode is active
@@ -111,14 +85,6 @@ export const getElementColor = (element, isDarkMode = false) => {
  */
 export const injectColorsToCSS = () => {
   const root = document.documentElement;
-
-  // Inject rank colors
-  Object.entries(RANK_COLORS).forEach(([rank, colors]) => {
-    const varName = `--rank-color-${rank.toLowerCase()}`;
-    const varNameDark = `--rank-color-${rank.toLowerCase()}-dark`;
-    root.style.setProperty(varName, colors.light);
-    root.style.setProperty(varNameDark, colors.dark);
-  });
 
   // Inject element colors
   Object.entries(ELEMENT_COLORS).forEach(([element, colors]) => {

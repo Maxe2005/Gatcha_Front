@@ -8,6 +8,82 @@
 }
 
 :root {
+  /* ============================================
+     DESIGN TOKENS — communs aux deux thèmes.
+     Voir Gatcha_Front/CLAUDE.md > "Direction artistique
+     & design system" pour le contrat que ces valeurs
+     encodent. Toute nouvelle taille/rayon/durée/z-index
+     doit venir de cette échelle, pas d'une valeur ad hoc.
+     ============================================ */
+
+  /* Typographie */
+  --text-display: 2.5rem;
+  --text-h1: 2rem;
+  --text-h2: 1.5rem;
+  --text-body: 1rem;
+  --text-small: 0.85rem;
+  --text-caption: 0.75rem;
+
+  /* Espacement (grille 4/8px) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* Rayons */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-pill: 999px;
+  --radius-circle: 50%;
+
+  /* Motion — plus une animation est spectaculaire, plus elle doit rester rare */
+  --motion-micro: 150ms;
+  --motion-micro-ease: ease-out;
+  --motion-transition: 300ms;
+  --motion-transition-ease: ease-in-out;
+  --motion-cinematic: 1.5s;
+  --motion-cinematic-ease: cubic-bezier(0.175, 0.885, 0.32, 1.27);
+
+  /* Z-index — carte documentée, ne pas inventer de valeur hors de cette liste */
+  --z-content: 1;
+  --z-nav-sticky: 100;
+  --z-dropdown: 200;
+  --z-overlay-transition: 250;
+  --z-modal-backdrop: 900;
+  --z-modal: 1000;
+  --z-toast: 1100;
+  --z-cinematic: 9000;
+
+  /* Rareté — palette FIXE, ne dépend jamais du thème actif (divine/dark) :
+     un LEGENDARY doit rester identifiable à l'identique dans les deux
+     ambiances, donc ces teintes ne recoupent volontairement aucun accent
+     de thème (ni l'or divine, ni le violet/rouge dark). */
+  --rank-common: linear-gradient(135deg, #d9dde1 0%, #9aa1a8 100%);
+  --rank-common-glow: rgba(154, 161, 168, 0.5);
+  --rank-rare: linear-gradient(135deg, #4fd8ff 0%, #0089b3 100%);
+  --rank-rare-glow: rgba(0, 180, 230, 0.55);
+  --rank-epic: linear-gradient(135deg, #ff5fd1 0%, #b8007a 100%);
+  --rank-epic-glow: rgba(255, 47, 191, 0.55);
+  --rank-legendary: linear-gradient(
+    135deg,
+    #ffd700 0%,
+    #ff5fd1 33%,
+    #4fd8ff 66%,
+    #ffd700 100%
+  );
+  --rank-legendary-glow: rgba(255, 215, 0, 0.6);
+  /* Variantes unies (pour les usages qui ne peuvent pas prendre un dégradé :
+     color de texte, border-color, background-color en style inline). */
+  --rank-common-solid: #9aa1a8;
+  --rank-rare-solid: #00b4e6;
+  --rank-epic-solid: #d6009c;
+  --rank-legendary-solid: #ffd700;
+
   /* Light Theme (Default) */
   --primary-color: #f1c40f;
   --secondary-color: #f8f9fa;
@@ -29,6 +105,13 @@
   --error-bg: rgba(231, 76, 60, 0.15);
   --error-border: #c0392b;
   --error-text: #8b0000;
+  --success-bg: rgba(30, 138, 95, 0.15);
+  --success-border: #1e8a5f;
+  --success-text: #145c3f;
+  --success-gradient: linear-gradient(135deg, #2fa876 0%, #1e8a5f 100%);
+  --success-shadow: rgba(30, 138, 95, 0.4);
+  --error-gradient: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+  --error-shadow: rgba(192, 57, 43, 0.4);
 }
 
 [data-theme='dark'],
@@ -54,6 +137,25 @@
   --error-bg: rgba(146, 43, 33, 0.25);
   --error-border: #e74c3c;
   --error-text: #f5b7b1;
+  --success-bg: rgba(47, 168, 118, 0.2);
+  --success-border: #2fa876;
+  --success-text: #a8e6cc;
+  --success-gradient: linear-gradient(135deg, #1e8a5f 0%, #145c3f 100%);
+  --success-shadow: rgba(47, 168, 118, 0.4);
+  --error-gradient: linear-gradient(135deg, #c0392b 0%, #7a1f1f 100%);
+  --error-shadow: rgba(231, 76, 60, 0.4);
+}
+
+/* Surfaces admin — identité sobre du jeu (voir CLAUDE.md > "Admin — identité
+   sobre du jeu") : ces conteneurs remappent --bg-primary/--text-primary
+   (utilisés en fallback par le CSS admin) sur les tokens du thème actif au
+   lieu de les laisser non définis / hérités du HUD (blanc-sur-blanc sinon). */
+.admin-dashboard,
+.admin-monsters-list,
+.admin-monster-detail,
+.generate-page {
+  --bg-primary: var(--card-bg);
+  --text-primary: var(--label-color);
 }
 
 body {

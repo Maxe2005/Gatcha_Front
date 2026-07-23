@@ -73,7 +73,7 @@
 }
 
 .btn-back-dashboard {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--button-gradient);
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
@@ -87,7 +87,7 @@
 
 .btn-back-dashboard:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 16px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 8px 16px var(--button-shadow);
 }
 
 .btn-back-dashboard:active {
@@ -109,7 +109,7 @@
 }
 
 .btn-process-generated {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  background: var(--error-gradient);
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
@@ -123,7 +123,7 @@
 
 .btn-process-generated:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 8px 16px rgba(245, 87, 108, 0.4);
+  box-shadow: 0 8px 16px var(--error-shadow);
 }
 
 .btn-process-generated:disabled {
@@ -133,11 +133,11 @@
 }
 
 .btn-process-generated.btn-transmit-batch {
-  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+  background: var(--success-gradient);
 }
 
 .btn-process-generated.btn-transmit-batch:hover:not(:disabled) {
-  box-shadow: 0 8px 16px rgba(17, 153, 142, 0.35);
+  box-shadow: 0 8px 16px var(--success-shadow);
 }
 
 .message {
@@ -151,15 +151,15 @@
 }
 
 .message-success {
-  background-color: #d4edda;
-  color: #155724;
-  border: 1px solid #c3e6cb;
+  background-color: var(--success-bg);
+  color: var(--success-text);
+  border: 1px solid var(--success-border);
 }
 
 .message-error {
-  background-color: #f8d7da;
-  color: #721c24;
-  border: 1px solid #f5c6cb;
+  background-color: var(--error-bg);
+  color: var(--error-text);
+  border: 1px solid var(--error-border);
 }
 
 .message-close {
@@ -244,13 +244,13 @@
 }
 
 .filter-search:hover {
-  border-color: #667eea;
+  border-color: var(--primary-color);
 }
 
 .filter-search:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px var(--button-shadow);
 }
 
 .filter-select {
@@ -269,13 +269,13 @@
 }
 
 .filter-select:hover {
-  border-color: #667eea;
+  border-color: var(--primary-color);
 }
 
 .filter-select:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px var(--button-shadow);
 }
 
 .btn-reset-filters {
@@ -305,10 +305,10 @@
 
 .error-message {
   padding: 1rem;
-  background: #fee;
-  border: 1px solid #fcc;
+  background: var(--error-bg);
+  border: 1px solid var(--error-border);
   border-radius: 8px;
-  color: #c33;
+  color: var(--error-text);
   margin-bottom: 1rem;
 }
 
@@ -382,7 +382,7 @@
 .monster-name {
   font-weight: 600;
   font-size: 1.2rem;
-  color: #667eea;
+  color: var(--primary-color);
   text-align: left !important;
   vertical-align: middle;
 }
@@ -394,19 +394,19 @@
 }
 
 .rank-text.rank-common {
-  color: var(--rank-color-common);
+  color: var(--rank-common-solid);
 }
 
 .rank-text.rank-rare {
-  color: var(--rank-color-rare);
+  color: var(--rank-rare-solid);
 }
 
 .rank-text.rank-epic {
-  color: var(--rank-color-epic);
+  color: var(--rank-epic-solid);
 }
 
 .rank-text.rank-legendary {
-  color: var(--rank-color-legendary);
+  color: var(--rank-legendary-solid);
 }
 
 /* Element colors */
@@ -487,7 +487,7 @@
 
 .btn-view {
   padding: 0.5rem 1rem;
-  background: #667eea;
+  background: var(--primary-color);
   color: white;
   border: none;
   border-radius: 6px;
@@ -498,9 +498,9 @@
 }
 
 .btn-view:hover {
-  background: #5568d3;
+  filter: brightness(1.1);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 12px var(--button-shadow);
 }
 
 .btn-view:active {
@@ -518,7 +518,7 @@
 
 .btn-pagination {
   padding: 0.7rem 1.5rem;
-  background: #667eea;
+  background: var(--primary-color);
   color: white;
   border: none;
   border-radius: 6px;
@@ -528,9 +528,9 @@
 }
 
 .btn-pagination:hover:not(:disabled) {
-  background: #5568d3;
+  filter: brightness(1.1);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 4px 12px var(--button-shadow);
 }
 
 .btn-pagination:disabled {
@@ -566,7 +566,9 @@
   .filter-search,
   .monsters-table table {
     background: rgba(26, 26, 26, 0.7);
-    color: var(--text-primary, #fff);
+    /* Fond toujours sombre ici (indépendant du thème divine/dark) : texte
+       clair fixe, pas --text-primary qui peut être sombre en thème divine. */
+    color: #ecf0f1;
     border-color: var(--border-color, #444);
   }
 
@@ -600,22 +602,8 @@
     background: rgba(42, 42, 42, 0.85);
   }
 
-  /* Rank colors in dark mode */
-  .rank-text.rank-common {
-    color: var(--rank-color-common-dark);
-  }
-
-  .rank-text.rank-rare {
-    color: var(--rank-color-rare-dark);
-  }
-
-  .rank-text.rank-epic {
-    color: var(--rank-color-epic-dark);
-  }
-
-  .rank-text.rank-legendary {
-    color: var(--rank-color-legendary-dark);
-  }
+  /* Pas de variante dark pour les rangs : la palette de rareté est fixe
+     (voir CLAUDE.md), volontairement identique quel que soit le thème. */
 
   /* Element colors in dark mode */
   .element-text.element-fire {
@@ -759,7 +747,10 @@
   text-align: center !important;
   font-family: var(--font-title) !important;
   font-size: 1.05rem !important;
-  color: var(--text-primary, #fff) !important;
+  /* Panneau de filtres toujours sombre par design (cf. .filters-container
+     plus bas) : texte clair fixe, pas --text-primary qui varie avec le
+     thème et peut être sombre en divine. */
+  color: #ecf0f1 !important;
   letter-spacing: 1px !important;
 }
 
@@ -774,7 +765,7 @@
   padding: 0.8rem 1.2rem !important;
   border-radius: 10px !important;
   background: rgba(0, 0, 0, 0.45) !important;
-  color: var(--text-primary) !important;
+  color: #ecf0f1 !important;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45) inset !important;
   border: 1px solid rgba(255, 255, 255, 0.06) !important;
 }
@@ -806,7 +797,7 @@
   padding: 0.9rem 1.4rem !important;
   border-radius: 12px !important;
   background: rgba(0, 0, 0, 0.65) !important;
-  color: var(--text-primary) !important;
+  color: #ecf0f1 !important;
   border: 1px solid rgba(255, 255, 255, 0.06) !important;
   text-transform: uppercase !important;
   font-weight: 700 !important;
@@ -855,7 +846,7 @@
   border-radius: 8px !important;
   border: 1px solid var(--border-color) !important;
   background: rgba(0, 0, 0, 0.45) !important;
-  color: var(--text-primary) !important;
+  color: #ecf0f1 !important;
   box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35) inset !important;
 }
 
@@ -868,7 +859,7 @@
   border-radius: 8px !important;
   border: 1px solid var(--border-color) !important;
   background: rgba(0, 0, 0, 0.45) !important;
-  color: var(--text-primary) !important;
+  color: #ecf0f1 !important;
 }
 
 .admin-monsters-list .btn-reset-filters {

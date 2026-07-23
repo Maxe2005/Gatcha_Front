@@ -19,6 +19,7 @@ import GenerateMonsters from './pages/admin/GenerateMonsters/GenerateMonsters';
 import AdminDashboard from './pages/admin/AdminDashboard/AdminDashboard';
 import AdminMonstersList from './pages/admin/AdminMonstersList/AdminMonstersList';
 import AdminMonsterDetail from './pages/admin/AdminMonsterDetail/AdminMonsterDetail';
+import AdminLayout from './components/AdminLayout/AdminLayout';
 import { BackgroundViewProvider } from './context/BackgroundViewContext';
 
 const Login = lazy(() => import('./pages/Login/Login'));
@@ -117,37 +118,20 @@ function AppRoutes() {
         }
       />
       <Route
-        path="/admin"
         element={
           <AdminRoute>
-            <AdminDashboard />
+            <AdminLayout />
           </AdminRoute>
         }
-      />
-      <Route
-        path="/admin/monsters"
-        element={
-          <AdminRoute>
-            <AdminMonstersList />
-          </AdminRoute>
-        }
-      />
-      <Route
-        path="/admin/monsters/:monsterId"
-        element={
-          <AdminRoute>
-            <AdminMonsterDetail />
-          </AdminRoute>
-        }
-      />
-      <Route
-        path="/generate"
-        element={
-          <AdminRoute>
-            <GenerateMonsters />
-          </AdminRoute>
-        }
-      />
+      >
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/admin/monsters" element={<AdminMonstersList />} />
+        <Route
+          path="/admin/monsters/:monsterId"
+          element={<AdminMonsterDetail />}
+        />
+        <Route path="/generate" element={<GenerateMonsters />} />
+      </Route>
     </Routes>
   );
 }

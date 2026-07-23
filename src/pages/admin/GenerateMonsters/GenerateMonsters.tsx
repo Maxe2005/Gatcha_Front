@@ -1,7 +1,6 @@
 // @ts-nocheck -- strict TypeScript activé globalement (P1.2) ; ce fichier n'est pas encore migré, voir ROADMAP.md P1.2
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import Header from '../../../components/Header/Header';
 import {
   generateMonster,
   generateMonsterBatch,
@@ -244,13 +243,15 @@ const GenerateMonsters = () => {
   };
 
   const getRankColor = (rank) => {
+    // Palette de rareté fixe (voir CLAUDE.md), partagée avec
+    // GatchaCard/SkillCard/Inventory — pas de hex custom ici.
     const colors = {
-      COMMON: '#808080',
-      RARE: '#4169E1',
-      EPIC: '#9932CC',
-      LEGENDARY: '#FFD700',
+      COMMON: 'var(--rank-common-solid)',
+      RARE: 'var(--rank-rare-solid)',
+      EPIC: 'var(--rank-epic-solid)',
+      LEGENDARY: 'var(--rank-legendary-solid)',
     };
-    return colors[rank] || '#808080';
+    return colors[rank] || 'var(--rank-common-solid)';
   };
 
   const getElementColor = (element) => {
@@ -269,7 +270,6 @@ const GenerateMonsters = () => {
 
   return (
     <div className={`generate-page theme-${theme}`} ref={pageRef}>
-      <Header />
       <div className="generate-container">
         {/* Bouton retour dashboard */}
         <button

@@ -8,14 +8,15 @@
 
 .admin-nav-btn {
   padding: 0.6rem 1rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--button-gradient);
   color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
+  font-family: var(--font-body);
   font-size: 0.95rem;
   font-weight: 500;
-  transition: all 0.3s ease;
+  transition: all var(--motion-transition) var(--motion-transition-ease);
   white-space: nowrap;
   display: flex;
   align-items: center;
@@ -24,18 +25,11 @@
 
 .admin-nav-btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 12px var(--button-shadow);
 }
 
 .admin-nav-btn:active {
   transform: translateY(0);
-}
-
-/* Dark theme support */
-@media (prefers-color-scheme: dark) {
-  .admin-nav-btn {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  }
 }
 
 /* Responsive design */

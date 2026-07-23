@@ -93,7 +93,7 @@
 
 /* Utiliser les couleurs d'accent existantes : bleu pour transition, doré pour update */
 .event-state_transition {
-  border-left: 4px solid #667eea; /* même accent que l'onglet actif */
+  border-left: 4px solid var(--primary-color); /* même accent que l'onglet actif */
 }
 
 .event-data_update {

@@ -80,7 +80,10 @@ const GatchaCard = ({
   };
 
   const elementClass = (monstre.element || 'neutre').toUpperCase();
-  const rankClass = (monstre.rank || 'COMMON').toUpperCase();
+  // Les classes CSS .rank-chip/.element-chip sont en minuscules (voir
+  // GatchaCard.css) — rankClass ne sert qu'à cet usage, contrairement à
+  // elementClass qui doit rester en MAJUSCULES pour le lookup elementToImage.
+  const rankClass = (monstre.rank || 'COMMON').toLowerCase();
 
   // Mapping rang vers image
   const rankToImage = {
@@ -199,7 +202,9 @@ const GatchaCard = ({
               <div className={`rank-chip rank-${rankClass}`}>
                 {monstre.rank || '???'}
               </div>
-              <div className={`element-chip element-${elementClass}`}>
+              <div
+                className={`element-chip element-${elementClass.toLowerCase()}`}
+              >
                 {(monstre.element || 'Neutre').toUpperCase()}
               </div>
             </div>

@@ -1,15 +1,11 @@
+/* Le thème applique la classe `header-${theme}` ('divine' ou 'dark'), donc
+   pas de règle par variante ici : --card-bg est déjà thémé globalement
+   (index.css) et couvre les deux cas sans dupliquer de couleur. */
 .header {
   transition: all 0.3s ease;
-  background-color: var(--header-bg);
+  background-color: var(--card-bg);
+  backdrop-filter: blur(10px);
   box-shadow: 0 2px 8px var(--shadow-color);
-}
-
-.header-light {
-  background-color: rgba(255, 255, 255, 0.95) !important;
-}
-
-.header-dark {
-  background-color: rgba(15, 15, 15, 0.95) !important;
 }
 
 .header-toolbar {

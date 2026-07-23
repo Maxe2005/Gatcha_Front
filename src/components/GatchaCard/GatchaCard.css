@@ -152,33 +152,34 @@
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
-/* Styles spécifiques par rang */
+/* Styles spécifiques par rang — palette de rareté fixe (voir CLAUDE.md),
+   indépendante du thème divine/dark actif. */
 .rank-chip.rank-common {
-  background: linear-gradient(135deg, #d4d4d4 0%, #a8a8a8 100%);
+  background: var(--rank-common);
   color: #2d2d2d;
-  box-shadow: 0 6px 20px rgba(168, 168, 168, 0.4);
+  box-shadow: 0 6px 20px var(--rank-common-glow);
   text-shadow: 0 1px 2px rgba(255, 255, 255, 0.3);
 }
 
 .rank-chip.rank-rare {
-  background: linear-gradient(135deg, #5eb3ff 0%, #3d8bd4 100%);
+  background: var(--rank-rare);
   color: #ffffff;
-  box-shadow: 0 6px 20px rgba(94, 179, 255, 0.5);
+  box-shadow: 0 6px 20px var(--rank-rare-glow);
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .rank-chip.rank-epic {
-  background: linear-gradient(135deg, #b967ff 0%, #8e44db 100%);
+  background: var(--rank-epic);
   color: #ffffff;
-  box-shadow: 0 6px 20px rgba(185, 103, 255, 0.5);
+  box-shadow: 0 6px 20px var(--rank-epic-glow);
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .rank-chip.rank-legendary {
-  background: linear-gradient(135deg, #ffb347 0%, #ff8c00 100%);
-  color: #1b1b1b;
-  box-shadow: 0 6px 20px rgba(255, 179, 71, 0.6);
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  background: var(--rank-legendary);
+  color: #ffffff;
+  box-shadow: 0 6px 20px var(--rank-legendary-glow);
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
 }
 
 .element-chip {
