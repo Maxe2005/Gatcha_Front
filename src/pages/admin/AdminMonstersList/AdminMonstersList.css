@@ -394,19 +394,19 @@
 }
 
 .rank-text.rank-common {
-  color: var(--rank-color-common);
+  color: var(--rank-common-solid);
 }
 
 .rank-text.rank-rare {
-  color: var(--rank-color-rare);
+  color: var(--rank-rare-solid);
 }
 
 .rank-text.rank-epic {
-  color: var(--rank-color-epic);
+  color: var(--rank-epic-solid);
 }
 
 .rank-text.rank-legendary {
-  color: var(--rank-color-legendary);
+  color: var(--rank-legendary-solid);
 }
 
 /* Element colors */
@@ -600,22 +600,8 @@
     background: rgba(42, 42, 42, 0.85);
   }
 
-  /* Rank colors in dark mode */
-  .rank-text.rank-common {
-    color: var(--rank-color-common-dark);
-  }
-
-  .rank-text.rank-rare {
-    color: var(--rank-color-rare-dark);
-  }
-
-  .rank-text.rank-epic {
-    color: var(--rank-color-epic-dark);
-  }
-
-  .rank-text.rank-legendary {
-    color: var(--rank-color-legendary-dark);
-  }
+  /* Pas de variante dark pour les rangs : la palette de rareté est fixe
+     (voir CLAUDE.md), volontairement identique quel que soit le thème. */
 
   /* Element colors in dark mode */
   .element-text.element-fire {

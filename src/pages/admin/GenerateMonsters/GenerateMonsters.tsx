@@ -244,13 +244,15 @@ const GenerateMonsters = () => {
   };
 
   const getRankColor = (rank) => {
+    // Palette de rareté fixe (voir CLAUDE.md), partagée avec
+    // GatchaCard/SkillCard/Inventory — pas de hex custom ici.
     const colors = {
-      COMMON: '#808080',
-      RARE: '#4169E1',
-      EPIC: '#9932CC',
-      LEGENDARY: '#FFD700',
+      COMMON: 'var(--rank-common-solid)',
+      RARE: 'var(--rank-rare-solid)',
+      EPIC: 'var(--rank-epic-solid)',
+      LEGENDARY: 'var(--rank-legendary-solid)',
     };
-    return colors[rank] || '#808080';
+    return colors[rank] || 'var(--rank-common-solid)';
   };
 
   const getElementColor = (element) => {

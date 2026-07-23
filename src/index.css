@@ -77,6 +77,12 @@
     #ffd700 100%
   );
   --rank-legendary-glow: rgba(255, 215, 0, 0.6);
+  /* Variantes unies (pour les usages qui ne peuvent pas prendre un dégradé :
+     color de texte, border-color, background-color en style inline). */
+  --rank-common-solid: #9aa1a8;
+  --rank-rare-solid: #00b4e6;
+  --rank-epic-solid: #d6009c;
+  --rank-legendary-solid: #ffd700;
 
   /* Light Theme (Default) */
   --primary-color: #f1c40f;
