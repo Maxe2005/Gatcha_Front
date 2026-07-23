@@ -566,7 +566,9 @@
   .filter-search,
   .monsters-table table {
     background: rgba(26, 26, 26, 0.7);
-    color: var(--text-primary, #fff);
+    /* Fond toujours sombre ici (indépendant du thème divine/dark) : texte
+       clair fixe, pas --text-primary qui peut être sombre en thème divine. */
+    color: #ecf0f1;
     border-color: var(--border-color, #444);
   }
 
@@ -745,7 +747,10 @@
   text-align: center !important;
   font-family: var(--font-title) !important;
   font-size: 1.05rem !important;
-  color: var(--text-primary, #fff) !important;
+  /* Panneau de filtres toujours sombre par design (cf. .filters-container
+     plus bas) : texte clair fixe, pas --text-primary qui varie avec le
+     thème et peut être sombre en divine. */
+  color: #ecf0f1 !important;
   letter-spacing: 1px !important;
 }
 
@@ -760,7 +765,7 @@
   padding: 0.8rem 1.2rem !important;
   border-radius: 10px !important;
   background: rgba(0, 0, 0, 0.45) !important;
-  color: var(--text-primary) !important;
+  color: #ecf0f1 !important;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45) inset !important;
   border: 1px solid rgba(255, 255, 255, 0.06) !important;
 }
@@ -792,7 +797,7 @@
   padding: 0.9rem 1.4rem !important;
   border-radius: 12px !important;
   background: rgba(0, 0, 0, 0.65) !important;
-  color: var(--text-primary) !important;
+  color: #ecf0f1 !important;
   border: 1px solid rgba(255, 255, 255, 0.06) !important;
   text-transform: uppercase !important;
   font-weight: 700 !important;
@@ -841,7 +846,7 @@
   border-radius: 8px !important;
   border: 1px solid var(--border-color) !important;
   background: rgba(0, 0, 0, 0.45) !important;
-  color: var(--text-primary) !important;
+  color: #ecf0f1 !important;
   box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35) inset !important;
 }
 
@@ -854,7 +859,7 @@
   border-radius: 8px !important;
   border: 1px solid var(--border-color) !important;
   background: rgba(0, 0, 0, 0.45) !important;
-  color: var(--text-primary) !important;
+  color: #ecf0f1 !important;
 }
 
 .admin-monsters-list .btn-reset-filters {
