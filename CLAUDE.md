@@ -70,3 +70,44 @@ Routing: pages are lazy-loaded with `Suspense`. `PrivateRoute` redirects to `/lo
 - Terser strips `console.*` in production builds, so console logging is dev-only by construction.
 - Naming is inconsistent around "Gatcha/Gacha": the page folder is `src/pages/Gatcha/` but the component/file is `Gacha.tsx`, route `/gacha`. Match existing spellings when navigating or importing.
 - UI copy (labels, error messages, notifications) is in **French** — keep new user-facing text in French.
+
+## Direction artistique & design system (charte v1)
+
+Le jeu a deux thèmes exclusifs, basculés par `ThemeContext` (clés de code `divine`/`dark`, conservées telles quelles — la nomenclature marketing ci-dessous n'est qu'une couche de présentation) :
+
+- **Divine Fantasy** (lumière/céleste) : or chaud `#F1C40F`, blanc/ivoire, bleu céleste doux, vert émeraude pastel en touche. Ambiance sereine, triomphante, sanctifiée. God rays, bloom doré, marbre blanc à spires dorées, cascades, prairies scintillantes.
+- **Dark Fantasy** (ténèbres/chaos) : violet spectral `#5B2C6F`, noir obsidienne `#0D0D0D`, rouge sang `#922B21`, touches lave/magenta néon. Ambiance oppressante, apocalyptique. Éclairage d'orage, rim-light violet/lave, château gothique, obsidienne craquelée, runes incandescentes.
+
+Les backgrounds illustrés par page/thème sous `public/assets/backgrounds/**` incarnent déjà cette direction (peinture fantasy semi-réaliste) — **c'est la référence à respecter**, pas à réinventer. Le travail de charte consiste à faire respecter ces tons par le CSS/les composants qui s'affichent par-dessus, qui aujourd'hui divergent souvent (voir points ci-dessous).
+
+⚠️ **Écart cross-repo connu** : les portraits de monstres sont générés par `API_generate_gatcha` (Gemini) dans un registre visuel mecha/sci-fi qui **ne correspond pas** à cette direction fantasy peinte. C'est un chantier prioritaire séparé côté prompt engineering de `API_generate_gatcha` — ne pas essayer de le compenser côté front.
+
+### Rareté — palette fixe, indépendante du thème actif
+
+La rareté (`COMMON`/`RARE`/`EPIC`/`LEGENDARY`) prime sur l'ambiance : un LEGENDARY doit rester identifiable à l'identique en Divine comme en Dark. Ne **jamais** réutiliser une teinte déjà prise par un thème (ex: l'or Divine `#F1C40F` était par le passé identique au flat-color LEGENDARY — collision corrigée, à ne pas réintroduire).
+
+- `COMMON` — argent/gris pierre
+- `RARE` — cyan électrique
+- `EPIC` — magenta franc
+- `LEGENDARY` — traitement prismatique/holographique (dégradé animé multi-teintes), jamais un or plat
+
+Source de vérité unique : les badges illustrés `public/assets/ranks/Rank_*.webp` (déjà utilisés dans `GatchaCard`/`SkillCard`) sont la représentation canonique de la rareté **partout**, y compris dans l'Inventaire — pas de tags texte à couleur plate custom par écran.
+
+### Tokens
+
+- **Typo** : `--font-title`/`--font-body` par thème (inchangé). Échelle de tailles à respecter partout : `display` 2.5rem (écrans cinématiques), `h1` 2rem, `h2` 1.5rem, `body` 1rem, `small` 0.85rem, `caption` 0.75rem — chacune avec poids/line-height fixés, pas de taille ad hoc par fichier.
+- **Espacement** : grille 4/8px (4/8/12/16/24/32/48/64).
+- **Rayons** : `--radius-sm: 6px` (inputs, tags), `--radius-md: 10px` (cards), `--radius-lg: 16px` (modales, panels), `--radius-pill: 999px` (chips/boutons ronds), `--radius-circle: 50%` (avatars). Toute nouvelle valeur de radius doit venir de cette échelle.
+- **Motion** — plus une animation est spectaculaire, plus elle doit rester rare (sinon plus rien ne se démarque au moment du pull) :
+  - `motion-micro` 120–150ms ease-out : hover/focus, partout.
+  - `motion-transition` 250–400ms ease-in-out : navigation, ouverture modale.
+  - `motion-cinematic` 1.2–2s, courbes signature : réservé au portail/reveal/changement de thème.
+- **Z-index** : `base(0) → content(1-10) → nav-sticky(100) → dropdown(200) → overlay-transition(250-300) → modal-backdrop(900) → modal(1000) → toast(1100) → cinématique plein écran(9000+)`. Toute nouvelle overlay se case dans cette liste, jamais un nombre inventé.
+
+### Admin — identité sobre du jeu, pas un skin détaché
+
+Les backgrounds illustrés admin existants (`public/assets/backgrounds/admin/**`) sont bons et se gardent. Le chrome (boutons, filtres, chips, nav) doit reprendre les tokens du jeu (accent or/sang, échelle de rayons ci-dessus) au lieu de dégradés génériques type SaaS (`#667eea`, `#f093fb`, etc. — à bannir). Titres/nav en `--font-title` pour garder le lien de marque ; contenu dense (tableaux, JSON, historique) en famille utilitaire (`Inter` ou équivalent) — c'est le seul endroit où mélanger les polices est légitime, la lisibilité de la donnée prime sur l'immersion. `AdminNav` doit être persistant sur toutes les routes `/admin/*` et `/generate` (layout partagé), pas limité à une seule page.
+
+### Accessibilité modale (règle commune)
+
+Toute modale (`ConfirmDialog` et équivalents admin) doit avoir `role="dialog"`, `aria-modal="true"`, piège de focus (`useFocusTrap`), et fermeture au `Escape` — c'est déjà le standard appliqué dans la modale de détail de l'Inventaire, à généraliser plutôt qu'à ré-inventer par écran.
