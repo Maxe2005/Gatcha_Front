@@ -205,7 +205,9 @@ const Inventory = () => {
                 <span className={`tag rank-${selectedMonster.rank}`}>
                   {selectedMonster.rank}
                 </span>
-                <span className={`tag element-${selectedMonster.element}`}>
+                <span
+                  className={`tag element-${(selectedMonster.element || '').toLowerCase()}`}
+                >
                   {selectedMonster.element}
                 </span>
               </div>
