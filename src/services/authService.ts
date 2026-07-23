@@ -18,6 +18,7 @@ export const AuthRoutes = {
   LOGIN: '/user/login',
   REGISTER: '/user',
   VERIFY_TOKEN: '/user/verify-token',
+  REFRESH_TOKEN: '/user/refresh-token',
   LOGOUT: '/user/logout',
   DELETE: '/user/delete',
   ADMIN_REGISTER: '/user/admin/register',
@@ -122,9 +123,12 @@ const validateRegisterInput = (
 
 /**
  * Normalise la réponse de login/register
- * L'API ne renvoie que { token } : le username est celui fourni en entrée
+ * L'API renvoie { token, refreshToken } : le username est celui fourni en entrée
  */
-const normalizeLoginResponse = (data: { token?: string }, username: string) => {
+const normalizeLoginResponse = (
+  data: { token?: string; refreshToken?: string },
+  username: string
+) => {
   if (!data.token || typeof data.token !== 'string') {
     throw new ApiError(
       ErrorTypes.VALIDATION,
@@ -132,10 +136,48 @@ const normalizeLoginResponse = (data: { token?: string }, username: string) => {
       200
     );
   }
+  if (!data.refreshToken || typeof data.refreshToken !== 'string') {
+    throw new ApiError(
+      ErrorTypes.VALIDATION,
+      'Invalid login response: missing or invalid refresh token',
+      200
+    );
+  }
 
   return {
     token: data.token,
+    refreshToken: data.refreshToken,
     username,
+  };
+};
+
+/**
+ * Normalise la réponse de rafraîchissement de token.
+ * L'API pivote systématiquement le refresh token (usage unique) :
+ * le refreshToken renvoyé remplace obligatoirement l'ancien.
+ */
+const normalizeRefreshResponse = (data: {
+  token?: string;
+  refreshToken?: string;
+}) => {
+  if (!data.token || typeof data.token !== 'string') {
+    throw new ApiError(
+      ErrorTypes.VALIDATION,
+      'Invalid refresh response: missing or invalid token',
+      200
+    );
+  }
+  if (!data.refreshToken || typeof data.refreshToken !== 'string') {
+    throw new ApiError(
+      ErrorTypes.VALIDATION,
+      'Invalid refresh response: missing or invalid refresh token',
+      200
+    );
+  }
+
+  return {
+    token: data.token,
+    refreshToken: data.refreshToken,
   };
 };
 
@@ -296,16 +338,61 @@ export const authService = {
   },
 
   /**
-   * Logout utilisateur : révoque le token côté API (liste de révocation),
-   * puis la déconnexion locale (cookie) est faite par AuthContext.
+   * Rafraîchit le token d'accès à partir du refresh token courant.
+   * Le refresh token est à usage unique côté API : celui renvoyé dans la
+   * réponse remplace obligatoirement l'ancien (rotation systématique).
+   * Toute réutilisation d'un refresh token déjà consommé invalide tous les
+   * refresh tokens de l'utilisateur côté API (détection de vol) : l'appelant
+   * doit alors forcer une reconnexion complète.
+   * @param {string} refreshToken - Refresh token courant
+   * @returns {Promise<{token, refreshToken}>}
+   */
+  async refreshToken(refreshToken: string) {
+    try {
+      if (!refreshToken || typeof refreshToken !== 'string') {
+        throw new ApiError(
+          ErrorTypes.VALIDATION,
+          'Refresh token must be a non-empty string',
+          400
+        );
+      }
+
+      logger.debug('AuthService', 'Refreshing access token');
+
+      const response = await authApi.post(AuthRoutes.REFRESH_TOKEN, {
+        refreshToken,
+      });
+      const normalizedData = normalizeRefreshResponse(response.data);
+
+      logger.debug('AuthService', 'Access token refreshed successfully');
+      return normalizedData;
+    } catch (error) {
+      logger.warn('AuthService', 'Token refresh failed', {
+        error: getErrorMessage(error),
+      });
+      if (error instanceof ApiError) {
+        throw error;
+      }
+      throw parseApiError(error);
+    }
+  },
+
+  /**
+   * Logout utilisateur : révoque le token d'accès et le refresh token
+   * côté API (liste de révocation), puis la déconnexion locale (cookies)
+   * est faite par AuthContext.
    * Un échec de révocation n'empêche jamais la déconnexion locale.
-   * @param {string} token - Token à révoquer
+   * @param {string} token - Token d'accès à révoquer
+   * @param {string} [refreshToken] - Refresh token à révoquer, si présent
    * @returns {Promise<{success}>}
    */
-  async logout(token: string) {
+  async logout(token: string, refreshToken?: string | null) {
     try {
       if (token) {
-        await authApi.post(AuthRoutes.LOGOUT, { token });
+        await authApi.post(AuthRoutes.LOGOUT, {
+          token,
+          refreshToken: refreshToken || undefined,
+        });
         logger.info('AuthService', 'Token revoked on logout');
       }
       return { success: true };

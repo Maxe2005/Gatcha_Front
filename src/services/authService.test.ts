@@ -8,7 +8,7 @@ vi.mock('./logger', () => ({
 }));
 
 import { authApi } from './api';
-import { authService, CredentialRules } from './authService';
+import { authService, AuthRoutes, CredentialRules } from './authService';
 import { ApiError, ErrorTypes } from './apiClient';
 
 const mockedPost = authApi.post as unknown as ReturnType<typeof vi.fn>;
@@ -26,15 +26,29 @@ describe('authService.login', () => {
   });
 
   it('normalizes a successful login response using the input username', async () => {
-    mockedPost.mockResolvedValue({ data: { token: 'abc123' } });
+    mockedPost.mockResolvedValue({
+      data: { token: 'abc123', refreshToken: 'refresh-abc123' },
+    });
 
     const result = await authService.login('Alice', 'password123');
 
-    expect(result).toEqual({ token: 'abc123', username: 'Alice' });
+    expect(result).toEqual({
+      token: 'abc123',
+      refreshToken: 'refresh-abc123',
+      username: 'Alice',
+    });
   });
 
   it('throws a validation ApiError when the API response has no token', async () => {
-    mockedPost.mockResolvedValue({ data: {} });
+    mockedPost.mockResolvedValue({ data: { refreshToken: 'refresh-abc123' } });
+
+    await expect(authService.login('Alice', 'password123')).rejects.toThrow(
+      ApiError
+    );
+  });
+
+  it('throws a validation ApiError when the API response has no refresh token', async () => {
+    mockedPost.mockResolvedValue({ data: { token: 'abc123' } });
 
     await expect(authService.login('Alice', 'password123')).rejects.toThrow(
       ApiError
@@ -74,7 +88,9 @@ describe('authService.register', () => {
   });
 
   it('accepts a username at the boundary lengths', async () => {
-    mockedPost.mockResolvedValue({ data: { token: 'tok' } });
+    mockedPost.mockResolvedValue({
+      data: { token: 'tok', refreshToken: 'refresh-tok' },
+    });
     const minName = 'a'.repeat(CredentialRules.USERNAME_MIN_LENGTH);
 
     const result = await authService.register(
@@ -83,7 +99,11 @@ describe('authService.register', () => {
       'password123'
     );
 
-    expect(result).toEqual({ token: 'tok', username: minName });
+    expect(result).toEqual({
+      token: 'tok',
+      refreshToken: 'refresh-tok',
+      username: minName,
+    });
   });
 });
 
@@ -119,5 +139,95 @@ describe('authService.verifyToken', () => {
     mockedPost.mockResolvedValue({ data: {} });
 
     await expect(authService.verifyToken('tok')).rejects.toThrow(ApiError);
+  });
+});
+
+describe('authService.refreshToken', () => {
+  beforeEach(() => {
+    mockedPost.mockReset();
+  });
+
+  it('rejects an empty refresh token without calling the API', async () => {
+    await expect(authService.refreshToken('')).rejects.toMatchObject({
+      type: ErrorTypes.VALIDATION,
+    });
+    expect(mockedPost).not.toHaveBeenCalled();
+  });
+
+  it('returns the rotated token pair on success', async () => {
+    mockedPost.mockResolvedValue({
+      data: { token: 'new-access', refreshToken: 'new-refresh' },
+    });
+
+    const result = await authService.refreshToken('old-refresh');
+
+    expect(mockedPost).toHaveBeenCalledWith(AuthRoutes.REFRESH_TOKEN, {
+      refreshToken: 'old-refresh',
+    });
+    expect(result).toEqual({
+      token: 'new-access',
+      refreshToken: 'new-refresh',
+    });
+  });
+
+  it('throws a validation ApiError when the response is missing the rotated refresh token', async () => {
+    mockedPost.mockResolvedValue({ data: { token: 'new-access' } });
+
+    await expect(authService.refreshToken('old-refresh')).rejects.toThrow(
+      ApiError
+    );
+  });
+
+  it('propagates a parsed ApiError when the refresh token is invalid/expired/reused', async () => {
+    mockedPost.mockRejectedValue({
+      isAxiosError: true,
+      response: {
+        status: 400,
+        data: {
+          errors: [{ statusCode: 498, message: 'Invalid refresh token' }],
+        },
+      },
+    });
+
+    await expect(authService.refreshToken('stale-refresh')).rejects.toThrow(
+      ApiError
+    );
+  });
+});
+
+describe('authService.logout', () => {
+  beforeEach(() => {
+    mockedPost.mockReset();
+  });
+
+  it('sends both token and refreshToken when revoking', async () => {
+    mockedPost.mockResolvedValue({ data: {} });
+
+    const result = await authService.logout('tok', 'refresh-tok');
+
+    expect(mockedPost).toHaveBeenCalledWith(AuthRoutes.LOGOUT, {
+      token: 'tok',
+      refreshToken: 'refresh-tok',
+    });
+    expect(result).toEqual({ success: true });
+  });
+
+  it('omits refreshToken from the payload when not provided', async () => {
+    mockedPost.mockResolvedValue({ data: {} });
+
+    await authService.logout('tok');
+
+    expect(mockedPost).toHaveBeenCalledWith(AuthRoutes.LOGOUT, {
+      token: 'tok',
+      refreshToken: undefined,
+    });
+  });
+
+  it('still resolves successfully when the API call fails', async () => {
+    mockedPost.mockRejectedValue(new Error('network down'));
+
+    const result = await authService.logout('tok', 'refresh-tok');
+
+    expect(result).toEqual({ success: true });
   });
 });
