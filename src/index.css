@@ -105,6 +105,10 @@
   --error-bg: rgba(231, 76, 60, 0.15);
   --error-border: #c0392b;
   --error-text: #8b0000;
+  --success-bg: rgba(30, 138, 95, 0.15);
+  --success-border: #1e8a5f;
+  --success-text: #145c3f;
+  --success-gradient: linear-gradient(135deg, #2fa876 0%, #1e8a5f 100%);
 }
 
 [data-theme='dark'],
@@ -130,6 +134,22 @@
   --error-bg: rgba(146, 43, 33, 0.25);
   --error-border: #e74c3c;
   --error-text: #f5b7b1;
+  --success-bg: rgba(47, 168, 118, 0.2);
+  --success-border: #2fa876;
+  --success-text: #a8e6cc;
+  --success-gradient: linear-gradient(135deg, #1e8a5f 0%, #145c3f 100%);
+}
+
+/* Surfaces admin — identité sobre du jeu (voir CLAUDE.md > "Admin — identité
+   sobre du jeu") : ces conteneurs remappent --bg-primary/--text-primary
+   (utilisés en fallback par le CSS admin) sur les tokens du thème actif au
+   lieu de les laisser non définis / hérités du HUD (blanc-sur-blanc sinon). */
+.admin-dashboard,
+.admin-monsters-list,
+.admin-monster-detail,
+.generate-page {
+  --bg-primary: var(--card-bg);
+  --text-primary: var(--label-color);
 }
 
 body {
