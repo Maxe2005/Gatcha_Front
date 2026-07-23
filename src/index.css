@@ -109,6 +109,9 @@
   --success-border: #1e8a5f;
   --success-text: #145c3f;
   --success-gradient: linear-gradient(135deg, #2fa876 0%, #1e8a5f 100%);
+  --success-shadow: rgba(30, 138, 95, 0.4);
+  --error-gradient: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+  --error-shadow: rgba(192, 57, 43, 0.4);
 }
 
 [data-theme='dark'],
@@ -138,6 +141,9 @@
   --success-border: #2fa876;
   --success-text: #a8e6cc;
   --success-gradient: linear-gradient(135deg, #1e8a5f 0%, #145c3f 100%);
+  --success-shadow: rgba(47, 168, 118, 0.4);
+  --error-gradient: linear-gradient(135deg, #c0392b 0%, #7a1f1f 100%);
+  --error-shadow: rgba(231, 76, 60, 0.4);
 }
 
 /* Surfaces admin — identité sobre du jeu (voir CLAUDE.md > "Admin — identité

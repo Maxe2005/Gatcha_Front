@@ -91,8 +91,8 @@
 
 .btn-back:hover {
   background: var(--card-bg, #f5f5f5);
-  border-color: #667eea;
-  color: #667eea;
+  border-color: var(--primary-color);
+  color: var(--primary-color);
 }
 
 .detail-header .state-badge {
@@ -144,10 +144,10 @@
 
 .error-message {
   padding: 1rem;
-  background: #fee;
-  border: 1px solid #fcc;
+  background: var(--error-bg);
+  border: 1px solid var(--error-border);
   border-radius: 8px;
-  color: #c33;
+  color: var(--error-text);
   margin-bottom: 1rem;
 }
 
@@ -181,8 +181,8 @@
 }
 
 .tab-button.active {
-  color: #667eea;
-  border-bottom-color: #667eea;
+  color: var(--primary-color);
+  border-bottom-color: var(--primary-color);
 }
 
 .tab-content {
@@ -257,12 +257,12 @@
 }
 
 .valid {
-  color: #48bb78;
+  color: var(--color-valid, #2fa876);
   font-weight: 600;
 }
 
 .invalid {
-  color: #e53e3e;
+  color: var(--color-invalid, #e53e3e);
   font-weight: 600;
 }
 
@@ -318,13 +318,13 @@
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--button-gradient);
   color: white;
 }
 
 .btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 16px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 8px 16px var(--button-shadow);
 }
 
 .btn-warning {
@@ -426,7 +426,7 @@
   background: rgba(255, 255, 255, 0.7);
   border: 1px solid var(--border-color, #ddd);
   border-radius: 8px;
-  border-left: 4px solid #667eea;
+  border-left: 4px solid var(--primary-color);
   backdrop-filter: blur(5px);
   transition:
     background 0.5s ease,
@@ -451,7 +451,7 @@
 }
 
 .arrow {
-  color: #667eea;
+  color: var(--primary-color);
   font-weight: 700;
 }
 
@@ -538,8 +538,8 @@
 .form-group input:focus,
 .form-group select:focus {
   outline: none;
-  border-color: #667eea;
-  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px var(--button-shadow);
 }
 
 .json-editor {
@@ -564,10 +564,10 @@
 
 .error {
   padding: 1rem;
-  background: #fee;
-  border: 1px solid #fcc;
+  background: var(--error-bg);
+  border: 1px solid var(--error-border);
   border-radius: 8px;
-  color: #c33;
+  color: var(--error-text);
   margin-bottom: 1rem;
 }
 
