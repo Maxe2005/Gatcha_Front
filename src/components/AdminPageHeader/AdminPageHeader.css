@@ -1,0 +1,90 @@
+.admin-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--border-color);
+  transition: border-color var(--motion-transition) var(--motion-transition-ease);
+}
+
+.admin-page-header-main {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.admin-breadcrumb {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+}
+
+.admin-breadcrumb-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.admin-breadcrumb-link {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--text-secondary);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: color var(--motion-micro) var(--motion-micro-ease);
+}
+
+.admin-breadcrumb-link:hover {
+  color: var(--primary-color);
+  text-decoration: underline;
+}
+
+.admin-breadcrumb-current {
+  color: var(--text-secondary);
+}
+
+.admin-breadcrumb-separator {
+  color: var(--text-secondary);
+  opacity: 0.6;
+}
+
+.admin-page-header-title-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.admin-page-header-title {
+  margin: 0;
+  font-family: var(--font-title);
+  font-size: 2rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  overflow-wrap: anywhere;
+}
+
+.admin-page-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+  .admin-page-header {
+    align-items: flex-start;
+  }
+
+  .admin-page-header-title {
+    font-size: 1.5rem;
+  }
+}

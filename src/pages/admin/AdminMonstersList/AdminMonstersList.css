@@ -49,51 +49,6 @@
   opacity: 1;
 }
 
-.list-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-  border-bottom: 2px solid var(--border-color, #ddd);
-  padding-bottom: 1rem;
-  transition: border-color 0.6s ease;
-}
-
-.list-header h1 {
-  font-size: 2rem;
-  font-weight: 600;
-  margin: 0;
-  transition: color 0.6s ease;
-}
-
-.list-header-actions {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.btn-back-dashboard {
-  background: var(--button-gradient);
-  color: white;
-  border: none;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 0.95rem;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  white-space: nowrap;
-}
-
-.btn-back-dashboard:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 16px var(--button-shadow);
-}
-
-.btn-back-dashboard:active {
-  transform: translateY(0);
-}
-
 .action-bar {
   background: rgba(249, 249, 249, 0.85);
   padding: 1rem;
@@ -552,10 +507,6 @@
     color: var(--text-primary, #fff);
   }
 
-  .list-header {
-    border-color: var(--border-color, #444);
-  }
-
   .filters-container {
     background: rgba(42, 42, 42, 0.85);
     border-color: var(--border-color, #444);
@@ -613,12 +564,6 @@
 
 /* Responsive design */
 @media (max-width: 1024px) {
-  .list-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-
   .filters {
     width: 100%;
   }
@@ -635,10 +580,6 @@
 @media (max-width: 768px) {
   .admin-monsters-list {
     padding: 1rem;
-  }
-
-  .list-header h1 {
-    font-size: 1.5rem;
   }
 
   .monsters-table {
@@ -666,12 +607,6 @@
 }
 
 /* --- Overrides to ensure admin monsters layout is stable across branches --- */
-.admin-monsters-list .list-header h1 {
-  font-size: 2rem !important;
-  line-height: 1.15 !important;
-  margin: 0 !important;
-}
-
 .admin-monsters-list .filters-container,
 .admin-monsters-list .monsters-table {
   position: relative !important;
