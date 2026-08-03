@@ -5,7 +5,7 @@
   height: 100vh;
   overflow: hidden;
   color: white; /* Default text color */
-  font-family: 'Cinzel', serif; /* Font fantasy par excellence */
+  font-family: var(--font-title);
   transition:
     opacity 1.5s ease,
     color 0.6s ease;

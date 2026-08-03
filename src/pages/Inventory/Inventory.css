@@ -44,7 +44,7 @@
   align-items: center;
   gap: 0.5rem;
   color: white;
-  font-family: 'Cinzel', serif;
+  font-family: var(--font-title);
 }
 
 .filter-group select {
@@ -277,7 +277,7 @@
 }
 
 .detail-title {
-  font-family: 'Cinzel', serif;
+  font-family: var(--font-title);
   font-size: 2.5rem;
   margin: 0 0 0.5rem 0;
 }
@@ -380,7 +380,7 @@
 }
 
 .detail-skills h3 {
-  font-family: 'Cinzel', serif;
+  font-family: var(--font-title);
   margin-bottom: 1rem;
   border-bottom: 1px solid rgba(0, 0, 0, 0.1);
   padding-bottom: 0.5rem;
@@ -527,7 +527,7 @@
   padding: 0.5rem 1rem;
   z-index: 30;
   color: inherit;
-  font-family: 'Cinzel', serif;
+  font-family: var(--font-title);
   font-weight: bold;
   cursor: pointer;
   background: rgba(255, 255, 255, 0.1);

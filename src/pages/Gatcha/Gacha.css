@@ -46,7 +46,7 @@
 
 .gacha-title {
   color: var(--text-primary);
-  font-family: 'Cinzel', serif;
+  font-family: var(--font-title);
   font-size: 2.5rem;
   margin-bottom: 16px;
 }
