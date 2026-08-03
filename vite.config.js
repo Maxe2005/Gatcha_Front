@@ -29,7 +29,7 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/invocation-service/, ''),
       },
       '/admin-service': {
-        target: 'http://localhost:8000',
+        target: 'http://localhost:8084',
         changeOrigin: true,
         ws: true, // WebSocket de suivi de génération d'images
         rewrite: (path) => path.replace(/^\/admin-service/, ''),
