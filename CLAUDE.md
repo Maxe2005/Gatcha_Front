@@ -93,6 +93,13 @@ La rareté (`COMMON`/`RARE`/`EPIC`/`LEGENDARY`) prime sur l'ambiance : un LEGEND
 
 Source de vérité unique : les badges illustrés `public/assets/ranks/Rank_*.webp` (déjà utilisés dans `GatchaCard`/`SkillCard`) sont la représentation canonique de la rareté **partout**, y compris dans l'Inventaire — pas de tags texte à couleur plate custom par écran.
 
+### États des monstres (admin) et éléments — même logique de palette fixe
+
+Même principe que la rareté : ces deux palettes sont des tokens CSS fixes dans `--state-*`/`--element-*` (`src/index.css`), indépendants du thème divine/dark actif, et ne doivent jamais être redéfinies en hex custom par écran (pas de copie locale dans un composant ou un fichier `colors.js` séparé — ce pattern d'injection runtime a existé et a été supprimé au profit des tokens CSS directs, à ne pas réintroduire).
+
+- États (`GENERATED`/`DEFECTIVE`/`PENDING_REVIEW`/`APPROVED`/`TRANSMITTED`/`REJECTED`) : `--state-generated`, `--state-defective`, `--state-pending-review` (+ `--state-pending-review-text` pour le texte sombre sur fond jaune), `--state-approved`, `--state-transmitted`, `--state-rejected`. Consommés par les badges `.state-badge.state-*` d'`AdminMonstersList`/`AdminMonsterDetail`/`AdminDashboard`.
+- Éléments (`FIRE`/`WATER`/`WIND`/`EARTH`/`LIGHT`/`DARKNESS`, + fallback `neutre`) : `--element-fire`, `--element-water`, `--element-wind`, `--element-earth`, `--element-light`, `--element-darkness`, `--element-neutre` (chacun avec un `-glow` associé pour les effets de halo/ombre). Consommés par `GatchaCard` (chip + halo de la carte), `AdminMonstersList`, `GenerateMonsters` et l'Inventaire. Teintes volontairement distinctes des accents de thème et des teintes de rareté pour éviter toute confusion visuelle (ex: ne pas réutiliser l'or Divine `#F1C40F` pour l'élément Lumière — collision corrigée, à ne pas réintroduire).
+
 ### Tokens
 
 - **Typo** : `--font-title`/`--font-body` par thème (inchangé). Échelle de tailles à respecter partout : `display` 2.5rem (écrans cinématiques), `h1` 2rem, `h2` 1.5rem, `body` 1rem, `small` 0.85rem, `caption` 0.75rem — chacune avec poids/line-height fixés, pas de taille ad hoc par fichier.

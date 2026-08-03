@@ -6,10 +6,6 @@ import './index.css';
 import './cursors.css';
 import './transitions.css';
 import './particleSystem';
-import { injectColorsToCSS } from './pages/admin/colors';
-
-// Inject CSS variables from color constants at startup
-injectColorsToCSS();
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

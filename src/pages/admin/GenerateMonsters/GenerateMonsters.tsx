@@ -255,17 +255,17 @@ const GenerateMonsters = () => {
   };
 
   const getElementColor = (element) => {
+    // Palette d'élément fixe (voir CLAUDE.md), partagée avec
+    // GatchaCard/AdminMonstersList/Inventory — pas de hex custom ici.
     const colors = {
-      FIRE: '#FF6B6B',
-      WATER: '#4ECDC4',
-      EARTH: '#8B7355',
-      AIR: '#B4D7FF',
-      ELECTRIC: '#FFD700',
-      ICE: '#B0E0E6',
-      LIGHT: '#FFEB99',
-      DARK: '#4B0082',
+      FIRE: 'var(--element-fire)',
+      WATER: 'var(--element-water)',
+      WIND: 'var(--element-wind)',
+      EARTH: 'var(--element-earth)',
+      LIGHT: 'var(--element-light)',
+      DARKNESS: 'var(--element-darkness)',
     };
-    return colors[element.toUpperCase()] || '#808080';
+    return colors[element?.toUpperCase()] || 'var(--element-neutre)';
   };
 
   return (

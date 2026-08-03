@@ -118,28 +118,28 @@
 }
 
 .state-badge.state-generated {
-  background: #a0aec0;
+  background: var(--state-generated);
 }
 
 .state-badge.state-defective {
-  background: #e53e3e;
+  background: var(--state-defective);
 }
 
 .state-badge.state-pending_review {
-  background: #ecc94b;
-  color: #000;
+  background: var(--state-pending-review);
+  color: var(--state-pending-review-text);
 }
 
 .state-badge.state-approved {
-  background: #48bb78;
+  background: var(--state-approved);
 }
 
 .state-badge.state-transmitted {
-  background: #4299e1;
+  background: var(--state-transmitted);
 }
 
 .state-badge.state-rejected {
-  background: #ed8936;
+  background: var(--state-rejected);
 }
 
 .error-message {
@@ -257,12 +257,12 @@
 }
 
 .valid {
-  color: var(--color-valid, #2fa876);
+  color: var(--color-valid);
   font-weight: 600;
 }
 
 .invalid {
-  color: var(--color-invalid, #e53e3e);
+  color: var(--color-invalid);
   font-weight: 600;
 }
 

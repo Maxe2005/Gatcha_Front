@@ -1,9 +1,9 @@
 /* Admin Monsters List Styles */
 
-/* 
- * CSS Variables for colors are injected at runtime from colors.js
- * This ensures a SINGLE SOURCE OF TRUTH for all colors
- * See: injectColorsToCSS() in colors.js
+/*
+ * Les couleurs (rareté, état, élément) sont des tokens CSS FIXES définis
+ * dans src/index.css (--rank-, --state-, --element-), indépendants du
+ * thème divine/dark actif. Single source of truth, voir CLAUDE.md.
  */
 
 .admin-monsters-list {
@@ -416,27 +416,27 @@
 }
 
 .element-text.element-fire {
-  color: var(--element-color-fire);
+  color: var(--element-fire);
 }
 
 .element-text.element-water {
-  color: var(--element-color-water);
+  color: var(--element-water);
 }
 
 .element-text.element-wind {
-  color: var(--element-color-wind);
+  color: var(--element-wind);
 }
 
 .element-text.element-earth {
-  color: var(--element-color-earth);
+  color: var(--element-earth);
 }
 
 .element-text.element-light {
-  color: var(--element-color-light);
+  color: var(--element-light);
 }
 
 .element-text.element-darkness {
-  color: var(--element-color-darkness);
+  color: var(--element-darkness);
 }
 
 .state-badge {
@@ -451,28 +451,28 @@
 }
 
 .state-badge.state-generated {
-  background: var(--state-color-generated);
+  background: var(--state-generated);
 }
 
 .state-badge.state-defective {
-  background: var(--state-color-defective);
+  background: var(--state-defective);
 }
 
 .state-badge.state-pending_review {
-  background: var(--state-color-pending-review);
-  color: var(--state-color-pending-review-text);
+  background: var(--state-pending-review);
+  color: var(--state-pending-review-text);
 }
 
 .state-badge.state-approved {
-  background: var(--state-color-approved);
+  background: var(--state-approved);
 }
 
 .state-badge.state-transmitted {
-  background: var(--state-color-transmitted);
+  background: var(--state-transmitted);
 }
 
 .state-badge.state-rejected {
-  background: var(--state-color-rejected);
+  background: var(--state-rejected);
 }
 
 .valid {
@@ -602,33 +602,9 @@
     background: rgba(42, 42, 42, 0.85);
   }
 
-  /* Pas de variante dark pour les rangs : la palette de rareté est fixe
-     (voir CLAUDE.md), volontairement identique quel que soit le thème. */
-
-  /* Element colors in dark mode */
-  .element-text.element-fire {
-    color: var(--element-color-fire-dark);
-  }
-
-  .element-text.element-water {
-    color: var(--element-color-water-dark);
-  }
-
-  .element-text.element-wind {
-    color: var(--element-color-wind-dark);
-  }
-
-  .element-text.element-earth {
-    color: var(--element-color-earth-dark);
-  }
-
-  .element-text.element-light {
-    color: var(--element-color-light-dark);
-  }
-
-  .element-text.element-darkness {
-    color: var(--element-color-darkness-dark);
-  }
+  /* Pas de variante dark pour les rangs ni les éléments : ces deux palettes
+     sont fixes (voir CLAUDE.md), volontairement identiques quel que soit
+     le thème actif. */
 
   .pagination {
     border-color: var(--border-color, #444);

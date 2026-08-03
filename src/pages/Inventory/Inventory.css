@@ -323,23 +323,23 @@
 }
 
 .tag.element-fire {
-  background: #e74c3c;
+  background: var(--element-fire);
 }
 .tag.element-water {
-  background: #3498db;
+  background: var(--element-water);
 }
 .tag.element-wind {
-  background: #2ecc71;
+  background: var(--element-wind);
 }
 .tag.element-earth {
-  background: #d35400;
+  background: var(--element-earth);
 }
 .tag.element-light {
-  background: #f1c40f;
-  color: black;
+  background: var(--element-light);
+  color: #2d2d2d;
 }
 .tag.element-darkness {
-  background: #2c3e50;
+  background: var(--element-darkness);
 }
 
 .detail-stats-grid {

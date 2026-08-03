@@ -257,15 +257,8 @@ export const adminApiService = {
 };
 
 // Helper functions for validation and UI
-export const monsterStateColors = {
-  GENERATED: '#a0aec0',
-  DEFECTIVE: '#e53e3e',
-  PENDING_REVIEW: '#ecc94b',
-  APPROVED: '#48bb78',
-  TRANSMITTED: '#4299e1',
-  REJECTED: '#ed8936',
-};
-
+// Les couleurs d'état vivent désormais uniquement dans les tokens --state-*
+// de src/index.css (palette fixe, voir CLAUDE.md), pas ici.
 export const monsterStates = [
   'GENERATED',
   'DEFECTIVE',

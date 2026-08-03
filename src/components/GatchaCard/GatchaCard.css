@@ -191,61 +191,63 @@
   backdrop-filter: blur(8px);
 }
 
-/* Styles spécifiques par élément - noms anglais */
+/* Éléments — palette FIXE (voir --element-* dans src/index.css et
+   CLAUDE.md > "Direction artistique & design system"), indépendante du
+   thème divine/dark actif. */
 .element-chip.element-fire {
-  color: #ff7a6a;
+  color: var(--element-fire);
   box-shadow:
-    0 0 12px rgba(255, 122, 106, 0.5),
-    inset 0 1px 0 rgba(255, 143, 104, 0.25);
-  text-shadow: 0 0 8px rgba(255, 122, 106, 0.6);
+    0 0 12px var(--element-fire-glow),
+    inset 0 1px 0 var(--element-fire-glow);
+  text-shadow: 0 0 8px var(--element-fire-glow);
 }
 
 .element-chip.element-water {
-  color: #6ad1ff;
+  color: var(--element-water);
   box-shadow:
-    0 0 12px rgba(106, 209, 255, 0.5),
-    inset 0 1px 0 rgba(106, 209, 255, 0.25);
-  text-shadow: 0 0 8px rgba(106, 209, 255, 0.6);
+    0 0 12px var(--element-water-glow),
+    inset 0 1px 0 var(--element-water-glow);
+  text-shadow: 0 0 8px var(--element-water-glow);
 }
 
 .element-chip.element-wind {
-  color: #7ef7c8;
+  color: var(--element-wind);
   box-shadow:
-    0 0 12px rgba(126, 247, 200, 0.5),
-    inset 0 1px 0 rgba(126, 247, 200, 0.25);
-  text-shadow: 0 0 8px rgba(126, 247, 200, 0.6);
+    0 0 12px var(--element-wind-glow),
+    inset 0 1px 0 var(--element-wind-glow);
+  text-shadow: 0 0 8px var(--element-wind-glow);
 }
 
 .element-chip.element-earth {
-  color: #d1b27e;
+  color: var(--element-earth);
   box-shadow:
-    0 0 12px rgba(209, 178, 126, 0.5),
-    inset 0 1px 0 rgba(209, 178, 126, 0.25);
-  text-shadow: 0 0 8px rgba(209, 178, 126, 0.6);
+    0 0 12px var(--element-earth-glow),
+    inset 0 1px 0 var(--element-earth-glow);
+  text-shadow: 0 0 8px var(--element-earth-glow);
 }
 
 .element-chip.element-light {
-  color: #f5e68d;
+  color: var(--element-light);
   box-shadow:
-    0 0 12px rgba(245, 230, 141, 0.6),
-    inset 0 1px 0 rgba(245, 230, 141, 0.3);
-  text-shadow: 0 0 8px rgba(245, 230, 141, 0.7);
+    0 0 12px var(--element-light-glow),
+    inset 0 1px 0 var(--element-light-glow);
+  text-shadow: 0 0 8px var(--element-light-glow);
 }
 
 .element-chip.element-darkness {
-  color: #9e8bff;
+  color: var(--element-darkness);
   box-shadow:
-    0 0 12px rgba(158, 139, 255, 0.5),
-    inset 0 1px 0 rgba(158, 139, 255, 0.25);
-  text-shadow: 0 0 8px rgba(158, 139, 255, 0.6);
+    0 0 12px var(--element-darkness-glow),
+    inset 0 1px 0 var(--element-darkness-glow);
+  text-shadow: 0 0 8px var(--element-darkness-glow);
 }
 
 .element-chip.element-neutre {
-  color: #9fb4c8;
+  color: var(--element-neutre);
   box-shadow:
-    0 0 12px rgba(159, 180, 200, 0.4),
-    inset 0 1px 0 rgba(159, 180, 200, 0.2);
-  text-shadow: 0 0 8px rgba(159, 180, 200, 0.5);
+    0 0 12px var(--element-neutre-glow),
+    inset 0 1px 0 var(--element-neutre-glow);
+  text-shadow: 0 0 8px var(--element-neutre-glow);
 }
 
 /* Icons pour le recto - positionnées aux coins */
@@ -419,47 +421,50 @@
   text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
 }
 
-/* Element palettes */
-.card-face.element-feu {
-  --element-color: #ff7a6a;
-  --element-glow: rgba(255, 122, 106, 0.35);
-  --card-sheen: rgba(255, 143, 104, 0.12);
+/* Element palettes — la classe posée par GatchaCard.tsx est
+   `element-${element}` en MAJUSCULES (voir elementClass), pas les noms
+   français utilisés ci-dessous avant fix ; ces sélecteurs ne matchaient
+   donc jamais et --element-color retombait sur --accent-color (thème). */
+.card-face.element-FIRE {
+  --element-color: var(--element-fire);
+  --element-glow: var(--element-fire-glow);
+  --card-sheen: var(--element-fire-glow);
 }
 
-.card-face.element-eau {
-  --element-color: #6ad1ff;
-  --element-glow: rgba(106, 209, 255, 0.35);
-  --card-sheen: rgba(106, 209, 255, 0.12);
+.card-face.element-WATER {
+  --element-color: var(--element-water);
+  --element-glow: var(--element-water-glow);
+  --card-sheen: var(--element-water-glow);
 }
 
-.card-face.element-vent {
-  --element-color: #7ef7c8;
-  --element-glow: rgba(126, 247, 200, 0.35);
-  --card-sheen: rgba(126, 247, 200, 0.12);
+.card-face.element-WIND {
+  --element-color: var(--element-wind);
+  --element-glow: var(--element-wind-glow);
+  --card-sheen: var(--element-wind-glow);
 }
 
-.card-face.element-terre {
-  --element-color: #d1b27e;
-  --element-glow: rgba(209, 178, 126, 0.35);
-  --card-sheen: rgba(209, 178, 126, 0.12);
+.card-face.element-EARTH {
+  --element-color: var(--element-earth);
+  --element-glow: var(--element-earth-glow);
+  --card-sheen: var(--element-earth-glow);
 }
 
-.card-face.element-lumiere {
-  --element-color: #f5e68d;
-  --element-glow: rgba(245, 230, 141, 0.4);
-  --card-sheen: rgba(245, 230, 141, 0.18);
+.card-face.element-LIGHT {
+  --element-color: var(--element-light);
+  --element-glow: var(--element-light-glow);
+  --card-sheen: var(--element-light-glow);
 }
 
-.card-face.element-tenebre {
-  --element-color: #9e8bff;
-  --element-glow: rgba(158, 139, 255, 0.35);
-  --card-sheen: rgba(158, 139, 255, 0.14);
+.card-face.element-DARKNESS {
+  --element-color: var(--element-darkness);
+  --element-glow: var(--element-darkness-glow);
+  --card-sheen: var(--element-darkness-glow);
 }
 
-.card-face.element-neutre {
-  --element-color: #9fb4c8;
-  --element-glow: rgba(159, 180, 200, 0.25);
-  --card-sheen: rgba(159, 180, 200, 0.1);
+.card-face.element-NEUTRE {
+  --element-color: var(--element-neutre);
+  --element-glow: var(--element-neutre-glow);
+  --card-sheen: var(--element-neutre-glow);
 }
 
 @media (max-width: 420px) {
