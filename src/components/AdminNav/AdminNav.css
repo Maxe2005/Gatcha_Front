@@ -6,11 +6,15 @@
   align-items: center;
 }
 
+/* Couleur de texte alignée sur .header-logout : --text-primary est blanc en
+   thème clair/divine (pensé pour être lu sur les fonds illustrés sombres),
+   donc invisible sur un fond de header presque blanc — --primary-color est
+   la seule teinte fiable en ghost sur les deux thèmes. */
 .admin-nav-btn {
   padding: 0.6rem 1rem;
-  background: var(--button-gradient);
-  color: white;
-  border: none;
+  background: transparent;
+  color: var(--primary-color);
+  border: 1px solid var(--primary-color);
   border-radius: var(--radius-sm);
   cursor: pointer;
   font-family: var(--font-body);
@@ -24,12 +28,33 @@
 }
 
 .admin-nav-btn:hover {
+  background-color: var(--shadow-color);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px var(--button-shadow);
 }
 
 .admin-nav-btn:active {
   transform: translateY(0);
+}
+
+/* La page active se distingue par le remplissage plein (gradient bouton) ;
+   les autres destinations restent en style "ghost" pour ne pas rivaliser
+   visuellement avec l'action en cours. */
+.admin-nav-btn.active {
+  background: var(--button-gradient);
+  color: white;
+  border-color: transparent;
+}
+
+.admin-nav-btn.active:hover {
+  box-shadow: 0 4px 12px var(--button-shadow);
+}
+
+.admin-nav-separator {
+  width: 1px;
+  align-self: stretch;
+  margin: 0 0.2rem;
+  background: var(--border-color);
+  opacity: 0.5;
 }
 
 /* Responsive design */

@@ -13,6 +13,7 @@ import {
   dismissToast,
 } from '../../../services/notificationService';
 import { useTheme } from '../../../context/ThemeContext';
+import AdminPageHeader from '../../../components/AdminPageHeader/AdminPageHeader';
 import './GenerateMonsters.css';
 
 const GenerateMonsters = () => {
@@ -271,18 +272,16 @@ const GenerateMonsters = () => {
   return (
     <div className={`generate-page theme-${theme}`} ref={pageRef}>
       <div className="generate-container">
-        {/* Bouton retour dashboard */}
-        <button
-          type="button"
-          className="generate-back-btn"
-          onClick={() => navigate('/admin')}
-        >
-          ← Retour au Dashboard
-        </button>
+        <AdminPageHeader
+          breadcrumb={[
+            { label: 'Tableau de Bord', to: '/admin' },
+            { label: 'Générateur de Monstres' },
+          ]}
+          title="✨ Générateur de Monstres"
+        />
 
         {/* Form Section */}
         <div className="generate-form-panel">
-          <h1 className="generate-form-title">✨ Générateur de Monstres</h1>
           <p className="generate-form-description">
             Utilisez votre créativité pour créer de nouveaux monstres ! Entrez
             un prompt décrivant le monstre que vous souhaitez générer. La

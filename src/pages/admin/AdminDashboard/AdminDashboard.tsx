@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { adminApi } from '../../../services/api';
-import ThemeToggle from '../../../components/ThemeToggle/ThemeToggle';
+import AdminPageHeader from '../../../components/AdminPageHeader/AdminPageHeader';
 import './AdminDashboard.css';
 
 const AdminDashboard = () => {
@@ -35,6 +35,7 @@ const AdminDashboard = () => {
   if (loading) {
     return (
       <div className="admin-dashboard">
+        <AdminPageHeader title="Tableau de Bord" />
         <div className="loading">Chargement des statistiques...</div>
       </div>
     );
@@ -43,78 +44,33 @@ const AdminDashboard = () => {
   if (error) {
     return (
       <div className="admin-dashboard">
-        <div
-          className="error"
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 12,
-            alignItems: 'center',
-          }}
-        >
-          <div>{error}</div>
-          <button
-            className="btn-home"
-            onClick={() => navigate('/')}
-            style={{
-              padding: '8px 16px',
-              fontWeight: 'bold',
-              borderRadius: 8,
-              background: '#eee',
-              color: '#222',
-              border: 'none',
-              cursor: 'pointer',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-            }}
-            title="Retour à l'accueil"
-          >
-            Accueil
-          </button>
-        </div>
+        <AdminPageHeader title="Tableau de Bord" />
+        <div className="error">{error}</div>
       </div>
     );
   }
 
-  const handleViewMonsters = () => {
-    navigate('/admin/monsters');
-  };
-
   return (
     <div className="admin-dashboard">
-      <div className="admin-header">
-        <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
-          <h1 style={{ margin: 0 }}>Tableau de Bord Admin</h1>
-          <button
-            className="btn-home"
-            onClick={() => navigate('/')}
-            style={{
-              padding: '8px 16px',
-              fontWeight: 'bold',
-              borderRadius: 8,
-              background: '#eee',
-              color: '#222',
-              border: 'none',
-              cursor: 'pointer',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-            }}
-            title="Retour à l'accueil"
-          >
-            Accueil
-          </button>
-        </div>
-        <div className="admin-header-actions">
-          <button className="btn-primary" onClick={handleViewMonsters}>
-            Voir les Monstres
-          </button>
-          <button
-            className="btn-secondary"
-            onClick={() => navigate('/generate')}
-          >
-            Générer des Monstres
-          </button>
-          <ThemeToggle />
-        </div>
-      </div>
+      <AdminPageHeader
+        title="Tableau de Bord"
+        actions={
+          <>
+            <button
+              className="btn-primary"
+              onClick={() => navigate('/admin/monsters')}
+            >
+              Voir les Monstres
+            </button>
+            <button
+              className="btn-secondary"
+              onClick={() => navigate('/generate')}
+            >
+              Générer des Monstres
+            </button>
+          </>
+        }
+      />
 
       {stats && (
         <>

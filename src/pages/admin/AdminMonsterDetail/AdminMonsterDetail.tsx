@@ -1,8 +1,8 @@
 // @ts-nocheck -- strict TypeScript activé globalement (P1.2) ; ce fichier n'est pas encore migré, voir ROADMAP.md P1.2
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { adminApiService } from '../../../services/adminService';
-import ThemeToggle from '../../../components/ThemeToggle/ThemeToggle';
+import AdminPageHeader from '../../../components/AdminPageHeader/AdminPageHeader';
 import './AdminMonsterDetail.css';
 import MonsterSummaryTab from './MonsterSummaryTab/MonsterSummaryTab';
 import MonsterDataTab from './MonsterDataTab/MonsterDataTab';
@@ -13,7 +13,6 @@ import MonsterImagesTab from './MonsterImagesTab/MonsterImagesTab';
 
 const AdminMonsterDetail = () => {
   const { monsterId } = useParams();
-  const navigate = useNavigate();
   const [monster, setMonster] = useState(null);
   const [monsterImages, setMonsterImages] = useState([]);
   const [defaultImage, setDefaultImage] = useState(null);
@@ -115,9 +114,25 @@ const AdminMonsterDetail = () => {
   //   }
   // }, [isInAdvancedState, activeTab, searchParams, setSearchParams]);
 
+  const monsterName = monster?.monster_data
+    ? monster.monster_data.name ||
+      monster.monster_data.title ||
+      monster.monster_data.nom ||
+      (typeof monster.monster_data === 'object'
+        ? Object.values(monster.monster_data)[0]
+        : monster.monster_data)
+    : null;
+
+  const detailBreadcrumb = [
+    { label: 'Tableau de Bord', to: '/admin' },
+    { label: 'Gestion des Monstres', to: '/admin/monsters' },
+    { label: monsterName || 'Détail du monstre' },
+  ];
+
   if (loading) {
     return (
       <div className="admin-monster-detail">
+        <AdminPageHeader breadcrumb={detailBreadcrumb} title="Détail du monstre" />
         <div className="loading">Chargement du monstre...</div>
       </div>
     );
@@ -126,12 +141,7 @@ const AdminMonsterDetail = () => {
   if (error) {
     return (
       <div className="admin-monster-detail">
-        <button
-          onClick={() => navigate('/admin/monsters')}
-          className="btn-back"
-        >
-          ← Retour
-        </button>
+        <AdminPageHeader breadcrumb={detailBreadcrumb} title="Détail du monstre" />
         <div className="error">{error}</div>
       </div>
     );
@@ -139,32 +149,17 @@ const AdminMonsterDetail = () => {
 
   return (
     <div className="admin-monster-detail">
-      <div className="detail-header">
-        <button
-          onClick={() => navigate('/admin/monsters')}
-          className="btn-back"
-        >
-          ← Retour
-        </button>
-        <div className="header-title">
-          {monster?.monster_data && (
-            <h1 className="monster-name-subtitle">
-              {monster.monster_data.name ||
-                monster.monster_data.title ||
-                monster.monster_data.nom ||
-                (typeof monster.monster_data === 'object'
-                  ? Object.values(monster.monster_data)[0]
-                  : monster.monster_data)}
-            </h1>
-          )}
-        </div>
-        <span
-          className={`state-badge state-${monster?.metadata?.state.toLowerCase()}`}
-        >
-          {monster?.metadata?.state}
-        </span>
-        <ThemeToggle />
-      </div>
+      <AdminPageHeader
+        breadcrumb={detailBreadcrumb}
+        title={monsterName}
+        badge={
+          <span
+            className={`state-badge state-${monster?.metadata?.state.toLowerCase()}`}
+          >
+            {monster?.metadata?.state}
+          </span>
+        }
+      />
 
       {actionError && <div className="error-message">{actionError}</div>}
 

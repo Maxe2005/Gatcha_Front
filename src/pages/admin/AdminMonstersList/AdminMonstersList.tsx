@@ -3,7 +3,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { adminApi } from '../../../services/api';
 import { adminApiService } from '../../../services/adminService';
-import ThemeToggle from '../../../components/ThemeToggle/ThemeToggle';
+import AdminPageHeader from '../../../components/AdminPageHeader/AdminPageHeader';
 import ConfirmDialog from '../../../components/ConfirmDialog/ConfirmDialog';
 import './AdminMonstersList.css';
 
@@ -368,19 +368,13 @@ const AdminMonstersList = () => {
 
   return (
     <div className="admin-monsters-list">
-      <div className="list-header">
-        <h1>Gestion des Monstres</h1>
-        <div className="list-header-actions">
-          <button
-            className="btn-back-dashboard"
-            onClick={() => navigate('/admin')}
-            title="Retour au Tableau de Bord"
-          >
-            ← Tableau de Bord
-          </button>
-          <ThemeToggle />
-        </div>
-      </div>
+      <AdminPageHeader
+        breadcrumb={[
+          { label: 'Tableau de Bord', to: '/admin' },
+          { label: 'Gestion des Monstres' },
+        ]}
+        title="Gestion des Monstres"
+      />
       {(selectedState === 'GENERATED' || selectedState === 'APPROVED') && (
         <div className="action-bar">
           {selectedState === 'GENERATED' && (
